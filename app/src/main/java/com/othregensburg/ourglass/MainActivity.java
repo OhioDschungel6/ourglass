@@ -1,6 +1,8 @@
 package com.othregensburg.ourglass;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -12,7 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -23,6 +28,8 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private boolean timeIsRunning=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,27 @@ public class MainActivity extends AppCompatActivity
         DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
         date.setText(df.format(Calendar.getInstance().getTime()));
 
+
+        //TimeStartButton
+        ImageView start = findViewById(R.id.start);
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //v.setBackgroundColor(getResources().getColor(R.color.startButton));
+
+                timeIsRunning=!timeIsRunning;
+                if (timeIsRunning) {
+                    ImageView img = (ImageView) v;
+                    img.setImageResource(R.drawable.hourglass_animation);
+                    AnimationDrawable ad= (AnimationDrawable) img.getDrawable();
+                    ad.start();
+                } else {
+                    ImageView img = (ImageView) v;
+                    img.setImageResource(R.drawable.hourglass_full);
+                }
+
+            }
+        });
 
     }
 
