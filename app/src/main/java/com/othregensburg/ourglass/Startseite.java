@@ -1,5 +1,6 @@
 package com.othregensburg.ourglass;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
@@ -107,11 +108,21 @@ public class Startseite extends AppCompatActivity
 
         if (id == R.id.nav_homescreen) {
             /*
-            Intent startHomescreen = new Intent(this, MainActivity.class);
-            startActivity(startHomescreen);
+            Intent intent = new Intent(this, Startseite.class);
+            startActivity(intent);
             */
-        } else if (id == R.id.nav_manage) {
-
+        } else if (id == R.id.nav_stundenuebersicht) {
+            Intent intent = new Intent(this, Stundenuebersicht.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_korrektur) {
+            Intent intent = new Intent(this, Stundenkorrektur.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_projekt) {
+            Intent intent = new Intent(this, Projektuebersicht.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_team) {
+            Intent intent = new Intent(this, Teamuebersicht.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

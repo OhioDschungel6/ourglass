@@ -8,8 +8,12 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="nav_drawer_homescreen">Startseite</string>
-    <string name="title_activity_stundenuebersicht">Stundenuebersicht</string>
+    <string name="nav_drawer_stundenuebersicht">Stundenübersicht</string>
+    <string name="nav_drawer_korrektur">Zeitkorrektur</string>
+    <string name="nav_drawer_projekt">Projekte</string>
+    <string name="nav_drawer_team">Team</string>
+    <string name="title_activity_stundenuebersicht">Stundenübersicht</string>
     <string name="title_activity_stundenkorrektur">Stundenkorrektur</string>
-    <string name="title_activity_teamuebersicht">Teamuebersicht</string>
-    <string name="title_activity_projektuebersicht">Projektuebersicht</string>
+    <string name="title_activity_teamuebersicht">Teamübersicht</string>
+    <string name="title_activity_projektuebersicht">Projektübersicht</string>
 </resources>

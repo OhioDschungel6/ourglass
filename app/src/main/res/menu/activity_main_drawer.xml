@@ -9,9 +9,21 @@
             android:icon="@drawable/ic_menu_homescreen"
             android:title="@string/nav_drawer_homescreen" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_stundenuebersicht"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="@string/nav_drawer_stundenuebersicht" />
+        <item
+            android:id="@+id/nav_korrektur"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/nav_drawer_korrektur" />
+        <item
+            android:id="@+id/nav_team"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/nav_drawer_team" />
+        <item
+            android:id="@+id/nav_projekt"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/nav_drawer_projekt" />
     </group>
 
 </menu>
