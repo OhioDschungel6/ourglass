@@ -10,20 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Projektuebersicht"
-            android:label="@string/title_activity_projektuebersicht"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity
             android:name=".Teamuebersicht"
             android:label="@string/title_activity_teamuebersicht"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".Stundenuebersicht"
+            android:label="@string/title_activity_stundenuebersicht"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Projektuebersicht"
+            android:label="@string/title_activity_projektuebersicht"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Stundenkorrektur"
             android:label="@string/title_activity_stundenkorrektur"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Stundenuebersicht"
-            android:label="@string/title_activity_stundenuebersicht"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Startseite"

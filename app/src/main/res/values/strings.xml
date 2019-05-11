@@ -16,4 +16,12 @@
     <string name="title_activity_stundenkorrektur">Stundenkorrektur</string>
     <string name="title_activity_teamuebersicht">Teamübersicht</string>
     <string name="title_activity_projektuebersicht">Projektübersicht</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
 </resources>

@@ -6,6 +6,6 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Teamuebersicht"
-    tools:showIn="@layout/activity_teamuebersicht">
+    tools:showIn="@layout/app_bar_teamuebersicht">
 
 </android.support.constraint.ConstraintLayout>

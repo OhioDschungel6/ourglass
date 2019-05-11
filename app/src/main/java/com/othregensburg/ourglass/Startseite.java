@@ -20,8 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class Startseite extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class Startseite extends AppDrawerBase {
 
     private boolean timeIsRunning=false;
 
@@ -70,63 +69,4 @@ public class Startseite extends AppCompatActivity
 
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_homescreen) {
-            /*
-            Intent intent = new Intent(this, Startseite.class);
-            startActivity(intent);
-            */
-        } else if (id == R.id.nav_stundenuebersicht) {
-            Intent intent = new Intent(this, Stundenuebersicht.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_korrektur) {
-            Intent intent = new Intent(this, Stundenkorrektur.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_projekt) {
-            Intent intent = new Intent(this, Projektuebersicht.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_team) {
-            Intent intent = new Intent(this, Teamuebersicht.class);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 }
