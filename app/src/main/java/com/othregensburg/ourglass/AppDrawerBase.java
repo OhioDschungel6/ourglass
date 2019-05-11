@@ -6,6 +6,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,7 +22,7 @@ public class AppDrawerBase extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            //super.onBackPressed();
         }
     }
 
@@ -29,21 +30,21 @@ public class AppDrawerBase extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_homescreen) {
-            /*
+
+        if (id == R.id.nav_homescreen && getClass()!= Startseite.class) {
             Intent intent = new Intent(this, Startseite.class);
             startActivity(intent);
-            */
-        } else if (id == R.id.nav_stundenuebersicht) {
+
+        } else if (id == R.id.nav_stundenuebersicht && getClass()!= Stundenuebersicht.class) {
             Intent intent = new Intent(this, Stundenuebersicht.class);
             startActivity(intent);
-        } else if (id == R.id.nav_korrektur) {
+        } else if (id == R.id.nav_korrektur && getClass()!= Stundenkorrektur.class) {
             Intent intent = new Intent(this, Stundenkorrektur.class);
             startActivity(intent);
-        } else if (id == R.id.nav_projekt) {
+        } else if (id == R.id.nav_projekt && getClass()!= Projektuebersicht.class) {
             Intent intent = new Intent(this, Projektuebersicht.class);
             startActivity(intent);
-        } else if (id == R.id.nav_team) {
+        } else if (id == R.id.nav_team && getClass()!= Teamuebersicht.class) {
             Intent intent = new Intent(this, Teamuebersicht.class);
             startActivity(intent);
         }
