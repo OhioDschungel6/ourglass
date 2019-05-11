@@ -1,5 +1,6 @@
 package com.othregensburg.ourglass;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,8 +14,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class Stundenkorrektur extends AppDrawerBase {
+
+    int mYear,mMonth,mDay;
+    final Calendar cal = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +49,31 @@ public class Stundenkorrektur extends AppDrawerBase {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        //Datepicker
+        TextView date = findViewById(R.id.date);
+        mYear = cal.get(Calendar.YEAR);
+        mMonth = cal.get(Calendar.MONTH)+1;
+        mDay = cal.get(Calendar.DAY_OF_MONTH);
+        date.setText(String.format(Locale.GERMAN,"%d.%d.%d",mDay,mMonth,mYear));
+        LinearLayout datepickerbar = findViewById(R.id.datepicker_bar);
+        datepickerbar.setOnClickListener(e -> {
+                    DatePickerDialog dpd = new DatePickerDialog(this, R.style.DatePickerTheme, dl, mYear, mMonth-1, mDay);
+                    dpd.show();
+                });
+
+
     }
+
+    private DatePickerDialog.OnDateSetListener dl = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            mYear = year;
+            mMonth = month+1;
+            mDay = dayOfMonth;
+            TextView date = findViewById(R.id.date);
+            date.setText(String.format(Locale.GERMAN,"%d.%d.%d",mDay,mMonth,mYear));
+        }
+    };
 
 
 }

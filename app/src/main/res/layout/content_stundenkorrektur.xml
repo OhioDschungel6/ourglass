@@ -11,14 +11,14 @@
 
 
     <LinearLayout
+        android:id="@+id/datepicker_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="#808080">
+        android:background="@color/datePicker">
 
         <TextView
-            android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -30,7 +30,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="05.07.19"
             android:textSize="24sp"
             android:textStyle="bold" />
 

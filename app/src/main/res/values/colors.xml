@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="startButton">#E71414</color>
+    <color name="datePicker">#808080</color>
 </resources>
