@@ -57,7 +57,7 @@ public class Stundenkorrektur extends AppDrawerBase {
         date.setText(String.format(Locale.GERMAN,"%d.%d.%d",mDay,mMonth,mYear));
         LinearLayout datepickerbar = findViewById(R.id.datepicker_bar);
         datepickerbar.setOnClickListener(e -> {
-                    DatePickerDialog dpd = new DatePickerDialog(this, R.style.DatePickerTheme, dl, mYear, mMonth-1, mDay);
+                    DatePickerDialog dpd = new DatePickerDialog(this, dl, mYear, mMonth-1, mDay);
                     dpd.show();
                 });
 

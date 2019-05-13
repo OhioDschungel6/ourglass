@@ -43,8 +43,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_weight="1"
-                android:contentDescription="calender_icon"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/calendar" />
         </android.support.constraint.ConstraintLayout>
 
