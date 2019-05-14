@@ -19,7 +19,6 @@
         android:layout_marginBottom="16dp"
         android:ems="10"
         android:gravity="center"
-        android:text="83:24"
         android:textSize="@dimen/textsize_big"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"

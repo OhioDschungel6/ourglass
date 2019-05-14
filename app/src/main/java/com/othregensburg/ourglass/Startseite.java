@@ -41,6 +41,7 @@ public class Startseite extends AppDrawerBase {
         navigationView.setNavigationItemSelectedListener(this);
 
         //TimeText
+
         TextView date= findViewById(R.id.date);
         DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
         date.setText(df.format(Calendar.getInstance().getTime()));
