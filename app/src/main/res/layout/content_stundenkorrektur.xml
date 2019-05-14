@@ -50,6 +50,12 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/datepicker_bar"></LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>
