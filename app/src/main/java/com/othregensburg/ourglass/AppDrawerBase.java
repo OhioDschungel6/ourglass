@@ -21,8 +21,13 @@ public class AppDrawerBase extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            //super.onBackPressed();
+        } else if (getClass() != Startseite.class){
+            Intent intent = new Intent(this, Startseite.class);
+            startActivity(intent);
+            finish();
+        }
+        else {
+            super.onBackPressed();
         }
     }
 
@@ -30,23 +35,27 @@ public class AppDrawerBase extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-
+        //TODO: finish richtige Methode?, Callstack ändern?
         if (id == R.id.nav_homescreen && getClass()!= Startseite.class) {
             Intent intent = new Intent(this, Startseite.class);
             startActivity(intent);
-
+            finish();
         } else if (id == R.id.nav_stundenuebersicht && getClass()!= Stundenuebersicht.class) {
             Intent intent = new Intent(this, Stundenuebersicht.class);
             startActivity(intent);
+            finish();
         } else if (id == R.id.nav_korrektur && getClass()!= Stundenkorrektur.class) {
             Intent intent = new Intent(this, Stundenkorrektur.class);
             startActivity(intent);
+            finish();
         } else if (id == R.id.nav_projekt && getClass()!= Projektuebersicht.class) {
             Intent intent = new Intent(this, Projektuebersicht.class);
             startActivity(intent);
+            finish();
         } else if (id == R.id.nav_team && getClass()!= Teamuebersicht.class) {
             Intent intent = new Intent(this, Teamuebersicht.class);
             startActivity(intent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
