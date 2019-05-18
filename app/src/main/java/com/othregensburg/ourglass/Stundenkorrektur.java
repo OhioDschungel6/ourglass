@@ -1,6 +1,7 @@
 package com.othregensburg.ourglass;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -35,6 +37,9 @@ public class Stundenkorrektur extends AppDrawerBase {
     final Calendar cal = Calendar.getInstance();
     private List<Time> startDates = new LinkedList<>();
     private List<Time> endDates = new LinkedList<>();
+    int changeIndex;
+    boolean startDateChange;
+    TextView changedView;
 
 
     @Override
@@ -72,6 +77,22 @@ public class Stundenkorrektur extends AppDrawerBase {
                 //element.getChildAt(i).setTag(i);
                 s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(i).getHours(), startDates.get(i).getMinutes()));
                 e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(i).getHours(), endDates.get(i).getMinutes()));
+                s.setOnClickListener(h->{
+                    LinearLayout r=(LinearLayout)h.getParent();
+                    LinearLayout parent = (LinearLayout)r.getParent();
+                    changeIndex = parent.indexOfChild(r);
+                    startDateChange=true;
+                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
+                    tpd.show();
+                });
+                e.setOnClickListener(h->{
+                    LinearLayout r=(LinearLayout)h.getParent();
+                    LinearLayout parent = (LinearLayout)r.getParent();
+                    changeIndex = parent.indexOfChild(r);
+                    startDateChange=false;
+                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
+                    tpd.show();
+                });
                 FloatingActionButton remove = element.getChildAt(i).findViewById(R.id.remove);
                 remove.setOnClickListener(g->{
                     LinearLayout r=(LinearLayout)g.getParent();
@@ -105,6 +126,28 @@ public class Stundenkorrektur extends AppDrawerBase {
             LinearLayout element = (LinearLayout) inflater.inflate(R.layout.entry, linearLayout);
             TextView s = element.getChildAt(size).findViewById(R.id.startTime);
             TextView e = element.getChildAt(size).findViewById(R.id.endTime);
+            //Timepicker
+            s.setOnClickListener(h->{
+                LinearLayout r=(LinearLayout)h.getParent();
+                LinearLayout parent = (LinearLayout)r.getParent();
+                 changeIndex = parent.indexOfChild(r);
+                 startDateChange=true;
+                changedView = (TextView)h;
+                TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
+                tpd.show();
+            });
+            e.setOnClickListener(h->{
+                LinearLayout r=(LinearLayout)h.getParent();
+                LinearLayout parent = (LinearLayout)r.getParent();
+                changeIndex = parent.indexOfChild(r);
+                startDateChange=false;
+                changedView = (TextView)h;
+                TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
+                tpd.show();
+            });
+
+
+
             s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(size).getHours(), startDates.get(size).getMinutes()));
             e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(size).getHours(), endDates.get(size).getMinutes()));
             FloatingActionButton remove = element.getChildAt(size).findViewById(R.id.remove);
@@ -118,6 +161,9 @@ public class Stundenkorrektur extends AppDrawerBase {
             });
 
         });
+
+
+
 
 
         //DrawerLayout
@@ -142,6 +188,20 @@ public class Stundenkorrektur extends AppDrawerBase {
 
 
     }
+
+    private TimePickerDialog.OnTimeSetListener onTimeDialogCallback= new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            if (startDateChange) {
+                startDates.get(changeIndex).setHours(hourOfDay);
+                startDates.get(changeIndex).setMinutes(minute);
+            } else {
+                endDates.get(changeIndex).setHours(hourOfDay);
+                endDates.get(changeIndex).setMinutes(minute);
+            }
+            changedView.setText(String.format(Locale.GERMAN,"%2d.%02d", hourOfDay, minute));
+        }
+    };
 
     private DatePickerDialog.OnDateSetListener dl = new DatePickerDialog.OnDateSetListener() {
         @Override
