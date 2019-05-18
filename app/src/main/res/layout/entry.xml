@@ -1,36 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp"
+    android:layout_marginStart="60dp"
+    android:layout_marginEnd="60dp"
+    android:id="@+id/correctenContainer">
 
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/startTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="24sp"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="10:00" />
 
         <TextView
-            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:textStyle="bold"
             android:text="-" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/endTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:textSize="24sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="13:31" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/remove"
+            app:fabSize="mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/ic_remove_circle_outline_black_24dp" />
     </LinearLayout>
-</LinearLayout>

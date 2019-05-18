@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -61,9 +62,36 @@ public class Stundenkorrektur extends AppDrawerBase {
 
         if (startDates.size() == endDates.size()) {
             LinearLayout linearLayout = findViewById(R.id.linLayout);
+            LayoutInflater inflater= getLayoutInflater();
 
-            linearLayout.addView();
+            for (int i=0; i<startDates.size();i++) {
+                LinearLayout element = (LinearLayout) inflater.inflate(R.layout.entry, linearLayout);
+                TextView s = element.getChildAt(i).findViewById(R.id.startTime);
+                TextView e = element.getChildAt(i).findViewById(R.id.endTime);
+                s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(i).getHours(), startDates.get(i).getMinutes()));
+                e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(i).getHours(), endDates.get(i).getMinutes()));
+
+            }
         }
+
+        //Plus Button
+        FloatingActionButton add = findViewById(R.id.addTime);
+        add.setOnClickListener(f ->{
+            int size=startDates.size();
+            startDates.add(endDates.get(size-1));
+            endDates.add(endDates.get(size-1));
+
+            LinearLayout linearLayout = findViewById(R.id.linLayout);
+            LayoutInflater inflater= getLayoutInflater();
+
+            LinearLayout element = (LinearLayout) inflater.inflate(R.layout.entry, linearLayout);
+            TextView s = element.getChildAt(size).findViewById(R.id.startTime);
+            TextView e = element.getChildAt(size).findViewById(R.id.endTime);
+            s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(size).getHours(), startDates.get(size).getMinutes()));
+            e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(size).getHours(), endDates.get(size).getMinutes()));
+
+
+        });
 
 
         //DrawerLayout
