@@ -46,7 +46,7 @@ public class Startseite extends AppDrawerBase {
 
         //TimeText
 
-        TextView date= findViewById(R.id.date);
+        TextView date = findViewById(R.id.date);
         DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
         date.setText(df.format(Calendar.getInstance().getTime()));
 
