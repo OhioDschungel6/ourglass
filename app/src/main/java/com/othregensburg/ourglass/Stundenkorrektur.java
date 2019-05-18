@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -68,8 +69,19 @@ public class Stundenkorrektur extends AppDrawerBase {
                 LinearLayout element = (LinearLayout) inflater.inflate(R.layout.entry, linearLayout);
                 TextView s = element.getChildAt(i).findViewById(R.id.startTime);
                 TextView e = element.getChildAt(i).findViewById(R.id.endTime);
+                //element.getChildAt(i).setTag(i);
                 s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(i).getHours(), startDates.get(i).getMinutes()));
                 e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(i).getHours(), endDates.get(i).getMinutes()));
+                FloatingActionButton remove = element.getChildAt(i).findViewById(R.id.remove);
+                remove.setOnClickListener(g->{
+                    LinearLayout r=(LinearLayout)g.getParent();
+                    LinearLayout parent = (LinearLayout)r.getParent();
+                    int nr = parent.indexOfChild(r);
+                    startDates.remove(nr);
+                    endDates.remove(nr);
+                    parent.removeViewAt(nr);
+                });
+
 
             }
         }
@@ -78,8 +90,14 @@ public class Stundenkorrektur extends AppDrawerBase {
         FloatingActionButton add = findViewById(R.id.addTime);
         add.setOnClickListener(f ->{
             int size=startDates.size();
-            startDates.add(endDates.get(size-1));
-            endDates.add(endDates.get(size-1));
+            if (size > 0) {
+                startDates.add(endDates.get(size-1));
+                endDates.add(endDates.get(size-1));
+            }else{
+                startDates.add(new Time(8,0,0));
+                endDates.add(new Time(8,0,0));
+            }
+
 
             LinearLayout linearLayout = findViewById(R.id.linLayout);
             LayoutInflater inflater= getLayoutInflater();
@@ -89,7 +107,15 @@ public class Stundenkorrektur extends AppDrawerBase {
             TextView e = element.getChildAt(size).findViewById(R.id.endTime);
             s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(size).getHours(), startDates.get(size).getMinutes()));
             e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(size).getHours(), endDates.get(size).getMinutes()));
-
+            FloatingActionButton remove = element.getChildAt(size).findViewById(R.id.remove);
+            remove.setOnClickListener(g->{
+                LinearLayout r=(LinearLayout)g.getParent();
+                LinearLayout parent = (LinearLayout)r.getParent();
+                int nr = parent.indexOfChild(r);
+                startDates.remove(nr);
+                endDates.remove(nr);
+                parent.removeViewAt(nr);
+            });
 
         });
 
