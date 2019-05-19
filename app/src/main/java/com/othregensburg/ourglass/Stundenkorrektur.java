@@ -4,30 +4,23 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.support.v4.view.GravityCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.sql.Date;
 import java.sql.Time;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,10 +28,8 @@ public class Stundenkorrektur extends AppDrawerBase {
 
     int mYear, mMonth, mDay;
     final Calendar cal = Calendar.getInstance();
-    private List<Time> startDates = new LinkedList<>();
-    private List<Time> endDates = new LinkedList<>();
-    int changeIndex;
-    boolean startDateChange;
+    private List<Pair<Time,Time>> dates = new ArrayList<>();
+    Time changedTime;
     TextView changedView;
 
 
@@ -49,23 +40,28 @@ public class Stundenkorrektur extends AppDrawerBase {
         setContentView(R.layout.activity_stundenkorrektur);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton done = findViewById(R.id.save_correct_time);
-        done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
         //ToDo Löschen
-        startDates.add(new Time(9, 0, 0));
-        startDates.add(new Time(10, 0, 0));
-        startDates.add(new Time(12, 0, 0));
-        endDates.add(new Time(9, 25, 0));
-        endDates.add(new Time(10, 25, 0));
-        endDates.add(new Time(13, 10, 0));
+        dates.add(new Pair<>(new Time(9, 0, 0),new Time(9, 25, 0)));
+        dates.add(new Pair<>(new Time(12, 0, 0),new Time(12, 25, 0)));
+        dates.add(new Pair<>(new Time(13, 10, 0),new Time(13, 25, 0)));
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        StundenkorrekturAdapter mAdapter = new StundenkorrekturAdapter(this, dates);
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
+        //Plus Button
+        FloatingActionButton addTime = findViewById(R.id.addTime);
+        addTime.setOnClickListener(e->{
+            Time second=dates.get(dates.size()-1).second;
+            dates.add(new Pair<>(new Time(second.getTime()), new Time(second.getTime())));
+            mAdapter.notifyDataSetChanged();
+        });
+
+
+        /*
         if (startDates.size() == endDates.size()) {
             LinearLayout linearLayout = findViewById(R.id.linLayout);
             LayoutInflater inflater= getLayoutInflater();
@@ -74,7 +70,7 @@ public class Stundenkorrektur extends AppDrawerBase {
                 LinearLayout element = (LinearLayout) inflater.inflate(R.layout.entry, linearLayout);
                 TextView s = element.getChildAt(i).findViewById(R.id.startTime);
                 TextView e = element.getChildAt(i).findViewById(R.id.endTime);
-                //element.getChildAt(i).setTag(i);
+
                 s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(i).getHours(), startDates.get(i).getMinutes()));
                 e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(i).getHours(), endDates.get(i).getMinutes()));
                 s.setOnClickListener(h->{
@@ -82,7 +78,7 @@ public class Stundenkorrektur extends AppDrawerBase {
                     LinearLayout parent = (LinearLayout)r.getParent();
                     changeIndex = parent.indexOfChild(r);
                     startDateChange=true;
-                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
+                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, startDates.get(changeIndex).getHours(), startDates.get(changeIndex).getMinutes(), true);
                     tpd.show();
                 });
                 e.setOnClickListener(h->{
@@ -90,7 +86,7 @@ public class Stundenkorrektur extends AppDrawerBase {
                     LinearLayout parent = (LinearLayout)r.getParent();
                     changeIndex = parent.indexOfChild(r);
                     startDateChange=false;
-                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
+                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, endDates.get(changeIndex).getHours(), endDates.get(changeIndex).getMinutes(), true);
                     tpd.show();
                 });
                 FloatingActionButton remove = element.getChildAt(i).findViewById(R.id.remove);
@@ -118,6 +114,7 @@ public class Stundenkorrektur extends AppDrawerBase {
                 startDates.add(new Time(8,0,0));
                 endDates.add(new Time(8,0,0));
             }
+
 
 
             LinearLayout linearLayout = findViewById(R.id.linLayout);
@@ -164,7 +161,7 @@ public class Stundenkorrektur extends AppDrawerBase {
 
 
 
-
+*/
 
         //DrawerLayout
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -174,6 +171,8 @@ public class Stundenkorrektur extends AppDrawerBase {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+
         //Datepicker
         TextView date = findViewById(R.id.date);
         mYear = cal.get(Calendar.YEAR);
@@ -188,7 +187,7 @@ public class Stundenkorrektur extends AppDrawerBase {
 
 
     }
-
+/*
     private TimePickerDialog.OnTimeSetListener onTimeDialogCallback= new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -202,7 +201,7 @@ public class Stundenkorrektur extends AppDrawerBase {
             changedView.setText(String.format(Locale.GERMAN,"%2d.%02d", hourOfDay, minute));
         }
     };
-
+*/
     private DatePickerDialog.OnDateSetListener dl = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
