@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentStundeneinteilung">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/spinner_tätigkeit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="48dp"
+            android:layout_marginTop="88dp"
+            android:layout_marginBottom="40dp"
+            android:prompt="@string/stundeneinteilung_spinnerPrompt_taetigkeit" />
+
+        <Spinner
+            android:id="@+id/spinner_projekt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="48dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            android:prompt="@string/stundeneinteilung_spinnerPrompt_projekt" />
+
+        <EditText
+            android:id="@+id/editTextMultiline_notiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:hint="@string/stundeneinteilung_editText_notiz_hint"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:ems="14"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"/>
+
+        <SeekBar
+            android:id="@+id/seekBar_zeit"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"/>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_fab_check" />
+
+</FrameLayout>

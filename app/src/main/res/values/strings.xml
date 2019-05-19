@@ -1,4 +1,7 @@
 <resources>
+    <string name="stundeneinteilung_spinnerPrompt_taetigkeit">Wähle eine Aktivität</string>
+    <string name="stundeneinteilung_spinnerPrompt_projekt">Wähle ein Projekt</string>
+    <string name="stundeneinteilung_editText_notiz_hint">Notiz</string>
     <string name="sollzeit">Soll:</string>
     <string name="istzeit">Ist:</string>
     <string name="app_name">ourglass</string>

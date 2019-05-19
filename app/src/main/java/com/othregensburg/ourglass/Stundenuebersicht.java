@@ -19,7 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.Button;
 
-public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesuebersicht.OnFragmentInteractionListener{
+public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesuebersicht.OnFragmentInteractionListener, FragmentStundeneinteilung.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +42,9 @@ public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesueb
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
         fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
+        //TODO: Testdaten, später vom aufrufenden Eintrag aus der Stundenübersicht übernehmen
         Fragment fragment = FragmentTagesuebersicht.newInstance(1, 1, 2019);
-        fragmentTransaction.add(R.id.stundenuebersicht_fragmentcontainer, fragment);
+        fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
         fragmentTransaction.commit();
     }
 
