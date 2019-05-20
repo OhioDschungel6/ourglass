@@ -14,9 +14,9 @@
         android:id="@+id/datepicker_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/datePicker"
         android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/datePicker">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="match_parent"
@@ -50,6 +50,11 @@
 
     </LinearLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/datepicker_bar" />
 
 
 </android.support.constraint.ConstraintLayout>

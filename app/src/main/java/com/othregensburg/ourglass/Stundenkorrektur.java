@@ -1,47 +1,169 @@
 package com.othregensburg.ourglass;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
-import android.support.v4.view.GravityCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class Stundenkorrektur extends AppDrawerBase {
 
-    int mYear,mMonth,mDay;
+    int mYear, mMonth, mDay;
     final Calendar cal = Calendar.getInstance();
+    private List<Pair<Time,Time>> dates = new ArrayList<>();
+    Time changedTime;
+    TextView changedView;
+
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stundenkorrektur);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+
+        //ToDo Löschen
+        dates.add(new Pair<>(new Time(9, 0, 0),new Time(9, 25, 0)));
+        dates.add(new Pair<>(new Time(12, 0, 0),new Time(12, 25, 0)));
+        dates.add(new Pair<>(new Time(13, 10, 0),new Time(13, 25, 0)));
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        StundenkorrekturAdapter mAdapter = new StundenkorrekturAdapter(this, dates);
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        //Plus Button
+        FloatingActionButton addTime = findViewById(R.id.addTime);
+        addTime.setOnClickListener(e->{
+            Time second=dates.get(dates.size()-1).second;
+            dates.add(new Pair<>(new Time(second.getTime()), new Time(second.getTime())));
+            mAdapter.notifyDataSetChanged();
         });
+
+
+        /*
+        if (startDates.size() == endDates.size()) {
+            LinearLayout linearLayout = findViewById(R.id.linLayout);
+            LayoutInflater inflater= getLayoutInflater();
+
+            for (int i=0; i<startDates.size();i++) {
+                LinearLayout element = (LinearLayout) inflater.inflate(R.layout.entry, linearLayout);
+                TextView s = element.getChildAt(i).findViewById(R.id.startTime);
+                TextView e = element.getChildAt(i).findViewById(R.id.endTime);
+
+                s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(i).getHours(), startDates.get(i).getMinutes()));
+                e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(i).getHours(), endDates.get(i).getMinutes()));
+                s.setOnClickListener(h->{
+                    LinearLayout r=(LinearLayout)h.getParent();
+                    LinearLayout parent = (LinearLayout)r.getParent();
+                    changeIndex = parent.indexOfChild(r);
+                    startDateChange=true;
+                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, startDates.get(changeIndex).getHours(), startDates.get(changeIndex).getMinutes(), true);
+                    tpd.show();
+                });
+                e.setOnClickListener(h->{
+                    LinearLayout r=(LinearLayout)h.getParent();
+                    LinearLayout parent = (LinearLayout)r.getParent();
+                    changeIndex = parent.indexOfChild(r);
+                    startDateChange=false;
+                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, endDates.get(changeIndex).getHours(), endDates.get(changeIndex).getMinutes(), true);
+                    tpd.show();
+                });
+                FloatingActionButton remove = element.getChildAt(i).findViewById(R.id.remove);
+                remove.setOnClickListener(g->{
+                    LinearLayout r=(LinearLayout)g.getParent();
+                    LinearLayout parent = (LinearLayout)r.getParent();
+                    int nr = parent.indexOfChild(r);
+                    startDates.remove(nr);
+                    endDates.remove(nr);
+                    parent.removeViewAt(nr);
+                });
+
+
+            }
+        }
+
+        //Plus Button
+        FloatingActionButton add = findViewById(R.id.addTime);
+        add.setOnClickListener(f ->{
+            int size=startDates.size();
+            if (size > 0) {
+                startDates.add(endDates.get(size-1));
+                endDates.add(endDates.get(size-1));
+            }else{
+                startDates.add(new Time(8,0,0));
+                endDates.add(new Time(8,0,0));
+            }
+
+
+
+            LinearLayout linearLayout = findViewById(R.id.linLayout);
+            LayoutInflater inflater= getLayoutInflater();
+
+            LinearLayout element = (LinearLayout) inflater.inflate(R.layout.entry, linearLayout);
+            TextView s = element.getChildAt(size).findViewById(R.id.startTime);
+            TextView e = element.getChildAt(size).findViewById(R.id.endTime);
+            //Timepicker
+            s.setOnClickListener(h->{
+                LinearLayout r=(LinearLayout)h.getParent();
+                LinearLayout parent = (LinearLayout)r.getParent();
+                 changeIndex = parent.indexOfChild(r);
+                 startDateChange=true;
+                changedView = (TextView)h;
+                TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
+                tpd.show();
+            });
+            e.setOnClickListener(h->{
+                LinearLayout r=(LinearLayout)h.getParent();
+                LinearLayout parent = (LinearLayout)r.getParent();
+                changeIndex = parent.indexOfChild(r);
+                startDateChange=false;
+                changedView = (TextView)h;
+                TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
+                tpd.show();
+            });
+
+
+
+            s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(size).getHours(), startDates.get(size).getMinutes()));
+            e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(size).getHours(), endDates.get(size).getMinutes()));
+            FloatingActionButton remove = element.getChildAt(size).findViewById(R.id.remove);
+            remove.setOnClickListener(g->{
+                LinearLayout r=(LinearLayout)g.getParent();
+                LinearLayout parent = (LinearLayout)r.getParent();
+                int nr = parent.indexOfChild(r);
+                startDates.remove(nr);
+                endDates.remove(nr);
+                parent.removeViewAt(nr);
+            });
+
+        });
+
+
+
+*/
+
+        //DrawerLayout
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_korrektur);
@@ -51,29 +173,45 @@ public class Stundenkorrektur extends AppDrawerBase {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+
         //Datepicker
         TextView date = findViewById(R.id.date);
         mYear = cal.get(Calendar.YEAR);
-        mMonth = cal.get(Calendar.MONTH)+1;
+        mMonth = cal.get(Calendar.MONTH) + 1;
         mDay = cal.get(Calendar.DAY_OF_MONTH);
-        date.setText(String.format(Locale.GERMAN,"%d.%d.%d",mDay,mMonth,mYear));
+        date.setText(String.format(Locale.GERMAN, "%d.%d.%d", mDay, mMonth, mYear));
         LinearLayout datepickerbar = findViewById(R.id.datepicker_bar);
         datepickerbar.setOnClickListener(e -> {
-                    DatePickerDialog dpd = new DatePickerDialog(this, dl, mYear, mMonth-1, mDay);
-                    dpd.show();
-                });
+            DatePickerDialog dpd = new DatePickerDialog(this, dl, mYear, mMonth - 1, mDay);
+            dpd.show();
+        });
 
 
     }
-
+/*
+    private TimePickerDialog.OnTimeSetListener onTimeDialogCallback= new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            if (startDateChange) {
+                startDates.get(changeIndex).setHours(hourOfDay);
+                startDates.get(changeIndex).setMinutes(minute);
+            } else {
+                endDates.get(changeIndex).setHours(hourOfDay);
+                endDates.get(changeIndex).setMinutes(minute);
+            }
+            changedView.setText(String.format(Locale.GERMAN,"%2d.%02d", hourOfDay, minute));
+        }
+    };
+*/
     private DatePickerDialog.OnDateSetListener dl = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             mYear = year;
-            mMonth = month+1;
+            mMonth = month + 1;
             mDay = dayOfMonth;
             TextView date = findViewById(R.id.date);
-            date.setText(String.format(Locale.GERMAN,"%d.%d.%d",mDay,mMonth,mYear));
+            date.setText(String.format(Locale.GERMAN, "%d.%d.%d", mDay, mMonth, mYear));
         }
     };
 
