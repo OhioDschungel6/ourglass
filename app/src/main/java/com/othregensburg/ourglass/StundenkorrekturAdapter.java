@@ -46,6 +46,9 @@ public class StundenkorrekturAdapter extends RecyclerView.Adapter<Stundenkorrekt
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
         viewHolder.startTime.setText(String.format(Locale.GERMAN, "%2d.%02d", dates.get(position).first.getHours(), dates.get(position).first.getMinutes()));
         viewHolder.endTime.setText(String.format(Locale.GERMAN, "%2d.%02d", dates.get(position).second.getHours(), dates.get(position).second.getMinutes()));
+        viewHolder.startTime.setTag(position);
+        viewHolder.endTime.setTag(position);
+        viewHolder.removeButton.setTag(position);
     }
 
 
@@ -66,7 +69,7 @@ public class StundenkorrekturAdapter extends RecyclerView.Adapter<Stundenkorrekt
             startTime.setOnClickListener(h->{
                 LinearLayout r=(LinearLayout)h.getParent();
                 RecyclerView parent = (RecyclerView)r.getParent();
-                int nr = parent.indexOfChild(r);
+                int nr = (int)startTime.getTag();// parent.indexOfChild(r);
                 changedTime= dates.get(nr).first;
                 TimePickerDialog tpd = new TimePickerDialog(context, onTimeDialogCallback, dates.get(nr).first.getHours(), dates.get(nr).second.getMinutes(), true);
                 tpd.show();
@@ -74,7 +77,7 @@ public class StundenkorrekturAdapter extends RecyclerView.Adapter<Stundenkorrekt
             endTime.setOnClickListener(h->{
                 LinearLayout r=(LinearLayout)h.getParent();
                 RecyclerView parent = (RecyclerView)r.getParent();
-                int nr = parent.indexOfChild(r);
+                int nr = (int)endTime.getTag();//parent.indexOfChild(r);
                 changedTime= dates.get(nr).second;
                 TimePickerDialog tpd = new TimePickerDialog(context, onTimeDialogCallback, dates.get(nr).first.getHours(), dates.get(nr).second.getMinutes(), true);
                 tpd.show();
@@ -82,7 +85,7 @@ public class StundenkorrekturAdapter extends RecyclerView.Adapter<Stundenkorrekt
             removeButton.setOnClickListener(h->{
                 LinearLayout r=(LinearLayout)h.getParent();
                 RecyclerView parent = (RecyclerView)r.getParent();
-                int nr = parent.indexOfChild(r);
+                int nr = (int)removeButton.getTag();//parent.indexOfChild(r);
                 dates.remove(nr);
                 notifyDataSetChanged();
             });
