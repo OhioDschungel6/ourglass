@@ -1,7 +1,9 @@
 package com.othregensburg.ourglass;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +17,11 @@ import android.widget.FrameLayout;
 public class AppDrawerBase extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+    }
 
     @Override
     public void onBackPressed() {
