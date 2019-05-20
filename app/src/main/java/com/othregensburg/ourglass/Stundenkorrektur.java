@@ -29,9 +29,6 @@ public class Stundenkorrektur extends AppDrawerBase {
     int mYear, mMonth, mDay;
     final Calendar cal = Calendar.getInstance();
     private List<Pair<Time,Time>> dates = new ArrayList<>();
-    Time changedTime;
-    TextView changedView;
-
 
     @Override
 
@@ -61,107 +58,6 @@ public class Stundenkorrektur extends AppDrawerBase {
         });
 
 
-        /*
-        if (startDates.size() == endDates.size()) {
-            LinearLayout linearLayout = findViewById(R.id.linLayout);
-            LayoutInflater inflater= getLayoutInflater();
-
-            for (int i=0; i<startDates.size();i++) {
-                LinearLayout element = (LinearLayout) inflater.inflate(R.layout.entry, linearLayout);
-                TextView s = element.getChildAt(i).findViewById(R.id.startTime);
-                TextView e = element.getChildAt(i).findViewById(R.id.endTime);
-
-                s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(i).getHours(), startDates.get(i).getMinutes()));
-                e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(i).getHours(), endDates.get(i).getMinutes()));
-                s.setOnClickListener(h->{
-                    LinearLayout r=(LinearLayout)h.getParent();
-                    LinearLayout parent = (LinearLayout)r.getParent();
-                    changeIndex = parent.indexOfChild(r);
-                    startDateChange=true;
-                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, startDates.get(changeIndex).getHours(), startDates.get(changeIndex).getMinutes(), true);
-                    tpd.show();
-                });
-                e.setOnClickListener(h->{
-                    LinearLayout r=(LinearLayout)h.getParent();
-                    LinearLayout parent = (LinearLayout)r.getParent();
-                    changeIndex = parent.indexOfChild(r);
-                    startDateChange=false;
-                    TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, endDates.get(changeIndex).getHours(), endDates.get(changeIndex).getMinutes(), true);
-                    tpd.show();
-                });
-                FloatingActionButton remove = element.getChildAt(i).findViewById(R.id.remove);
-                remove.setOnClickListener(g->{
-                    LinearLayout r=(LinearLayout)g.getParent();
-                    LinearLayout parent = (LinearLayout)r.getParent();
-                    int nr = parent.indexOfChild(r);
-                    startDates.remove(nr);
-                    endDates.remove(nr);
-                    parent.removeViewAt(nr);
-                });
-
-
-            }
-        }
-
-        //Plus Button
-        FloatingActionButton add = findViewById(R.id.addTime);
-        add.setOnClickListener(f ->{
-            int size=startDates.size();
-            if (size > 0) {
-                startDates.add(endDates.get(size-1));
-                endDates.add(endDates.get(size-1));
-            }else{
-                startDates.add(new Time(8,0,0));
-                endDates.add(new Time(8,0,0));
-            }
-
-
-
-            LinearLayout linearLayout = findViewById(R.id.linLayout);
-            LayoutInflater inflater= getLayoutInflater();
-
-            LinearLayout element = (LinearLayout) inflater.inflate(R.layout.entry, linearLayout);
-            TextView s = element.getChildAt(size).findViewById(R.id.startTime);
-            TextView e = element.getChildAt(size).findViewById(R.id.endTime);
-            //Timepicker
-            s.setOnClickListener(h->{
-                LinearLayout r=(LinearLayout)h.getParent();
-                LinearLayout parent = (LinearLayout)r.getParent();
-                 changeIndex = parent.indexOfChild(r);
-                 startDateChange=true;
-                changedView = (TextView)h;
-                TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
-                tpd.show();
-            });
-            e.setOnClickListener(h->{
-                LinearLayout r=(LinearLayout)h.getParent();
-                LinearLayout parent = (LinearLayout)r.getParent();
-                changeIndex = parent.indexOfChild(r);
-                startDateChange=false;
-                changedView = (TextView)h;
-                TimePickerDialog tpd = new TimePickerDialog(this, onTimeDialogCallback, 0, 0, true);
-                tpd.show();
-            });
-
-
-
-            s.setText(String.format(Locale.GERMAN,"%2d.%02d", startDates.get(size).getHours(), startDates.get(size).getMinutes()));
-            e.setText(String.format(Locale.GERMAN,"%2d.%02d", endDates.get(size).getHours(), endDates.get(size).getMinutes()));
-            FloatingActionButton remove = element.getChildAt(size).findViewById(R.id.remove);
-            remove.setOnClickListener(g->{
-                LinearLayout r=(LinearLayout)g.getParent();
-                LinearLayout parent = (LinearLayout)r.getParent();
-                int nr = parent.indexOfChild(r);
-                startDates.remove(nr);
-                endDates.remove(nr);
-                parent.removeViewAt(nr);
-            });
-
-        });
-
-
-
-*/
 
         //DrawerLayout
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -187,21 +83,7 @@ public class Stundenkorrektur extends AppDrawerBase {
 
 
     }
-/*
-    private TimePickerDialog.OnTimeSetListener onTimeDialogCallback= new TimePickerDialog.OnTimeSetListener() {
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            if (startDateChange) {
-                startDates.get(changeIndex).setHours(hourOfDay);
-                startDates.get(changeIndex).setMinutes(minute);
-            } else {
-                endDates.get(changeIndex).setHours(hourOfDay);
-                endDates.get(changeIndex).setMinutes(minute);
-            }
-            changedView.setText(String.format(Locale.GERMAN,"%2d.%02d", hourOfDay, minute));
-        }
-    };
-*/
+
     private DatePickerDialog.OnDateSetListener dl = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
