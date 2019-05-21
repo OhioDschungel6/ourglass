@@ -43,7 +43,7 @@ public class Stundenkorrektur extends AppDrawerBase {
         dates.add(new Pair<>(new Time(12, 0, 0),new Time(12, 25, 0)));
         dates.add(new Pair<>(new Time(13, 10, 0),new Time(13, 25, 0)));
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
         StundenkorrekturAdapter mAdapter = new StundenkorrekturAdapter(this, dates);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
