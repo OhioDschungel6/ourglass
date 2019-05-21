@@ -61,29 +61,30 @@ public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesueb
         dates.add(new Date(2019, 2, 21));
         dates.add(new Date(2019, 2, 22));
         dates.add(new Date(2019, 2, 23));
+        dates.add(new Date(2019, 2, 24));
 
         List<Pair<Time,Time>> l1 = new ArrayList<>();
-        l1.add(new Pair(new Time(9,0,0),new Time(12,0,0)));
-        l1.add(new Pair(new Time(13,0,0),new Time(13,10,0)));
-        l1.add(new Pair(new Time(13,25,0),new Time(13,50,0)));
+        l1.add(new Pair<Time,Time>(new Time(9,0,0),new Time(12,0,0)));
+        l1.add(new Pair<Time,Time>(new Time(13,0,0),new Time(13,10,0)));
+        l1.add(new Pair<Time,Time>(new Time(13,25,0),new Time(13,50,0)));
         times.put(dates.get(0), l1);
 
         List<Pair<Time,Time>> l2 = new ArrayList<>();
-        l2.add(new Pair(new Time(9,0,0),new Time(12,0,0)));
-        l2.add(new Pair(new Time(13,0,0),new Time(13,10,0)));
-        l2.add(new Pair(new Time(13,25,0),new Time(13,50,0)));
+        l2.add(new Pair<Time,Time>(new Time(9,0,0),new Time(12,0,0)));
+        l2.add(new Pair<Time,Time>(new Time(13,0,0),new Time(13,10,0)));
+        l2.add(new Pair<Time,Time>(new Time(13,25,0),new Time(13,50,0)));
         times.put(dates.get(1), l2);
 
         List<Pair<Time,Time>> l3 = new ArrayList<>();
-        l3.add(new Pair(new Time(9,0,0),new Time(12,0,0)));
-        l3.add(new Pair(new Time(13,0,0),new Time(13,10,0)));
+        l3.add(new Pair<Time,Time>(new Time(9,0,0),new Time(12,0,0)));
+        l3.add(new Pair<Time,Time>(new Time(13,0,0),new Time(13,10,0)));
         times.put(dates.get(2), l3);
 
         List<Pair<Time,Time>> l4 = new ArrayList<>();
-        l4.add(new Pair(new Time(9,0,0),new Time(12,0,0)));
-        l4.add(new Pair(new Time(13,0,0),new Time(13,10,0)));
-        l4.add(new Pair(new Time(13,25,0),new Time(13,50,0)));
-        l4.add(new Pair(new Time(14,10,0),new Time(16,20,0)));
+        l4.add(new Pair<Time,Time>(new Time(9,0,0),new Time(12,0,0)));
+        l4.add(new Pair<Time,Time>(new Time(13,0,0),new Time(13,10,0)));
+        l4.add(new Pair<Time,Time>(new Time(13,25,0),new Time(13,50,0)));
+        l4.add(new Pair<Time,Time>(new Time(14,10,0),new Time(16,20,0)));
         times.put(dates.get(3), l4);
 
 

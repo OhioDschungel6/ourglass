@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -22,6 +24,7 @@ public class StundenuebersichtAdapter extends RecyclerView.Adapter<Stundenuebers
     private List<Date> dates;
     private Map<Date, List<Pair<Time, Time>>> times;
     private final Context context;
+    private DateFormat df = new SimpleDateFormat("EEEE, dd.MM.yy", Locale.GERMANY);
 
 
     StundenuebersichtAdapter(Context context, List<Date> dates, Map<Date, List<Pair<Time, Time>>> times) {
@@ -43,11 +46,11 @@ public class StundenuebersichtAdapter extends RecyclerView.Adapter<Stundenuebers
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
         Date date = dates.get(position);
-        viewHolder.tag.setText(String.format(Locale.GERMAN,"Monday, %d.%02d.%d",date.getDay(),date.getMonth(),date.getYear()));
+        viewHolder.tag.setText(df.format(date));
         viewHolder.duration.setText("8:23");
         for (Pair<Time, Time> p : times.getOrDefault(date, Collections.emptyList())) {
             TextView v = new TextView(context);
-            v.setText(String.format(Locale.GERMAN, "●%d.%02d - %d.%02d", p.first.getHours(), p.first.getMinutes(), p.second.getHours(), p.second.getMinutes()));
+            v.setText(String.format(Locale.GERMAN, "●  %d.%02d - %d.%02d", p.first.getHours(), p.first.getMinutes(), p.second.getHours(), p.second.getMinutes()));
             viewHolder.timesList.addView(v);
         }
 

@@ -69,7 +69,8 @@ public class FragmentTagesuebersicht extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_DAY, day);
         args.putInt(ARG_MONTH, month-1);
-        args.putInt(ARG_YEAR, year);
+        //TODO: -1900??
+        args.putInt(ARG_YEAR, year-1900);
         fragment.setArguments(args);
         return fragment;
     }
@@ -96,7 +97,7 @@ public class FragmentTagesuebersicht extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         TextView textViewDate = getView().findViewById(R.id.date);
-        DateFormat df = new SimpleDateFormat("E dd.MM.yy", Locale.GERMANY);
+        DateFormat df = new SimpleDateFormat("EEEE dd.MM.yy", Locale.GERMANY);
         textViewDate.setText(df.format(date));
 
         PieChartView pieChartView = getView().findViewById(R.id.pie_chart);
