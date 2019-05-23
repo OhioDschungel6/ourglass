@@ -52,7 +52,13 @@ public class Stundenkorrektur extends AppDrawerBase {
         //Plus Button
         FloatingActionButton addTime = findViewById(R.id.addTime);
         addTime.setOnClickListener(e->{
-            Time second=dates.get(dates.size()-1).second;
+            Time second;
+            if (dates.size() > 0) {
+                second=dates.get(dates.size()-1).second;
+            }else{
+                second = new Time(8, 0, 0);
+            }
+
             dates.add(new Pair<>(new Time(second.getTime()), new Time(second.getTime())));
             mAdapter.notifyDataSetChanged();
         });

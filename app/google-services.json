@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "759660852721",
+    "firebase_url": "https://ourglass-84f4d.firebaseio.com",
+    "project_id": "ourglass-84f4d",
+    "storage_bucket": "ourglass-84f4d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759660852721:android:e7a304499fec6dfe",
+        "android_client_info": {
+          "package_name": "com.othregensburg.ourglass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759660852721-k9jeii9eub6bogtfuh25h3rrdnbdh76k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.othregensburg.ourglass",
+            "certificate_hash": "3112e0e60b6bb35cf2380cfa53122f9602a8da94"
+          }
+        },
+        {
+          "client_id": "759660852721-vm80s0ki30schnpqe893c1erm92abmlr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_mz9IVus0eICFZjFwdc_aVC_CoTTKu_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759660852721-vm80s0ki30schnpqe893c1erm92abmlr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
