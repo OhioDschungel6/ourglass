@@ -35,6 +35,7 @@ import lecho.lib.hellocharts.view.PieChartView;
  * Use the {@link FragmentTagesuebersicht#newInstance} factory method to
  * create an instance of this fragment.
  */
+
 public class FragmentTagesuebersicht extends Fragment {
     private static final int PIE_CHART_TEXTSIZE = 14;
 
@@ -60,13 +61,16 @@ public class FragmentTagesuebersicht extends Fragment {
      *
      * @return A new instance of fragment FragmentTagesuebersicht.
      */
+
     // TODO: Rename and change types and number of parameters
     public static FragmentTagesuebersicht newInstance(int day, int month, int year) {
         FragmentTagesuebersicht fragment = new FragmentTagesuebersicht();
         Bundle args = new Bundle();
         args.putInt(ARG_DAY, day);
         args.putInt(ARG_MONTH, month-1);
-        args.putInt(ARG_YEAR, year);
+        //TODO: -1900??
+        args.putInt(ARG_YEAR, year-1900);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,7 +97,7 @@ public class FragmentTagesuebersicht extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         TextView textViewDate = getView().findViewById(R.id.date);
-        DateFormat df = new SimpleDateFormat("E dd.MM.yy", Locale.GERMANY);
+        DateFormat df = new SimpleDateFormat("EEEE dd.MM.yy", Locale.GERMANY);
         textViewDate.setText(df.format(date));
 
         PieChartView pieChartView = getView().findViewById(R.id.pie_chart);
@@ -125,7 +129,9 @@ public class FragmentTagesuebersicht extends Fragment {
                 fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
                 //TODO: Testdaten, später aus Datenbank holen
                 Fragment fragment = FragmentStundeneinteilung.newInstance(3.21f);
-                fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+                //todo wieder einkommentieren
+                // fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+
                 fragmentTransaction.commit();
             }
         });
