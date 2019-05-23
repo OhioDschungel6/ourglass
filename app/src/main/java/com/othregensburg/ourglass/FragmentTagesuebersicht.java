@@ -62,7 +62,6 @@ public class FragmentTagesuebersicht extends Fragment {
      * @return A new instance of fragment FragmentTagesuebersicht.
      */
 
-
     // TODO: Rename and change types and number of parameters
     public static FragmentTagesuebersicht newInstance(int day, int month, int year) {
         FragmentTagesuebersicht fragment = new FragmentTagesuebersicht();
@@ -71,6 +70,7 @@ public class FragmentTagesuebersicht extends Fragment {
         args.putInt(ARG_MONTH, month-1);
         //TODO: -1900??
         args.putInt(ARG_YEAR, year-1900);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -131,6 +131,7 @@ public class FragmentTagesuebersicht extends Fragment {
                 Fragment fragment = FragmentStundeneinteilung.newInstance(3.21f);
                 //todo wieder einkommentieren
                 // fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+
                 fragmentTransaction.commit();
             }
         });

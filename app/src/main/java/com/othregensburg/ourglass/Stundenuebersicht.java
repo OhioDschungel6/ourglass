@@ -35,7 +35,6 @@ public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesueb
     private List<Date> dates;
     private Map<Date, List<Pair<Time, Time>>> times;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,9 +93,6 @@ public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesueb
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
@@ -104,6 +100,7 @@ public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesueb
         //TODO: Testdaten, später vom aufrufenden Eintrag aus der Stundenübersicht übernehmen
         //Fragment fragment = FragmentTagesuebersicht.newInstance(1, 1, 2019);
         //fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+
         fragmentTransaction.commit();
     }
 
