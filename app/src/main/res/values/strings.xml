@@ -1,4 +1,5 @@
 <resources>
+    <string name="sign_in_button_text">Anmelden</string>
     <string name="stundeneinteilung_spinnerPrompt_taetigkeit">Wähle eine Aktivität</string>
     <string name="stundeneinteilung_spinnerPrompt_projekt">Wähle ein Projekt</string>
     <string name="stundeneinteilung_editText_notiz_hint">Notiz</string>
