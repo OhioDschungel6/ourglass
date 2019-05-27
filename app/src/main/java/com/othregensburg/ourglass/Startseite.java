@@ -15,6 +15,14 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,6 +31,8 @@ import java.util.Locale;
 public class Startseite extends AppDrawerBase {
 
     private boolean timeIsRunning=false;
+    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +54,32 @@ public class Startseite extends AppDrawerBase {
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_homescreen);
 
-        //TimeText
+       //TimeRunning
 
+
+        DatabaseReference ref = database.getReference("user/"+user.getUid()+"/timeRunning");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                timeIsRunning = dataSnapshot.getValue(Boolean.class);
+                if (timeIsRunning) {
+                    ImageView img = (ImageView) findViewById(R.id.start);
+                    img.setImageResource(R.drawable.hourglass_animation);
+                    AnimationDrawable ad= (AnimationDrawable) img.getDrawable();
+                    ad.start();
+                }else {
+                    ImageView img = (ImageView) findViewById(R.id.start);
+                    img.setImageResource(R.drawable.hourglass_full);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
+        //TimeText
         TextView date = findViewById(R.id.date);
         DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
         date.setText(df.format(Calendar.getInstance().getTime()));
@@ -59,6 +93,8 @@ public class Startseite extends AppDrawerBase {
                 //v.setBackgroundColor(getResources().getColor(R.color.startButton));
 
                 timeIsRunning=!timeIsRunning;
+                DatabaseReference ref = database.getReference("user/"+user.getUid()+"/timeRunning");
+                ref.setValue(timeIsRunning);
                 if (timeIsRunning) {
                     ImageView img = (ImageView) v;
                     img.setImageResource(R.drawable.hourglass_animation);

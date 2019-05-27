@@ -33,6 +33,7 @@ public class StartActivity extends AppCompatActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
+                        .setLogo(R.drawable.hourglass_full)
                         .build(),
                 RC_SIGN_IN);
     }
@@ -50,6 +51,8 @@ public class StartActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, Startseite.class);
                 startActivity(intent);
                 finish();
+            } else if(resultCode == RESULT_FIRST_USER){
+
             } else if (resultCode == RESULT_CANCELED) {
                 ImageView img = findViewById(R.id.loading);
                 img.setImageResource(R.drawable.hourglass_full);
@@ -72,6 +75,7 @@ public class StartActivity extends AppCompatActivity {
                                 AuthUI.getInstance()
                                         .createSignInIntentBuilder()
                                         .setAvailableProviders(providers)
+                                        .setLogo(R.drawable.hourglass_full)
                                         .build(),
                                 RC_SIGN_IN);
                     }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.design.widget.NavigationView;
@@ -17,6 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -62,6 +71,7 @@ public class Stundenkorrektur extends AppDrawerBase {
             dates.add(new Pair<>(new Time(second.getTime()), new Time(second.getTime())));
             mAdapter.notifyDataSetChanged();
         });
+
 
 
 

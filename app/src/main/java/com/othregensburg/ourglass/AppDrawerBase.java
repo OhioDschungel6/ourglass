@@ -3,6 +3,7 @@ package com.othregensburg.ourglass;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +14,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
+
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 public class AppDrawerBase extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -88,9 +93,25 @@ public class AppDrawerBase extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_sign_out) {
+            AuthUI.getInstance()
+                    .signOut(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        public void onComplete(@NonNull Task<Void> task) {
+                            getBackToStartActivity();
+                        }
+                    });
+            return true;
         }
 
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getBackToStartActivity () {
+        Intent intent = new Intent(this, StartActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }
