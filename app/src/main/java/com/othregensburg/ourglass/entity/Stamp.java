@@ -4,7 +4,6 @@ import android.util.Pair;
 
 public class Stamp {
     //TODO not public
-    public String key;
     public String startzeit;
     public String endzeit;
 
