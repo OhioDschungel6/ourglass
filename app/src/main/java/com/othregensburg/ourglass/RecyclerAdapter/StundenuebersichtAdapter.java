@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass;
+package com.othregensburg.ourglass.RecyclerAdapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.othregensburg.ourglass.R;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -27,7 +29,7 @@ public class StundenuebersichtAdapter extends RecyclerView.Adapter<Stundenuebers
     private DateFormat df = new SimpleDateFormat("EEEE, dd.MM.yy", Locale.GERMANY);
 
 
-    StundenuebersichtAdapter(Context context, List<Date> dates, Map<Date, List<Pair<Time, Time>>> times) {
+    public StundenuebersichtAdapter(Context context, List<Date> dates, Map<Date, List<Pair<Time, Time>>> times) {
         mInflater = LayoutInflater.from(context);
         this.dates = dates;
         this.times = times;
