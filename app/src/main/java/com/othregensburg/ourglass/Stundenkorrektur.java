@@ -58,8 +58,9 @@ public class Stundenkorrektur extends AppDrawerBase {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Section RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
-        Query query = FirebaseDatabase.getInstance()
+        Query query = database
                 .getReference("arbeitstage/"+user.getUid()+String.format(Locale.GERMAN,"/%02d%02d%02d",mYear,mMonth,mDay))
                 .child("timestamps");
 
@@ -79,18 +80,34 @@ public class Stundenkorrektur extends AppDrawerBase {
         //Plus Button
         FloatingActionButton addTime = findViewById(R.id.addTime);
         addTime.setOnClickListener(e->{
-            /*
-            Time second;
+            DatabaseReference ref =database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%02d%02d%02d",user.getUid(),mYear-2000,mMonth,mDay))
+                    .child("timestamps");
+            ref.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() != null) {
+                        Stamp stamp=null;
+                        for (DataSnapshot d :dataSnapshot.getChildren()) {
+                            stamp= d.getValue(Stamp.class);
+                        }
+                        if (stamp != null) {
+                            stamp.startzeit=stamp.endzeit;
+                            DatabaseReference newref=ref.push();
+                            newref.setValue(stamp);
+                        }
 
-            if (dates.size() > 0) {
-                second=dates.get(dates.size()-1).second;
-            }else{
-                second = new Time(8, 0, 0);
-            }
+                    }else{
+                        DatabaseReference newref=ref.push();
+                        //newref.setValue(new Stamp("8:00","8:00"));
+                    }
+                }
 
-            dates.add(new Pair<>(new Time(second.getTime()), new Time(second.getTime())));
-            //mAdapter.notifyDataSetChanged();
-            */
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
         });
 
 
@@ -135,7 +152,7 @@ public class Stundenkorrektur extends AppDrawerBase {
             date.setText(String.format(Locale.GERMAN, "%d.%d.%d", mDay, mMonth, mYear));
             //TODO year-2000 disgusting and may clean up old adapter
 
-            Query query = FirebaseDatabase.getInstance()
+            Query query = database
                     .getReference("arbeitstage/"+user.getUid()+String.format(Locale.GERMAN,"/%02d%02d%02d",mYear-2000,mMonth,mDay))
                     .child("timestamps");
 

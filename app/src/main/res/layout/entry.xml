@@ -18,7 +18,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="10:00" />
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,8 +37,7 @@
             android:layout_weight="1"
             android:textSize="24sp"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:text="13:31" />
+            android:gravity="center" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/remove"
