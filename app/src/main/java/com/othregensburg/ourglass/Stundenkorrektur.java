@@ -58,22 +58,6 @@ public class Stundenkorrektur extends AppDrawerBase {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Section RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
-        Query query = database
-                .getReference("arbeitstage/"+user.getUid()+String.format(Locale.GERMAN,"/%02d%02d%02d",mYear,mMonth,mDay))
-                .child("timestamps");
-
-        FirebaseRecyclerOptions<Stamp> options =
-                new FirebaseRecyclerOptions.Builder<Stamp>()
-                        .setQuery(query, Stamp.class)
-                        .build();
-        mAdapter= new FirebaseAdapterStundenkorrektur(options);
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        mAdapter.startListening();
-
 
 
 
@@ -98,7 +82,7 @@ public class Stundenkorrektur extends AppDrawerBase {
 
                     }else{
                         DatabaseReference newref=ref.push();
-                        //newref.setValue(new Stamp("8:00","8:00"));
+                        newref.setValue(new Stamp("8:00","8:00"));
                     }
                 }
 
@@ -136,6 +120,24 @@ public class Stundenkorrektur extends AppDrawerBase {
             DatePickerDialog dpd = new DatePickerDialog(this, dl, mYear, mMonth - 1, mDay);
             dpd.show();
         });
+
+        //Section RecyclerView
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
+        //TODO -2000 disgusting
+        Query query = database
+                .getReference("arbeitstage/"+user.getUid()+String.format(Locale.GERMAN,"/%02d%02d%02d",mYear-2000,mMonth,mDay))
+                .child("timestamps");
+
+        FirebaseRecyclerOptions<Stamp> options =
+                new FirebaseRecyclerOptions.Builder<Stamp>()
+                        .setQuery(query, Stamp.class)
+                        .build();
+        mAdapter= new FirebaseAdapterStundenkorrektur(options);
+
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter.startListening();
+
 
 
     }

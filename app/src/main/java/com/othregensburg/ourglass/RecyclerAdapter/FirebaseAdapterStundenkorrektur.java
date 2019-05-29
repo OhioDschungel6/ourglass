@@ -17,6 +17,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.othregensburg.ourglass.R;
 import com.othregensburg.ourglass.entity.Stamp;
@@ -24,6 +25,7 @@ import com.othregensburg.ourglass.entity.Stamp;
 import java.util.Locale;
 
 public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Stamp,FirebaseAdapterStundenkorrektur.ViewHolder> {
+
 
     public FirebaseAdapterStundenkorrektur(@NonNull FirebaseRecyclerOptions<Stamp> options) {
         super(options);
@@ -35,9 +37,8 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
         holder.startTime.setText(model.startzeit);
         holder.endTime.setText(model.endzeit);
         holder.model=model;
-        holder.startTime.setTag(position);
-        holder.endTime.setTag(position);
-        holder.removeButton.setTag(position);
+        holder.itemRef= getRef(position);
+
     }
 
     @NonNull
@@ -53,27 +54,36 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
         final TextView startTime;
         final TextView endTime;
         final FloatingActionButton removeButton;
-        private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference itemRef;
         ViewHolder(@NonNull final View itemView) {
             super(itemView);
             startTime=itemView.findViewById(R.id.startTime);
             endTime=itemView.findViewById(R.id.endTime);
             removeButton = itemView.findViewById(R.id.remove);
             startTime.setOnClickListener(h->{
-
+                Pair<Integer,Integer> pair= model.pairStartzeit();
+                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogStartZeitCallback, pair.first,pair.second, true);
+                tpd.show();
             });
             endTime.setOnClickListener(h->{
-
+                Pair<Integer,Integer> pair= model.pairEndzeit();
+                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogEndZeitCallback, pair.first,pair.second, true);
+                tpd.show();
             });
             removeButton.setOnClickListener(h->{
-
+                itemRef.setValue(null);
             });
         }
-        private TimePickerDialog.OnTimeSetListener onTimeDialogCallback= new TimePickerDialog.OnTimeSetListener() {
+        private TimePickerDialog.OnTimeSetListener onTimeDialogStartZeitCallback= new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
+                itemRef.child("startzeit").setValue(String.format(Locale.GERMAN, "%d:%02d", hourOfDay, minute));
+            }
+        };
+        private TimePickerDialog.OnTimeSetListener onTimeDialogEndZeitCallback= new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                itemRef.child("endzeit").setValue(String.format(Locale.GERMAN, "%d:%02d", hourOfDay, minute));
             }
         };
     }

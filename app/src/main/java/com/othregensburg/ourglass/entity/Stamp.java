@@ -4,6 +4,7 @@ import android.util.Pair;
 
 public class Stamp {
     //TODO not public
+    public String key;
     public String startzeit;
     public String endzeit;
 
@@ -18,8 +19,13 @@ public class Stamp {
 
 
 
-    public Pair<Integer,Integer> getPairStartzeit() {
-        return new Pair<Integer, Integer>(Integer.parseInt(startzeit.substring(0,2)),Integer.parseInt(startzeit.substring(3,5)));
+    public Pair<Integer,Integer> pairStartzeit() {
+        String[] s = startzeit.split(":");
+        return new Pair<Integer, Integer>(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
+    }
+    public Pair<Integer,Integer> pairEndzeit() {
+        String[] s = endzeit.split(":");
+        return new Pair<Integer, Integer>(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
     }
 
 }
