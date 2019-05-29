@@ -27,4 +27,5 @@ public class Stamp {
         return new Pair<Integer, Integer>(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
     }
 
+
 }
