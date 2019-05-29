@@ -34,7 +34,7 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Stamp model) {
         holder.startTime.setText(model.startzeit);
         holder.endTime.setText(model.endzeit);
-        //holder.model=model;
+        holder.model=model;
         holder.startTime.setTag(position);
         holder.endTime.setTag(position);
         holder.removeButton.setTag(position);
@@ -49,7 +49,7 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        //Stamp model;
+        Stamp model;
         final TextView startTime;
         final TextView endTime;
         final FloatingActionButton removeButton;
@@ -61,9 +61,7 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
             endTime=itemView.findViewById(R.id.endTime);
             removeButton = itemView.findViewById(R.id.remove);
             startTime.setOnClickListener(h->{
-                //Pair<Integer,Integer> pair= model.get2Startzeit();
-                //TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogCallback,pair.first,pair.second , true);
-                //tpd.show();
+
             });
             endTime.setOnClickListener(h->{
 
