@@ -67,21 +67,6 @@ public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesueb
         Query query = database
                 .getReference("arbeitstage/"+user.getUid())
                 .orderByKey();
-/*
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    Arbeitstag a = d.getValue(Arbeitstag.class);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-         */
 
         FirebaseRecyclerOptions<Arbeitstag> options =
                 new FirebaseRecyclerOptions.Builder<Arbeitstag>()

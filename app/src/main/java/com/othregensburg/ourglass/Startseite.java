@@ -114,6 +114,39 @@ public class Startseite extends AppDrawerBase {
             }
         });
 
+        //months Worktime
+        TextView monthTime = findViewById(R.id.textView_istStdAnz);
+        Query monthTimeQuery= database.getReference("arbeitstage/"+user.getUid())
+                .orderByKey()
+                .startAt(String.format(Locale.GERMAN,"%02d%02d%02d",calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, 1));
+        monthTimeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Time t = new Time();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Arbeitstag arbeitstag = ds.getValue(Arbeitstag.class);
+                    if (arbeitstag.krank || arbeitstag.urlaub) {
+                        //todo
+                    } else {
+                        if (arbeitstag.timestamps != null) {
+                            for (Stamp stamp : arbeitstag.timestamps.values()) {
+                                if (stamp.endzeit == null) {
+                                    DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+                                    stamp.endzeit = df.format(calendar.getTime());
+                                }
+                                t.add(stamp);
+                            }
+                        }
+                    }
+                }
+                monthTime.setText(t.toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         //TimeStartButton
         ImageView start = findViewById(R.id.start);
