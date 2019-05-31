@@ -24,8 +24,11 @@ import com.othregensburg.ourglass.entity.Time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Arbeitstag,FirebaseAdapterStundenuebersicht.ViewHolder> {
@@ -41,18 +44,38 @@ public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Ar
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder viewHolder, int position, @NonNull Arbeitstag model) {
         String key= getRef(position).getKey();
-        viewHolder.tag.setText(df.format(new Date(Integer.parseInt(key.substring(4)),Integer.parseInt(key.substring(2,4)),Integer.parseInt(key.substring(0,2)))));
-        Time t=new Time();
+        viewHolder.tag.setText(df.format(new Date(Integer.parseInt(key.substring(0,2)),Integer.parseInt(key.substring(2,4))-1,Integer.parseInt(key.substring(4)))));
+        if (model.krank) {
+            viewHolder.duration.setText("Krank");
+        } else if (model.urlaub) {
+            viewHolder.duration.setText("Urlaub");
+        } else {
+            Time t=new Time();
 
+            List<Stamp> iter = new ArrayList<>(model.timestamps.values());
+            Collections.sort(iter, new Comparator<Stamp>() {
+                @Override
+                public int compare(Stamp o1, Stamp o2) {
+                    if (o1.startzeit.length() < o2.startzeit.length()) {
+                        return -1;
+                    } else if (o1.startzeit.length() > o2.startzeit.length()) {
+                        return 1;
+                    }
+                    return o1.startzeit.compareTo(o2.startzeit);
+                }
+            });
 
-        for (Stamp p :model.timestamps.values()) {
-            TextView v = new TextView(con);
-            v.setText(String.format(Locale.GERMAN, "●  %s - %s", p.startzeit, p.endzeit));
-            viewHolder.timesList.addView(v);
-            t.add(p);
+            for (Stamp p :iter) {
+                TextView v = new TextView(con);
+                if (p.endzeit == null) {
+                    p.endzeit="";
+                }
+                v.setText(String.format(Locale.GERMAN, "●  %s - %s", p.startzeit, p.endzeit));
+                viewHolder.timesList.addView(v);
+                t.add(p);
+            }
+            viewHolder.duration.setText(t.toString());
         }
-        viewHolder.duration.setText(t.toString());
-
     }
 
     @NonNull

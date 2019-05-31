@@ -78,6 +78,7 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 itemRef.child("startzeit").setValue(String.format(Locale.GERMAN, "%d:%02d", hourOfDay, minute));
+                notifyDataSetChanged();
             }
         };
         private TimePickerDialog.OnTimeSetListener onTimeDialogEndZeitCallback= new TimePickerDialog.OnTimeSetListener() {

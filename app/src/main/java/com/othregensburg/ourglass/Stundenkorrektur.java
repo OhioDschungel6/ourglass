@@ -126,7 +126,7 @@ public class Stundenkorrektur extends AppDrawerBase {
         //TODO -2000 disgusting
         Query query = database
                 .getReference("arbeitstage/"+user.getUid()+String.format(Locale.GERMAN,"/%02d%02d%02d",mYear-2000,mMonth,mDay))
-                .child("timestamps");
+                .child("timestamps").orderByChild("startzeit");
 
         FirebaseRecyclerOptions<Stamp> options =
                 new FirebaseRecyclerOptions.Builder<Stamp>()

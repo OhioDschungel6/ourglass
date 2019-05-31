@@ -3,6 +3,7 @@ package com.othregensburg.ourglass;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,7 +22,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.othregensburg.ourglass.entity.Stamp;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,6 +36,7 @@ public class Startseite extends AppDrawerBase {
     private boolean timeIsRunning=false;
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private final Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +86,7 @@ public class Startseite extends AppDrawerBase {
         //TimeText
         TextView date = findViewById(R.id.date);
         DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
-        date.setText(df.format(Calendar.getInstance().getTime()));
+        date.setText(df.format(calendar.getTime()));
 
 
         //TimeStartButton
@@ -100,9 +104,32 @@ public class Startseite extends AppDrawerBase {
                     img.setImageResource(R.drawable.hourglass_animation);
                     AnimationDrawable ad= (AnimationDrawable) img.getDrawable();
                     ad.start();
+                    DatabaseReference reference= database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%02d%02d%02d",
+                            user.getUid(),calendar.get(Calendar.YEAR)-2000,calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH)))
+                            .child("timestamps").push();
+                    DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+                    reference.setValue(new Stamp(df.format(calendar.getTime()), null));
                 } else {
                     ImageView img = (ImageView) v;
                     img.setImageResource(R.drawable.hourglass_full);
+                    Query query=database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%02d%02d%02d",
+                            user.getUid(),calendar.get(Calendar.YEAR)-2000,calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH)))
+                            .child("timestamps").orderByKey().limitToLast(1);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot d : dataSnapshot.getChildren()) {
+                                DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+                                d.getRef().child("endzeit").setValue(df.format(calendar.getTime()));
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
 
             }
