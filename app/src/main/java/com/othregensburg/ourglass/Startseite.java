@@ -24,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.othregensburg.ourglass.entity.Arbeitstag;
 import com.othregensburg.ourglass.entity.Stamp;
+import com.othregensburg.ourglass.entity.Time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -87,6 +89,30 @@ public class Startseite extends AppDrawerBase {
         TextView date = findViewById(R.id.date);
         DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
         date.setText(df.format(calendar.getTime()));
+
+        //Todays worktime
+        TextView todayWorktime = findViewById(R.id.worktime);
+        DatabaseReference worktime = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d/timestamps", user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
+        worktime.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Time t = new Time();
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Stamp s = d.getValue(Stamp.class);
+                    if (s.endzeit == null) {
+                        DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+                        s.endzeit = df.format(calendar.getTime());
+                    }
+                    t.add(s);
+                    todayWorktime.setText(t.toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
         //TimeStartButton
