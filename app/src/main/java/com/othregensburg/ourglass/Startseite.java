@@ -31,6 +31,7 @@ import com.othregensburg.ourglass.entity.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class Startseite extends AppDrawerBase {
@@ -90,6 +91,12 @@ public class Startseite extends AppDrawerBase {
         DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
         date.setText(df.format(calendar.getTime()));
 
+
+        loadUI();
+
+    }
+
+    private void loadUI() {
         //Todays worktime
         TextView todayWorktime = findViewById(R.id.worktime);
         DatabaseReference worktime = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d/timestamps", user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
@@ -194,6 +201,53 @@ public class Startseite extends AppDrawerBase {
             }
         });
 
+        //Sollstd:
+        TextView sollStd = findViewById(R.id.textView_sollStdAnz);
+        DatabaseReference sollStdRef = database.getReference(String.format(Locale.GERMAN, "user/%s/Sollstd", user.getUid()));
+        sollStdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Double anz = dataSnapshot.getValue(Double.class);
+                if (anz != null) {
+                    double d=anz*getWorkdays();
+                    sollStd.setText(String.format(Locale.GERMAN, "%d:%02d",(int)d,(int)(d-(int) d)*60));
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
+
+    public int getWorkdays() {
+        int weekday = calendar.get(Calendar.DAY_OF_WEEK);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int oldDay = day;
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        int weekDayOfFirst = calendar.get(Calendar.DAY_OF_WEEK);
+
+        if (weekDayOfFirst == 1) {
+            weekDayOfFirst += 7;
+        }
+
+        weekDayOfFirst--;
+
+        day+=weekDayOfFirst-1;
+        int weekenddays = (day/7)*2;
+        if (weekday == 7 ) {
+            weekenddays++;
+        }
+        return oldDay - weekenddays;
+    }
+
+
+
+
+
+
 
 }

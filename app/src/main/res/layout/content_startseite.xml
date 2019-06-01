@@ -52,7 +52,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
-            android:text="83:24"
             android:textColor="@android:color/black"
             android:textSize="@dimen/textsize_big" />
 
@@ -72,7 +71,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
-            android:text="88:00"
             android:textColor="@android:color/black"
             android:textSize="@dimen/textsize_big" />
     </LinearLayout>
@@ -82,7 +80,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="3:21"
         android:textAlignment="center"
         android:textSize="56sp"
         android:textStyle="bold"

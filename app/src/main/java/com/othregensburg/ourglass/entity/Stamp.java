@@ -16,8 +16,6 @@ public class Stamp {
         this.endzeit = endzeit;
     }
 
-
-
     public Pair<Integer,Integer> pairStartzeit() {
         String[] s = startzeit.split(":");
         return new Pair<Integer, Integer>(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
