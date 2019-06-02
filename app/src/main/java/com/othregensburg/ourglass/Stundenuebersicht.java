@@ -37,7 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesuebersicht.OnFragmentInteractionListener, FragmentStundeneinteilung.OnFragmentInteractionListener{
+public class Stundenuebersicht extends AppDrawerBase {
 
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -92,29 +92,11 @@ public class Stundenuebersicht extends AppDrawerBase implements FragmentTagesueb
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter.startListening();
-
-
-
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
-        fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
-        //TODO: Testdaten, später vom aufrufenden Eintrag aus der Stundenübersicht übernehmen
-        //Fragment fragment = FragmentTagesuebersicht.newInstance(1, 1, 2019);
-        //fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
-
-        fragmentTransaction.commit();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mAdapter.stopListening();
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }

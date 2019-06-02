@@ -2,8 +2,10 @@ package com.othregensburg.ourglass.RecyclerAdapter;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.othregensburg.ourglass.R;
+import com.othregensburg.ourglass.TagesuebersichtActivity;
 import com.othregensburg.ourglass.entity.Arbeitstag;
 import com.othregensburg.ourglass.entity.Stamp;
 import com.othregensburg.ourglass.entity.Time;
@@ -43,7 +46,7 @@ public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Ar
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder viewHolder, int position, @NonNull Arbeitstag model) {
-        String key= getRef(position).getKey();
+        String key = getRef(position).getKey();
         viewHolder.tag.setText(df.format(new Date(Integer.parseInt(key.substring(0,2)),Integer.parseInt(key.substring(2,4))-1,Integer.parseInt(key.substring(4)))));
         if (model.krank) {
             viewHolder.duration.setText("Krank");
@@ -76,6 +79,15 @@ public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Ar
             }
             viewHolder.duration.setText(t.toString());
         }
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO: Tag übergeben, ViewModel?
+                Intent intent = new Intent(con , TagesuebersichtActivity.class);
+                con.startActivity(intent);
+            }
+        });
     }
 
     @NonNull

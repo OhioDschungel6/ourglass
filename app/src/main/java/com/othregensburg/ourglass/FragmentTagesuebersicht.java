@@ -129,9 +129,7 @@ public class FragmentTagesuebersicht extends Fragment {
                 fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
                 //TODO: Testdaten, später aus Datenbank holen
                 Fragment fragment = FragmentStundeneinteilung.newInstance(3.21f);
-                //todo wieder einkommentieren
-                // fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
-
+                fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
                 fragmentTransaction.commit();
             }
         });
