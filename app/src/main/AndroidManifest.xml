@@ -8,7 +8,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
 
         <activity android:name=".StartActivity">
             <intent-filter>
@@ -20,7 +21,7 @@
         <activity
             android:name=".TagesuebersichtActivity"
             android:label="@string/title_activity_tagesuebersicht"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Teamuebersicht"
             android:label="@string/title_activity_teamuebersicht"

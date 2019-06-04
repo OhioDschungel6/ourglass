@@ -25,7 +25,6 @@ public class AppDrawerBase extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO: sensor portrait besser aber um datenkonsistenz kümmern
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
