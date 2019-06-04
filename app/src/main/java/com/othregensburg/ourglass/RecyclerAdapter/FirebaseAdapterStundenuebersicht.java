@@ -79,7 +79,6 @@ public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Ar
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Tag übergeben, ViewModel?
                 Intent intent = new Intent(con , TagesuebersichtActivity.class);
                 con.startActivity(intent);
             }

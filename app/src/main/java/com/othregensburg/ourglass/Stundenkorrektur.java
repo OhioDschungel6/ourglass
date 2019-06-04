@@ -82,7 +82,7 @@ public class Stundenkorrektur extends AppDrawerBase {
 
                     }else{
                         DatabaseReference newref=ref.push();
-                        newref.setValue(new Stamp("8:00","8:00"));
+                        newref.setValue(new Stamp("08:00","08:00"));
                     }
                 }
 
