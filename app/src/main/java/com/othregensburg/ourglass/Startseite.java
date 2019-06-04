@@ -241,6 +241,7 @@ public class Startseite extends AppDrawerBase {
         if (weekday == 7 ) {
             weekenddays++;
         }
+        calendar.set(Calendar.DAY_OF_MONTH, oldDay);
         return oldDay - weekenddays;
     }
 
