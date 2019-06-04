@@ -39,7 +39,7 @@ public class Startseite extends AppDrawerBase {
     private boolean timeIsRunning=false;
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private final Calendar calendar = Calendar.getInstance();
+    private Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +170,7 @@ public class Startseite extends AppDrawerBase {
                     img.setImageResource(R.drawable.hourglass_animation);
                     AnimationDrawable ad= (AnimationDrawable) img.getDrawable();
                     ad.start();
+                    calendar=Calendar.getInstance();
                     DatabaseReference reference= database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%02d%02d%02d",
                             user.getUid(),calendar.get(Calendar.YEAR)-2000,calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH)))
                             .child("timestamps").push();
@@ -178,6 +179,7 @@ public class Startseite extends AppDrawerBase {
                 } else {
                     ImageView img = (ImageView) v;
                     img.setImageResource(R.drawable.hourglass_full);
+                    calendar=Calendar.getInstance();
                     Query query=database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%02d%02d%02d",
                             user.getUid(),calendar.get(Calendar.YEAR)-2000,calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH)))
                             .child("timestamps").orderByKey().limitToLast(1);
@@ -224,11 +226,12 @@ public class Startseite extends AppDrawerBase {
     }
 
     public int getWorkdays() {
-        int weekday = calendar.get(Calendar.DAY_OF_WEEK);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        Calendar cal= (Calendar) calendar.clone();
+        int weekday = cal.get(Calendar.DAY_OF_WEEK);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
         int oldDay = day;
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        int weekDayOfFirst = calendar.get(Calendar.DAY_OF_WEEK);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        int weekDayOfFirst = cal.get(Calendar.DAY_OF_WEEK);
 
         if (weekDayOfFirst == 1) {
             weekDayOfFirst += 7;
@@ -241,7 +244,7 @@ public class Startseite extends AppDrawerBase {
         if (weekday == 7 ) {
             weekenddays++;
         }
-        calendar.set(Calendar.DAY_OF_MONTH, oldDay);
+
         return oldDay - weekenddays;
     }
 
