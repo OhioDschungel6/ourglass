@@ -55,10 +55,15 @@ public class StartActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
-                Intent intent = new Intent(this, Startseite.class);
-                startActivity(intent);
-                finish();
-            } else if(resultCode == RESULT_FIRST_USER){
+                IdpResponse resp= (IdpResponse) data.getExtras().get("extra_idp_response");
+
+                if (resp!=null && resp.isNewUser()) {
+                    //TODO Intent UserData
+                } else {
+                    Intent intent = new Intent(this, Startseite.class);
+                    startActivity(intent);
+                    finish();
+                }
 
             } else if (resultCode == RESULT_CANCELED) {
                 ImageView img = findViewById(R.id.loading);
