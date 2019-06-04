@@ -59,6 +59,9 @@ public class StartActivity extends AppCompatActivity {
 
                 if (resp!=null && resp.isNewUser()) {
                     //TODO Intent UserData
+                    Intent intent = new Intent(this, FirstLogin.class);
+                    startActivity(intent);
+                    finish();
                 } else {
                     Intent intent = new Intent(this, Startseite.class);
                     startActivity(intent);
