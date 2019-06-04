@@ -8,5 +8,5 @@ public class Arbeitstag {
     public boolean urlaub;
     public boolean krank;
     public Map<String,Stamp> timestamps;
-    public List<Projekteinteilung> einteilung;
+    public Map<String,Projekteinteilung> einteilung;
 }

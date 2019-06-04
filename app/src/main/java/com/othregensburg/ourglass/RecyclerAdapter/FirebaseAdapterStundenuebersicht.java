@@ -56,15 +56,11 @@ public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Ar
             Collections.sort(iter, new Comparator<Stamp>() {
                 @Override
                 public int compare(Stamp o1, Stamp o2) {
-                    if (o1.startzeit.length() < o2.startzeit.length()) {
-                        return -1;
-                    } else if (o1.startzeit.length() > o2.startzeit.length()) {
-                        return 1;
-                    }
                     return o1.startzeit.compareTo(o2.startzeit);
                 }
             });
 
+            viewHolder.timesList.removeAllViews();
             for (Stamp p :iter) {
                 TextView v = new TextView(con);
                 if (p.endzeit == null) {
