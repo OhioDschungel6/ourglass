@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,6 +17,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TagesuebersichtActivity"
+            android:label="@string/title_activity_tagesuebersicht"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Teamuebersicht"
             android:label="@string/title_activity_teamuebersicht"
@@ -35,8 +40,7 @@
         <activity
             android:name=".Startseite"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
