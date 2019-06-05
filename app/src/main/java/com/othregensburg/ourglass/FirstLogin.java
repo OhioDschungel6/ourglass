@@ -65,6 +65,7 @@ public class FirstLogin extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
             else {
+                //TODO: Problem bei FloatingActionButton?
                 firstname.setVisibility(View.GONE);
                 name.setVisibility(View.GONE);
                 findViewById(R.id.textView_weeklyWorkTimeLabel).setVisibility(View.GONE);
