@@ -33,10 +33,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Startseite extends AppDrawerBase {
 
-    private boolean timeIsRunning=false;
+    private boolean timeIsRunning = false;
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Calendar calendar = Calendar.getInstance();
@@ -47,7 +49,6 @@ public class Startseite extends AppDrawerBase {
         setContentView(R.layout.activity_startseite);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -61,10 +62,10 @@ public class Startseite extends AppDrawerBase {
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_homescreen);
 
-       //TimeRunning
+        //TimeRunning
 
 
-        DatabaseReference ref = database.getReference("user/"+user.getUid()+"/timeRunning");
+        DatabaseReference ref = database.getReference("user/" + user.getUid() + "/timeRunning");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -72,9 +73,9 @@ public class Startseite extends AppDrawerBase {
                 if (timeIsRunning) {
                     ImageView img = (ImageView) findViewById(R.id.start);
                     img.setImageResource(R.drawable.hourglass_animation);
-                    AnimationDrawable ad= (AnimationDrawable) img.getDrawable();
+                    AnimationDrawable ad = (AnimationDrawable) img.getDrawable();
                     ad.start();
-                }else {
+                } else {
                     ImageView img = (ImageView) findViewById(R.id.start);
                     img.setImageResource(R.drawable.hourglass_full);
                 }
@@ -93,10 +94,34 @@ public class Startseite extends AppDrawerBase {
 
 
         loadUI();
+        addRefreshTimer();
 
     }
 
-    private void loadUI() {
+    private void addRefreshTimer() {
+        Timer timer = new Timer(true);
+        Date now= Calendar.getInstance().getTime();
+        now.setSeconds(0);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                calendar = Calendar.getInstance();
+                //TimeText
+                TextView date = findViewById(R.id.date);
+                DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
+                date.setText(df.format(calendar.getTime()));
+
+                //TodaysWorktime
+                updateTodaysWorktime();
+
+                //MonthlyIsWorktime
+                updateMonthlyIsWorktime();
+
+            }
+        },now,60000);
+    }
+
+    private void updateTodaysWorktime() {
         //Todays worktime
         TextView todayWorktime = findViewById(R.id.worktime);
         DatabaseReference worktime = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d/timestamps", user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
@@ -108,6 +133,7 @@ public class Startseite extends AppDrawerBase {
                     Stamp s = d.getValue(Stamp.class);
                     if (s.endzeit == null) {
                         DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+                        calendar= Calendar.getInstance();
                         s.endzeit = df.format(calendar.getTime());
                     }
                     t.add(s);
@@ -120,41 +146,14 @@ public class Startseite extends AppDrawerBase {
 
             }
         });
+    }
+
+    private void loadUI() {
+        //Todays worktime
+        updateTodaysWorktime();
 
         //months Worktime
-        TextView monthTime = findViewById(R.id.textView_istStdAnz);
-        Query monthTimeQuery= database.getReference("arbeitstage/"+user.getUid())
-                .orderByKey()
-                .startAt(String.format(Locale.GERMAN,"%02d%02d%02d",calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, 1));
-        monthTimeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Time t = new Time();
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Arbeitstag arbeitstag = ds.getValue(Arbeitstag.class);
-                    if (arbeitstag.krank || arbeitstag.urlaub) {
-                        //todo
-                    } else {
-                        if (arbeitstag.timestamps != null) {
-                            for (Stamp stamp : arbeitstag.timestamps.values()) {
-                                if (stamp.endzeit == null) {
-                                    DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
-                                    calendar=Calendar.getInstance();
-                                    stamp.endzeit = df.format(calendar.getTime());
-                                }
-                                t.add(stamp);
-                            }
-                        }
-                    }
-                }
-                monthTime.setText(t.toString());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        updateMonthlyIsWorktime();
 
         //TimeStartButton
         ImageView start = findViewById(R.id.start);
@@ -163,26 +162,26 @@ public class Startseite extends AppDrawerBase {
             public void onClick(View v) {
                 //v.setBackgroundColor(getResources().getColor(R.color.startButton));
 
-                timeIsRunning=!timeIsRunning;
-                DatabaseReference ref = database.getReference("user/"+user.getUid()+"/timeRunning");
+                timeIsRunning = !timeIsRunning;
+                DatabaseReference ref = database.getReference("user/" + user.getUid() + "/timeRunning");
                 ref.setValue(timeIsRunning);
                 if (timeIsRunning) {
                     ImageView img = (ImageView) v;
                     img.setImageResource(R.drawable.hourglass_animation);
-                    AnimationDrawable ad= (AnimationDrawable) img.getDrawable();
+                    AnimationDrawable ad = (AnimationDrawable) img.getDrawable();
                     ad.start();
-                    calendar=Calendar.getInstance();
-                    DatabaseReference reference= database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%02d%02d%02d",
-                            user.getUid(),calendar.get(Calendar.YEAR)-2000,calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH)))
+                    calendar = Calendar.getInstance();
+                    DatabaseReference reference = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d",
+                            user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)))
                             .child("timestamps").push();
                     DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
                     reference.setValue(new Stamp(df.format(calendar.getTime()), null));
                 } else {
                     ImageView img = (ImageView) v;
                     img.setImageResource(R.drawable.hourglass_full);
-                    calendar=Calendar.getInstance();
-                    Query query=database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%02d%02d%02d",
-                            user.getUid(),calendar.get(Calendar.YEAR)-2000,calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.DAY_OF_MONTH)))
+                    calendar = Calendar.getInstance();
+                    Query query = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d",
+                            user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)))
                             .child("timestamps").orderByKey().limitToLast(1);
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -212,8 +211,8 @@ public class Startseite extends AppDrawerBase {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Double anz = dataSnapshot.getValue(Double.class);
                 if (anz != null) {
-                    double d=anz*getWorkdays();
-                    sollStd.setText(String.format(Locale.GERMAN, "%d:%02d",(int)d,(int)((d-(int) d)*60)));
+                    double d = anz * getWorkdays();
+                    sollStd.setText(String.format(Locale.GERMAN, "%d:%02d", (int) d, (int) ((d - (int) d) * 60)));
                 }
 
             }
@@ -226,8 +225,45 @@ public class Startseite extends AppDrawerBase {
 
     }
 
+    public void updateMonthlyIsWorktime() {
+        //months isWorktime
+        TextView monthTime = findViewById(R.id.textView_istStdAnz);
+        Query monthTimeQuery = database.getReference("arbeitstage/" + user.getUid())
+                .orderByKey()
+                .startAt(String.format(Locale.GERMAN, "%02d%02d%02d", calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, 1));
+        monthTimeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Time t = new Time();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Arbeitstag arbeitstag = ds.getValue(Arbeitstag.class);
+                    if (arbeitstag.krank || arbeitstag.urlaub) {
+                        //todo
+                    } else {
+                        if (arbeitstag.timestamps != null) {
+                            for (Stamp stamp : arbeitstag.timestamps.values()) {
+                                if (stamp.endzeit == null) {
+                                    DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+                                    calendar = Calendar.getInstance();
+                                    stamp.endzeit = df.format(calendar.getTime());
+                                }
+                                t.add(stamp);
+                            }
+                        }
+                    }
+                }
+                monthTime.setText(t.toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public int getWorkdays() {
-        Calendar cal= (Calendar) calendar.clone();
+        Calendar cal = (Calendar) calendar.clone();
         int weekday = cal.get(Calendar.DAY_OF_WEEK);
         int day = cal.get(Calendar.DAY_OF_MONTH);
         int oldDay = day;
@@ -240,19 +276,14 @@ public class Startseite extends AppDrawerBase {
 
         weekDayOfFirst--;
 
-        day+=weekDayOfFirst-1;
-        int weekenddays = (day/7)*2;
-        if (weekday == 7 ) {
+        day += weekDayOfFirst - 1;
+        int weekenddays = (day / 7) * 2;
+        if (weekday == 7) {
             weekenddays++;
         }
 
         return oldDay - weekenddays;
     }
-
-
-
-
-
 
 
 }
