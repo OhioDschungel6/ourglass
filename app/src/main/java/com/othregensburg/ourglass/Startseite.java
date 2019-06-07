@@ -213,7 +213,7 @@ public class Startseite extends AppDrawerBase {
                 Double anz = dataSnapshot.getValue(Double.class);
                 if (anz != null) {
                     double d=anz*getWorkdays();
-                    sollStd.setText(String.format(Locale.GERMAN, "%d:%02d",(int)d,(int)(d-(int) d)*60));
+                    sollStd.setText(String.format(Locale.GERMAN, "%d:%02d",(int)d,(int)((d-(int) d)*60)));
                 }
 
             }
