@@ -139,6 +139,7 @@ public class Startseite extends AppDrawerBase {
                             for (Stamp stamp : arbeitstag.timestamps.values()) {
                                 if (stamp.endzeit == null) {
                                     DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+                                    calendar=Calendar.getInstance();
                                     stamp.endzeit = df.format(calendar.getTime());
                                 }
                                 t.add(stamp);
