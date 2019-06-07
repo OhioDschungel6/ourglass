@@ -43,12 +43,20 @@
             android:layout_marginTop="40dp"
             android:layout_marginBottom="40dp"/>
 
+        <TextView
+            android:id="@+id/textView_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center"
+            android:text="0" />
+
         <SeekBar
-            android:id="@+id/seekBar_zeit"
+            android:id="@+id/seekBar_time"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"/>
+            android:layout_marginTop="8dp"/>
 
     </LinearLayout>
 
@@ -59,5 +67,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_fab_check" />
+
+
 
 </FrameLayout>

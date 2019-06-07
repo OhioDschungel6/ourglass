@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.othregensburg.ourglass.entity.Arbeitstag;
+import com.othregensburg.ourglass.entity.Projekteinteilung;
+import com.othregensburg.ourglass.entity.Time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -37,17 +47,17 @@ import lecho.lib.hellocharts.view.PieChartView;
  */
 
 public class FragmentTagesuebersicht extends Fragment {
+    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
     private static final int PIE_CHART_TEXTSIZE = 14;
 
-    private static final String ARG_DAY = "day";
-    private static final String ARG_MONTH = "month";
-    private static final String ARG_YEAR = "year";
+    private static final String ARG_REF_URL = "refUrl";
+    private static final String ARG_MINUTES_WORKED = "minutesWorked";
 
-    // TODO: java util Date oder sql date?
-    private int day;
-    private int month;
-    private int year;
+    private DatabaseReference ref;
     private Date date;
+    private int minutesWorked;
+    private int minutesUntagged;
 
     private OnFragmentInteractionListener mListener;
 
@@ -62,15 +72,11 @@ public class FragmentTagesuebersicht extends Fragment {
      * @return A new instance of fragment FragmentTagesuebersicht.
      */
 
-    // TODO: Rename and change types and number of parameters
-    public static FragmentTagesuebersicht newInstance(int day, int month, int year) {
+    public static FragmentTagesuebersicht newInstance(String refUrl, int minutesWorked) {
         FragmentTagesuebersicht fragment = new FragmentTagesuebersicht();
         Bundle args = new Bundle();
-        args.putInt(ARG_DAY, day);
-        args.putInt(ARG_MONTH, month-1);
-        //TODO: -1900??
-        args.putInt(ARG_YEAR, year-1900);
-
+        args.putString(ARG_REF_URL, refUrl);
+        args.putInt(ARG_MINUTES_WORKED, minutesWorked);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,10 +85,12 @@ public class FragmentTagesuebersicht extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            day = getArguments().getInt(ARG_DAY);
-            month = getArguments().getInt(ARG_MONTH);
-            year = getArguments().getInt(ARG_YEAR);
-            date = new GregorianCalendar(year, month, day).getTime();
+            String refUrl = getArguments().getString(ARG_REF_URL);
+            minutesWorked = getArguments().getInt(ARG_MINUTES_WORKED);
+            minutesUntagged = minutesWorked;
+            ref = database.getReferenceFromUrl(refUrl);
+            String key = ref.getKey();
+            date = new Date(Integer.parseInt(key.substring(0,2))+100,Integer.parseInt(key.substring(2,4))-1,Integer.parseInt(key.substring(4)));
         }
     }
 
@@ -100,23 +108,38 @@ public class FragmentTagesuebersicht extends Fragment {
         DateFormat df = new SimpleDateFormat("EEEE dd.MM.yy", Locale.GERMANY);
         textViewDate.setText(df.format(date));
 
-        PieChartView pieChartView = getView().findViewById(R.id.pie_chart);
-        //TODO: test data, insert values from database later
-        //SliceValue arguments: 1. float value for size, 2. color
-        List<SliceValue> pieData = new ArrayList<>();
-        pieData.add(new SliceValue(0.3f, Color.BLUE).setLabel("Email"));
-        pieData.add(new SliceValue(3, Color.GRAY).setLabel("abc"));
-        pieData.add(new SliceValue(2.5f, Color.RED).setLabel("Projekt Xyz"));
-        pieData.add(new SliceValue(1.64f, Color.MAGENTA).setLabel("Nicht zugeteilt"));
+        DatabaseReference refEinteilungen = ref.child("/einteilung");
 
-        PieChartData pieChartData = new PieChartData(pieData);
-        pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
-        //TODO: get timeWorked from database
-        String timeWorked = "8:23";
-        //Set size and color of font in the middle:
-        //pieChartData.setHasCenterCircle(true).setCenterText1("Sales in million").setCenterText1FontSize(20).setCenterText1Color(Color.parseColor("#0097A7"));
-        pieChartData.setHasCenterCircle(true).setCenterText1(timeWorked);
-        pieChartView.setPieChartData(pieChartData);
+
+        refEinteilungen.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int n = 0;
+                List<SliceValue> pieData = new ArrayList<>();
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                    Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
+                    //SliceValue arguments: 1. float value for size, 2. color;
+                    pieData.add(new SliceValue(einteilung.minuten, getNextColor(n)).setLabel(einteilung.taetigkeit));
+                    minutesUntagged -= einteilung.minuten;
+                    n++;
+                }
+                pieData.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel("Nicht eingeteilt"));
+                PieChartData pieChartData = new PieChartData(pieData);
+                pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
+                Time timeWorked = new Time(minutesWorked);
+                //Set size and color of font in the middle:
+                //pieChartData.setHasCenterCircle(true).setCenterText1("Sales in million").setCenterText1FontSize(20).setCenterText1Color(Color.parseColor("#0097A7"));
+                pieChartData.setHasCenterCircle(true).setCenterText1(timeWorked.toString());
+                PieChartView pieChartView = getView().findViewById(R.id.pie_chart);
+                pieChartView.setPieChartData(pieChartData);
+                pieChartView.refreshDrawableState();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //Todo: DatabaseError
+            }
+        });
 
         //TODO: Evtl nach Designrichtlinien mit ViewModel (bzw Interactioninterface) implementieren
         FloatingActionButton fabStundeneinteilung = getView().findViewById(R.id.fab_stundeneinteilung);
@@ -127,12 +150,21 @@ public class FragmentTagesuebersicht extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
                 fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
-                //TODO: Testdaten, später aus Datenbank holen
-                Fragment fragment = FragmentStundeneinteilung.newInstance(3.21f);
+                Fragment fragment = FragmentStundeneinteilung.newInstance(minutesUntagged);
                 fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
                 fragmentTransaction.commit();
             }
         });
+    }
+
+    private int getNextColor (int n) {
+        switch (n%3) {
+            //TODO: R.color richtig oder color.parse?
+            case 0: return R.color.colorPrimaryDark;
+            case 1: return R.color.colorPrimaryLight;
+            case 2: return R.color.colorAccent;
+            default: return R.color.colorPrimaryDark;
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

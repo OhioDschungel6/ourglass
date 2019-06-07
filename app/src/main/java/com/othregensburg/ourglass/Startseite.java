@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+//TODO: 0 Stunden Tagesarbeitszeit anzeigen, wenn noch keine Einträge für den aktuellen Tag vorhanden
 public class Startseite extends AppDrawerBase {
 
     private boolean timeIsRunning=false;
@@ -47,8 +48,6 @@ public class Startseite extends AppDrawerBase {
         setContentView(R.layout.activity_startseite);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -117,7 +116,7 @@ public class Startseite extends AppDrawerBase {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                //TODO: DatabaseError
             }
         });
 
@@ -151,7 +150,7 @@ public class Startseite extends AppDrawerBase {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                //TODO: DatabaseError
             }
         });
 
@@ -195,7 +194,7 @@ public class Startseite extends AppDrawerBase {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                            //TODO: DatabaseError
                         }
                     });
                 }

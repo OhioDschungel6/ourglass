@@ -23,6 +23,4 @@
     <string name="title_activity_projektuebersicht">Projektübersicht</string>
     <string name="title_activity_tagesuebersicht">Tagesübersicht</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

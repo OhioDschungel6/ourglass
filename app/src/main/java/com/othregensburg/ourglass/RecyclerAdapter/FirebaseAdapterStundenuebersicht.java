@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,14 +48,14 @@ public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Ar
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder viewHolder, int position, @NonNull Arbeitstag model) {
         String key = getRef(position).getKey();
-        viewHolder.tag.setText(df.format(new Date(Integer.parseInt(key.substring(0,2)),Integer.parseInt(key.substring(2,4))-1,Integer.parseInt(key.substring(4)))));
+        viewHolder.tag.setText(df.format(new Date(Integer.parseInt(key.substring(0,2))+100,Integer.parseInt(key.substring(2,4))-1,Integer.parseInt(key.substring(4)))));
+        Time t=new Time();
+
         if (model.krank) {
             viewHolder.duration.setText("Krank");
         } else if (model.urlaub) {
             viewHolder.duration.setText("Urlaub");
         } else {
-            Time t=new Time();
-
             List<Stamp> iter = new ArrayList<>(model.timestamps.values());
             Collections.sort(iter, new Comparator<Stamp>() {
                 @Override
@@ -79,8 +80,13 @@ public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Ar
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(con , TagesuebersichtActivity.class);
-                con.startActivity(intent);
+                if(!model.krank && !model.urlaub) {
+                    Intent intent = new Intent(con, TagesuebersichtActivity.class);
+                    // Extra z.B.: https://ourglass-84f4d.firebaseio.com/arbeitstage/DV8i9rsyXUdXtWA30SCTmiEnfib2/190222
+                    intent.putExtra("DatabaseRef", getRef(position).toString());
+                    intent.putExtra("minutesWorked", t.getMinutes());
+                    con.startActivity(intent);
+                }
             }
         });
     }

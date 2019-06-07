@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -19,12 +22,9 @@ import android.widget.SeekBar;
  * create an instance of this fragment.
  */
 public class FragmentStundeneinteilung extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_FREE_TIME = "freeTime";
+    private static final String ARG_MINUTES_UNTAGGED = "minutesUntagged";
 
-    // TODO: Rename and change types of parameters
-    private float freeTime;
+    private int minutesUntagged;
 
     private OnFragmentInteractionListener mListener;
 
@@ -32,15 +32,10 @@ public class FragmentStundeneinteilung extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentStundeneinteilung newInstance(float freeTime) {
+    public static FragmentStundeneinteilung newInstance(int minutesUntagged) {
         FragmentStundeneinteilung fragment = new FragmentStundeneinteilung();
         Bundle args = new Bundle();
-        args.putFloat(ARG_FREE_TIME, freeTime);
+        args.putInt(ARG_MINUTES_UNTAGGED, minutesUntagged);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,7 +44,7 @@ public class FragmentStundeneinteilung extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            freeTime = getArguments().getFloat(ARG_FREE_TIME);
+            minutesUntagged = getArguments().getInt(ARG_MINUTES_UNTAGGED);
         }
     }
 
@@ -62,9 +57,26 @@ public class FragmentStundeneinteilung extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        SeekBar seekBarTime = getView().findViewById(R.id.seekBar_zeit);
-        //TODO: seekBar geht nur mit int, brauchen float/double
-        //seekBarTime.setMax(freeTime);
+
+        SeekBar seekBarTime = getView().findViewById(R.id.seekBar_time);
+        seekBarTime.setMax(minutesUntagged);
+        seekBarTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                TextView textViewTime = getView().findViewById(R.id.textView_time);
+                textViewTime.setText(Integer.toString(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
