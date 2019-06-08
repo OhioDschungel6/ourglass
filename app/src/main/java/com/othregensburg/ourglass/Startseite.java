@@ -69,6 +69,11 @@ public class Startseite extends AppDrawerBase {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    Intent intent = new Intent(getBaseContext(), FirstLogin.class);
+                    startActivity(intent);
+                    finish();
+                }
                 timeIsRunning = dataSnapshot.getValue(Boolean.class);
                 if (timeIsRunning) {
                     ImageView img = (ImageView) findViewById(R.id.start);

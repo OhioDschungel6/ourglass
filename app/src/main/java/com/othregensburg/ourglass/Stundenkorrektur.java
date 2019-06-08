@@ -134,7 +134,7 @@ public class Stundenkorrektur extends AppDrawerBase {
                 new FirebaseRecyclerOptions.Builder<Stamp>()
                         .setQuery(query, Stamp.class)
                         .build();
-        mAdapter= new FirebaseAdapterStundenkorrektur(options);
+        mAdapter= new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur));
 
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -166,7 +166,7 @@ public class Stundenkorrektur extends AppDrawerBase {
                             .build();
 
 
-            mAdapter=new FirebaseAdapterStundenkorrektur(options);
+            mAdapter=new FirebaseAdapterStundenkorrektur(options,findViewById(R.id.constraintStundenkorrektur));
             RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
             recyclerView.setAdapter(mAdapter);
             mAdapter.startListening();
