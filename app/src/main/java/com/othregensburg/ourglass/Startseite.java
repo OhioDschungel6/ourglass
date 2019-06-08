@@ -129,16 +129,19 @@ public class Startseite extends AppDrawerBase {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Time t = new Time();
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    Stamp s = d.getValue(Stamp.class);
-                    if (s.endzeit == null) {
-                        DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
-                        calendar= Calendar.getInstance();
-                        s.endzeit = df.format(calendar.getTime());
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot d : dataSnapshot.getChildren()) {
+                        Stamp s = d.getValue(Stamp.class);
+                        if (s.endzeit == null) {
+                            DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+                            calendar= Calendar.getInstance();
+                            s.endzeit = df.format(calendar.getTime());
+                        }
+                        t.add(s);
                     }
-                    t.add(s);
-                    todayWorktime.setText(t.toString());
                 }
+                todayWorktime.setText(t.toString());
+
             }
 
             @Override
