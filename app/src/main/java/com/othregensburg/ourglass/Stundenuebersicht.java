@@ -1,8 +1,10 @@
 package com.othregensburg.ourglass;
 
+import android.app.DatePickerDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +15,8 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.widget.Toolbar;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,11 +34,16 @@ import com.othregensburg.ourglass.entity.Stamp;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import lecho.lib.hellocharts.model.Line;
 
 
 public class Stundenuebersicht extends AppDrawerBase {
@@ -42,6 +51,8 @@ public class Stundenuebersicht extends AppDrawerBase {
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAdapterStundenuebersicht mAdapter;
+    private Calendar firstDate = Calendar.getInstance();
+    private Calendar secondDate = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +71,33 @@ public class Stundenuebersicht extends AppDrawerBase {
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        //setDates
+        firstDate.set(Calendar.DAY_OF_MONTH, 1);
+        TextView textView_firstDate = findViewById(R.id.date1);
+        TextView textView_secondDate = findViewById(R.id.date2);
+        DateFormat df= new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
+        textView_firstDate.setText(df.format(firstDate.getTime()));
+        textView_secondDate.setText(df.format(secondDate.getTime()));
 
+
+        //setDatePicker for Datepickerbar
+        ConstraintLayout c1 = findViewById(R.id.datePickerLeft);
+        c1.setOnClickListener(e->{
+            DatePickerDialog dpd = new DatePickerDialog(this, dateDialogFirstDate, firstDate.get(Calendar.YEAR), firstDate.get(Calendar.MONTH), firstDate.get(Calendar.DAY_OF_MONTH));
+            dpd.show();
+        });
+        ConstraintLayout c2 = findViewById(R.id.datePickerRight);
+        c2.setOnClickListener(e->{
+            DatePickerDialog dpd = new DatePickerDialog(this, dateDialogSecondDate, secondDate.get(Calendar.YEAR), secondDate.get(Calendar.MONTH), secondDate.get(Calendar.DAY_OF_MONTH));
+            dpd.show();
+        });
 
         //Section RecyclerView
+        DateFormat queryDate = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
         RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenuebersicht);
         Query query = database
                 .getReference("arbeitstage/"+user.getUid())
-                .orderByKey();
+                .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
 
         FirebaseRecyclerOptions<Arbeitstag> options =
                 new FirebaseRecyclerOptions.Builder<Arbeitstag>()
@@ -75,7 +106,9 @@ public class Stundenuebersicht extends AppDrawerBase {
         mAdapter= new FirebaseAdapterStundenuebersicht(options,this);
 
         recyclerView.setAdapter(mAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setReverseLayout(true);
+        recyclerView.setLayoutManager(llm);
         mAdapter.startListening();
     }
 
@@ -84,4 +117,68 @@ public class Stundenuebersicht extends AppDrawerBase {
         super.onStop();
         mAdapter.stopListening();
     }
+
+    private DatePickerDialog.OnDateSetListener dateDialogFirstDate = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            c.set(Calendar.MONTH,month);
+            c.set(Calendar.YEAR,year);
+            if (c.compareTo(secondDate)<0) {
+                firstDate=c;
+                TextView textView_firstDate = findViewById(R.id.date1);
+                DateFormat df= new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
+                textView_firstDate.setText(df.format(firstDate.getTime()));
+
+
+                //new Query
+                DateFormat queryDate = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
+                RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenuebersicht);
+                Query query = database
+                        .getReference("arbeitstage/"+user.getUid())
+                        .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
+
+                FirebaseRecyclerOptions<Arbeitstag> options =
+                        new FirebaseRecyclerOptions.Builder<Arbeitstag>()
+                                .setQuery(query, Arbeitstag.class)
+                                .build();
+                mAdapter= new FirebaseAdapterStundenuebersicht(options,getBaseContext());
+                recyclerView.setAdapter(mAdapter);
+                mAdapter.startListening();
+            }
+        }
+    };
+
+    private DatePickerDialog.OnDateSetListener dateDialogSecondDate = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            c.set(Calendar.MONTH,month);
+            c.set(Calendar.YEAR,year);
+            if (c.compareTo(firstDate)>0) {
+                secondDate=c;
+                TextView textView_secondDate = findViewById(R.id.date2);
+                DateFormat df= new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
+                textView_secondDate.setText(df.format(secondDate.getTime()));
+
+
+                //new Query
+                DateFormat queryDate = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
+                RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenuebersicht);
+                Query query = database
+                        .getReference("arbeitstage/"+user.getUid())
+                        .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
+
+                FirebaseRecyclerOptions<Arbeitstag> options =
+                        new FirebaseRecyclerOptions.Builder<Arbeitstag>()
+                                .setQuery(query, Arbeitstag.class)
+                                .build();
+                mAdapter= new FirebaseAdapterStundenuebersicht(options,getBaseContext());
+                recyclerView.setAdapter(mAdapter);
+                mAdapter.startListening();
+            }
+        }
+    };
 }
