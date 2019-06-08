@@ -114,7 +114,7 @@ public class Stundenkorrektur extends AppDrawerBase {
         mYear = cal.get(Calendar.YEAR);
         mMonth = cal.get(Calendar.MONTH) + 1;
         mDay = cal.get(Calendar.DAY_OF_MONTH);
-        date.setText(String.format(Locale.GERMAN, "%d.%d.%d", mDay, mMonth, mYear));
+        date.setText(String.format(Locale.GERMAN, "%02d.%02d.%02d", mDay, mMonth, mYear-2000));
         LinearLayout datepickerbar = findViewById(R.id.datepicker_bar);
         datepickerbar.setOnClickListener(e -> {
             DatePickerDialog dpd = new DatePickerDialog(this, dl, mYear, mMonth - 1, mDay);
