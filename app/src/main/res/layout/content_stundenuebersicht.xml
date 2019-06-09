@@ -88,11 +88,19 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@+id/dateBarStundenuebersicht"/>
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_stundenuebersicht"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateBarStundenuebersicht" />
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
 </android.support.constraint.ConstraintLayout>
