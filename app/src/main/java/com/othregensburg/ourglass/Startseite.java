@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Startseite extends AppDrawerBase {
+public class Startseite extends AppDrawerBase implements View.OnClickListener{
 
     private boolean timeIsRunning = false;
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -66,7 +66,7 @@ public class Startseite extends AppDrawerBase {
 
 
         DatabaseReference ref = database.getReference("user/" + user.getUid() + "/timeRunning");
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
@@ -75,6 +75,10 @@ public class Startseite extends AppDrawerBase {
                     finish();
                 }
                 timeIsRunning = dataSnapshot.getValue(Boolean.class);
+                if (getIntent().getBooleanExtra("nfc",false)) {
+                    //if Started via NFC
+                    onClick(findViewById(R.id.start));
+                }
                 if (timeIsRunning) {
                     ImageView img = (ImageView) findViewById(R.id.start);
                     img.setImageResource(R.drawable.hourglass_animation);
@@ -100,6 +104,7 @@ public class Startseite extends AppDrawerBase {
 
         loadUI();
         addRefreshTimer();
+
 
     }
 
@@ -165,51 +170,7 @@ public class Startseite extends AppDrawerBase {
 
         //TimeStartButton
         ImageView start = findViewById(R.id.start);
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //v.setBackgroundColor(getResources().getColor(R.color.startButton));
-
-                timeIsRunning = !timeIsRunning;
-                DatabaseReference ref = database.getReference("user/" + user.getUid() + "/timeRunning");
-                ref.setValue(timeIsRunning);
-                if (timeIsRunning) {
-                    ImageView img = (ImageView) v;
-                    img.setImageResource(R.drawable.hourglass_animation);
-                    AnimationDrawable ad = (AnimationDrawable) img.getDrawable();
-                    ad.start();
-                    calendar = Calendar.getInstance();
-                    DatabaseReference reference = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d",
-                            user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)))
-                            .child("timestamps").push();
-                    DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
-                    reference.setValue(new Stamp(df.format(calendar.getTime()), null));
-                } else {
-                    ImageView img = (ImageView) v;
-                    img.setImageResource(R.drawable.hourglass_full);
-                    calendar = Calendar.getInstance();
-                    Query query = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d",
-                            user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)))
-                            .child("timestamps").orderByKey().limitToLast(1);
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot d : dataSnapshot.getChildren()) {
-                                DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
-                                d.getRef().child("endzeit").setValue(df.format(calendar.getTime()));
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-            }
-        });
+        start.setOnClickListener(this);
 
         //Sollstd:
         TextView sollStd = findViewById(R.id.textView_sollStdAnz);
@@ -294,4 +255,44 @@ public class Startseite extends AppDrawerBase {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        timeIsRunning = !timeIsRunning;
+        DatabaseReference ref = database.getReference("user/" + user.getUid() + "/timeRunning");
+        ref.setValue(timeIsRunning);
+        if (timeIsRunning) {
+            ImageView img = (ImageView) v;
+            img.setImageResource(R.drawable.hourglass_animation);
+            AnimationDrawable ad = (AnimationDrawable) img.getDrawable();
+            ad.start();
+            calendar = Calendar.getInstance();
+            DatabaseReference reference = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d",
+                    user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)))
+                    .child("timestamps").push();
+            DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+            reference.setValue(new Stamp(df.format(calendar.getTime()), null));
+        } else {
+            ImageView img = (ImageView) v;
+            img.setImageResource(R.drawable.hourglass_full);
+            calendar = Calendar.getInstance();
+            Query query = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d",
+                    user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)))
+                    .child("timestamps").orderByKey().limitToLast(1);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot d : dataSnapshot.getChildren()) {
+                        DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
+                        d.getRef().child("endzeit").setValue(df.format(calendar.getTime()));
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
 }

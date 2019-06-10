@@ -34,7 +34,6 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getIntent().getAction();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_start);
         ImageView img = (ImageView) findViewById(R.id.loading);
@@ -64,10 +63,20 @@ public class StartActivity extends AppCompatActivity {
                 if (resp!=null && resp.isNewUser()) {
                     //TODO Intent UserData
                     Intent intent = new Intent(this, FirstLogin.class);
+                    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+                        intent.putExtra("nfc", true);
+                    } else {
+                        intent.putExtra("nfc", false);
+                    }
                     startActivity(intent);
                     finish();
                 } else {
                     Intent intent = new Intent(this, Startseite.class);
+                    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+                        intent.putExtra("nfc", true);
+                    } else {
+                        intent.putExtra("nfc", false);
+                    }
                     startActivity(intent);
                     finish();
                 }
