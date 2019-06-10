@@ -2,6 +2,7 @@ package com.othregensburg.ourglass;
 
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -50,6 +51,12 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //NFC
+
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        nfcAdapter.enableReaderMode(this, tag -> {
+            onClick(findViewById(R.id.start));
+        } ,NfcAdapter.FLAG_READER_NFC_F |NfcAdapter.FLAG_READER_NFC_B| NfcAdapter.FLAG_READER_NFC_A|NfcAdapter.FLAG_READER_NFC_V,null);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
