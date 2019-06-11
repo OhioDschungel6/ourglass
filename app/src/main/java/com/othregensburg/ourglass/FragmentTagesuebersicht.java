@@ -1,6 +1,7 @@
 package com.othregensburg.ourglass;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,15 +12,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.othregensburg.ourglass.entity.Arbeitstag;
 import com.othregensburg.ourglass.entity.Projekteinteilung;
@@ -33,6 +39,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import lecho.lib.hellocharts.listener.PieChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.view.PieChartView;
@@ -49,6 +56,7 @@ import lecho.lib.hellocharts.view.PieChartView;
 
 public class FragmentTagesuebersicht extends Fragment {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private static final int PIE_CHART_TEXTSIZE = 14;
 
@@ -136,6 +144,44 @@ public class FragmentTagesuebersicht extends Fragment {
                 PieChartView pieChartView = getView().findViewById(R.id.pie_chart);
                 pieChartView.setPieChartData(pieChartData);
                 pieChartView.refreshDrawableState();
+
+                pieChartView.setOnValueTouchListener(new PieChartOnValueSelectListener() {
+                    @Override
+                    public void onValueSelected(int arcIndex, SliceValue value) {
+                        Query selected = ref.child("einteilung").orderByChild("taetigkeit").equalTo(String.copyValueOf(value.getLabelAsChars()));
+                        selected.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                /*
+                                for (DataSnapshot d : dataSnapshot.getChildren()) {
+
+                                }
+                                */
+                                //TODO: DialogFragment
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle(String.copyValueOf(value.getLabelAsChars()));
+
+                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.show();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onValueDeselected() {
+
+                    }
+                });
 
                 FloatingActionButton fabStundeneinteilung = getView().findViewById(R.id.fab_stundeneinteilung);
                 if(minutesUntagged == 0) {

@@ -125,6 +125,7 @@ public class FragmentStundeneinteilung extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(((String) parent.getItemAtPosition(position)).equals(ADD_TAETIGKEIT)) {
+                    //TODO: DialogFragment
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle(R.string.dialog_addTaetigkeit_title);
 
