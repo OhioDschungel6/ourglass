@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +124,9 @@ public class FragmentTagesuebersicht extends Fragment {
                     minutesUntagged -= einteilung.minuten;
                     n++;
                 }
-                pieData.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel("Nicht eingeteilt"));
+                if (minutesUntagged > 0) {
+                    pieData.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel("Nicht eingeteilt"));
+                }
                 PieChartData pieChartData = new PieChartData(pieData);
                 pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
                 Time timeWorked = new Time(minutesWorked);
@@ -133,6 +136,26 @@ public class FragmentTagesuebersicht extends Fragment {
                 PieChartView pieChartView = getView().findViewById(R.id.pie_chart);
                 pieChartView.setPieChartData(pieChartData);
                 pieChartView.refreshDrawableState();
+
+                FloatingActionButton fabStundeneinteilung = getView().findViewById(R.id.fab_stundeneinteilung);
+                if(minutesUntagged == 0) {
+                    //TODO: ausgrauen besser
+                    fabStundeneinteilung.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    fabStundeneinteilung.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
+                            fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
+                            Fragment fragment = FragmentStundeneinteilung.newInstance(minutesUntagged, ref.toString(), minutesWorked);
+                            fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+                            fragmentTransaction.commit();
+                        }
+                    });
+                }
             }
 
             @Override
@@ -140,30 +163,14 @@ public class FragmentTagesuebersicht extends Fragment {
                 //Todo: DatabaseError
             }
         });
-
-        //TODO: Evtl nach Designrichtlinien mit ViewModel (bzw Interactioninterface) implementieren
-        FloatingActionButton fabStundeneinteilung = getView().findViewById(R.id.fab_stundeneinteilung);
-        fabStundeneinteilung.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
-                fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
-                Fragment fragment = FragmentStundeneinteilung.newInstance(minutesUntagged);
-                fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
-                fragmentTransaction.commit();
-            }
-        });
     }
 
     private int getNextColor (int n) {
-        switch (n%3) {
+        switch (n%2) {
             //TODO: R.color richtig oder color.parse?
-            case 0: return R.color.colorPrimaryDark;
-            case 1: return R.color.colorPrimaryLight;
-            case 2: return R.color.colorAccent;
-            default: return R.color.colorPrimaryDark;
+            case 0: return ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
+            case 1: return ContextCompat.getColor(getContext(),R.color.colorAccent);
+            default: return ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
         }
     }
 

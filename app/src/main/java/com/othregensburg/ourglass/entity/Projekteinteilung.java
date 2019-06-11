@@ -6,6 +6,10 @@ public class Projekteinteilung {
     public String notiz;
     public int minuten;
 
+    public Projekteinteilung(){
+
+    }
+
     public Projekteinteilung(String taetigkeit, String projekt, String notiz, int minuten) {
         this. projekt = projekt;
         this.taetigkeit = taetigkeit;

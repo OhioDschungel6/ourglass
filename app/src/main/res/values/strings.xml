@@ -1,4 +1,5 @@
 <resources>
+    <string name="dialog_addTaetigkeit_title">Neue Tätigkeit hinzufügen</string>
     <string name="action_sign_out">Abmelden</string>
     <string name="sign_in_button_text">Anmelden</string>
     <string name="stundeneinteilung_spinnerPrompt_taetigkeit">Wähle eine Aktivität</string>
