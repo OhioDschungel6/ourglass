@@ -1,5 +1,6 @@
 package com.othregensburg.ourglass;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -49,6 +50,17 @@ public class TagesuebersichtActivity extends AppDrawerBase implements FragmentTa
         Fragment fragment = FragmentTagesuebersicht.newInstance(refUrl, minutesWorekd);
         fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            Intent intent = new Intent(this, Stundenuebersicht.class);
+            startActivity(intent);
+        }
     }
 
     @Override

@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:hint="@string/stundeneinteilung_editText_notiz_hint"
-            android:gravity="center"
             android:layout_gravity="center"
             android:ems="14"
             android:layout_marginTop="40dp"

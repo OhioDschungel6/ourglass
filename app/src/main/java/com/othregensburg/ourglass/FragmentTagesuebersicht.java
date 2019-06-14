@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.othregensburg.ourglass.entity.Arbeitstag;
 import com.othregensburg.ourglass.entity.Projekteinteilung;
 import com.othregensburg.ourglass.entity.Time;
+
+import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -127,7 +130,12 @@ public class FragmentTagesuebersicht extends Fragment {
                 List<SliceValue> pieData = new ArrayList<>();
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
-                    //SliceValue arguments: 1. float value for size, 2. color;
+                    //TODO: grausam, wie gehts besser?
+                    /*
+                    for (SliceValue pd : pieData) {
+
+                    }
+                    */
                     pieData.add(new SliceValue(einteilung.minuten, getNextColor(n)).setLabel(einteilung.taetigkeit));
                     minutesUntagged -= einteilung.minuten;
                     n++;
@@ -152,14 +160,23 @@ public class FragmentTagesuebersicht extends Fragment {
                         selected.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                /*
-                                for (DataSnapshot d : dataSnapshot.getChildren()) {
-
-                                }
-                                */
-                                //TODO: DialogFragment
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                                 builder.setTitle(String.copyValueOf(value.getLabelAsChars()));
+                                //TODO: builder.setCustomTitle()
+
+                                View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details, (ViewGroup) getView(), false);
+                                LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
+
+                                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                                    Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
+                                    //attach to root?
+                                    View element = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details_entry, einteilungenList, false);
+                                    ((TextView)element.findViewById(R.id.textView_projekt)).setText(einteilung.projekt);
+                                    ((TextView) element.findViewById(R.id.textView_notiz)).setText(einteilung.notiz);
+                                    ((TextView) element.findViewById(R.id.textView_time)).setText(Integer.toString(einteilung.minuten));
+                                    einteilungenList.addView(element);
+                                }
+                                builder.setView(viewInflated);
 
                                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -198,6 +215,7 @@ public class FragmentTagesuebersicht extends Fragment {
                             fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
                             Fragment fragment = FragmentStundeneinteilung.newInstance(minutesUntagged, ref.toString(), minutesWorked);
                             fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+                            fragmentTransaction.addToBackStack(null);
                             fragmentTransaction.commit();
                         }
                     });
@@ -212,10 +230,12 @@ public class FragmentTagesuebersicht extends Fragment {
     }
 
     private int getNextColor (int n) {
-        switch (n%2) {
+        switch (n%4) {
             //TODO: R.color richtig oder color.parse?
             case 0: return ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
             case 1: return ContextCompat.getColor(getContext(),R.color.colorAccent);
+            case 2: return ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
+            case 3: return ContextCompat.getColor(getContext(),R.color.pieChart_thirdColor);
             default: return ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
         }
     }

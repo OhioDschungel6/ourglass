@@ -110,8 +110,7 @@ public class FragmentStundeneinteilung extends Fragment {
                     taetigkeiten.add(d.getKey());
                 }
                 taetigkeiten.add(ADD_TAETIGKEIT);
-                String[] taetigkeitenArray = taetigkeiten.toArray(new String[0]);
-                taetigkeitAdapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, taetigkeitenArray);
+                taetigkeitAdapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, taetigkeiten);
                 spinnerTaetigkeit.setAdapter(taetigkeitAdapter);
             }
 
@@ -129,20 +128,26 @@ public class FragmentStundeneinteilung extends Fragment {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle(R.string.dialog_addTaetigkeit_title);
 
-                    final EditText newTaetigkeit = new EditText(getContext());
-                    builder.setView(newTaetigkeit);
+                    View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_taetigkeit, (ViewGroup) getView(), false);
+                    final EditText editTextNewTaetigkeit = (EditText) viewInflated.findViewById(R.id.new_taetigkeit);
+                    builder.setView(viewInflated);
 
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            database.getReference("user/"+user.getUid()+"/taetigkeiten/" + newTaetigkeit.getText().toString()).setValue(true);
-                            spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit.getText().toString()));
+                            String newTaetigkeit = editTextNewTaetigkeit.getText().toString();
+                            database.getReference("user/"+user.getUid()+"/taetigkeiten/" + newTaetigkeit).setValue(true);
+                            taetigkeitAdapter.add(newTaetigkeit);
+                            taetigkeitAdapter.remove(ADD_TAETIGKEIT);
+                            taetigkeitAdapter.add(ADD_TAETIGKEIT);
+                            spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit));
                         }
                     });
                     builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
+                            spinnerTaetigkeit.setSelection(0);
                         }
                     });
                     builder.show();
@@ -164,8 +169,7 @@ public class FragmentStundeneinteilung extends Fragment {
                     projekte.add(d.getKey());
                 }
                 //projekte.add(ADD_PROJEKT);
-                String[] projekteArray = projekte.toArray(new String[0]);
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, projekteArray);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, projekte);
                 spinnerProjekt.setAdapter(adapter);
             }
 
@@ -223,13 +227,7 @@ public class FragmentStundeneinteilung extends Fragment {
                     DatabaseReference einteilung = ref.child("einteilung").push();
                     einteilung.setValue(new Projekteinteilung(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress()));
 
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
-                    fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
-                    Fragment fragment = FragmentTagesuebersicht.newInstance(ref.toString(), minutesWorekd);
-                    fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
-                    fragmentTransaction.commit();
+                    getActivity().getSupportFragmentManager().popBackStack();
                 }
             }
         });
