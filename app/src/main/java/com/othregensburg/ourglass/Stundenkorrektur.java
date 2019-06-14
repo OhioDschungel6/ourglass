@@ -37,6 +37,8 @@ import com.othregensburg.ourglass.entity.Arbeitstag;
 import com.othregensburg.ourglass.entity.Stamp;
 
 import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -44,11 +46,12 @@ import java.util.Locale;
 
 public class Stundenkorrektur extends AppDrawerBase {
 
-    int mYear, mMonth, mDay;
     final Calendar cal = Calendar.getInstance();
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private FirebaseAdapterStundenkorrektur mAdapter;
+    private DateFormat df= new SimpleDateFormat("yyMMdd", Locale.GERMANY);
+    private  DateFormat textFormatter= new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
 
     @Override
 
@@ -64,7 +67,8 @@ public class Stundenkorrektur extends AppDrawerBase {
         //Plus Button
         FloatingActionButton addTime = findViewById(R.id.addTime);
         addTime.setOnClickListener(e->{
-            DatabaseReference ref =database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%02d%02d%02d",user.getUid(),mYear-2000,mMonth,mDay))
+
+            DatabaseReference ref =database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%s",user.getUid(),df.format(cal.getTime())))
                     .child("timestamps");
             ref.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -111,13 +115,10 @@ public class Stundenkorrektur extends AppDrawerBase {
 
         //Datepicker
         TextView date = findViewById(R.id.date);
-        mYear = cal.get(Calendar.YEAR);
-        mMonth = cal.get(Calendar.MONTH) + 1;
-        mDay = cal.get(Calendar.DAY_OF_MONTH);
-        date.setText(String.format(Locale.GERMAN, "%d.%d.%d", mDay, mMonth, mYear));
+        date.setText(textFormatter.format(cal.getTime()));
         LinearLayout datepickerbar = findViewById(R.id.datepicker_bar);
         datepickerbar.setOnClickListener(e -> {
-            DatePickerDialog dpd = new DatePickerDialog(this, dl, mYear, mMonth - 1, mDay);
+            DatePickerDialog dpd = new DatePickerDialog(this, dl, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
             dpd.show();
         });
 
@@ -125,7 +126,7 @@ public class Stundenkorrektur extends AppDrawerBase {
         RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
         //TODO -2000 disgusting
         Query query = database
-                .getReference("arbeitstage/" + user.getUid() + String.format(Locale.GERMAN, "/%02d%02d%02d", mYear - 2000, mMonth, mDay))
+                .getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s",user.getUid(), df.format(cal.getTime())))
                 .child("timestamps").orderByChild("startzeit");
 
 
@@ -133,7 +134,7 @@ public class Stundenkorrektur extends AppDrawerBase {
                 new FirebaseRecyclerOptions.Builder<Stamp>()
                         .setQuery(query, Stamp.class)
                         .build();
-        mAdapter= new FirebaseAdapterStundenkorrektur(options);
+        mAdapter= new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur));
 
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -148,15 +149,14 @@ public class Stundenkorrektur extends AppDrawerBase {
     private DatePickerDialog.OnDateSetListener dl = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            mYear = year;
-            mMonth = month + 1;
-            mDay = dayOfMonth;
+            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.YEAR, year);
             TextView date = findViewById(R.id.date);
-            date.setText(String.format(Locale.GERMAN, "%d.%d.%d", mDay, mMonth, mYear));
-            //TODO year-2000 disgusting and may clean up old adapter
+            date.setText(textFormatter.format(cal.getTime()));
 
             Query query = database
-                    .getReference("arbeitstage/" + user.getUid() + String.format(Locale.GERMAN, "/%02d%02d%02d", mYear - 2000, mMonth, mDay))
+                    .getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s",user.getUid(), df.format(cal.getTime())))
                     .child("timestamps")
                     .orderByChild("startzeit");
 
@@ -166,7 +166,7 @@ public class Stundenkorrektur extends AppDrawerBase {
                             .build();
 
 
-            mAdapter=new FirebaseAdapterStundenkorrektur(options);
+            mAdapter=new FirebaseAdapterStundenkorrektur(options,findViewById(R.id.constraintStundenkorrektur));
             RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
             recyclerView.setAdapter(mAdapter);
             mAdapter.startListening();

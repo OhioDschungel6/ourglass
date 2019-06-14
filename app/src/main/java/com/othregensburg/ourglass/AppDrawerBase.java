@@ -2,6 +2,7 @@ package com.othregensburg.ourglass;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,16 @@ public class AppDrawerBase extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //NFC
+        if (getClass() != Startseite.class) {
+            NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+            nfcAdapter.enableReaderMode(this, tag -> {
+                Intent intent = new Intent(this, Startseite.class);
+                intent.putExtra("nfc", true);
+                startActivity(intent);
+            } ,NfcAdapter.FLAG_READER_NFC_F |NfcAdapter.FLAG_READER_NFC_B| NfcAdapter.FLAG_READER_NFC_A|NfcAdapter.FLAG_READER_NFC_V,null);
+        }
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.othregensburg.ourglass;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.AnimationDrawable;
+import android.nfc.NfcAdapter;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -62,10 +63,20 @@ public class StartActivity extends AppCompatActivity {
                 if (resp!=null && resp.isNewUser()) {
                     //TODO Intent UserData
                     Intent intent = new Intent(this, FirstLogin.class);
+                    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+                        intent.putExtra("nfc", true);
+                    } else {
+                        intent.putExtra("nfc", false);
+                    }
                     startActivity(intent);
                     finish();
                 } else {
                     Intent intent = new Intent(this, Startseite.class);
+                    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+                        intent.putExtra("nfc", true);
+                    } else {
+                        intent.putExtra("nfc", false);
+                    }
                     startActivity(intent);
                     finish();
                 }

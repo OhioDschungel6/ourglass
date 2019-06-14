@@ -3,7 +3,9 @@ package com.othregensburg.ourglass.RecyclerAdapter;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -26,9 +28,11 @@ import java.util.Locale;
 
 public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Stamp,FirebaseAdapterStundenkorrektur.ViewHolder> {
 
+    private ConstraintLayout constraintLayout;
 
-    public FirebaseAdapterStundenkorrektur(@NonNull FirebaseRecyclerOptions<Stamp> options) {
+    public FirebaseAdapterStundenkorrektur(@NonNull FirebaseRecyclerOptions<Stamp> options, ConstraintLayout cl) {
         super(options);
+        constraintLayout=cl;
 
     }
 
@@ -45,6 +49,7 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater mInflater=LayoutInflater.from(viewGroup.getContext());
+
         View mItemView = mInflater.inflate(R.layout.entry, viewGroup, false);
         return new FirebaseAdapterStundenkorrektur.ViewHolder(mItemView);
     }
@@ -77,14 +82,29 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
         private TimePickerDialog.OnTimeSetListener onTimeDialogStartZeitCallback= new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                itemRef.child("startzeit").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
-                notifyDataSetChanged();
+                if (endTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) >= 0) {
+                    itemRef.child("startzeit").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+
+                    notifyDataSetChanged();
+                } else {
+
+                    Snackbar.make(constraintLayout, "Startzeit kann nicht nach der Endzeit sein!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+
             }
         };
         private TimePickerDialog.OnTimeSetListener onTimeDialogEndZeitCallback= new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                itemRef.child("endzeit").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+                if (startTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) <= 0) {
+                    itemRef.child("endzeit").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+
+                } else {
+                    Snackbar.make(constraintLayout, "Endzeit kann nicht vor der Startzeit sein!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+
             }
         };
     }

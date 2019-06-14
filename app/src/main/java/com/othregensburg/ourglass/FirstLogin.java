@@ -77,6 +77,7 @@ public class FirstLogin extends AppCompatActivity {
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                         Intent intent = new Intent(getBaseContext(), Startseite.class);
+                        intent.putExtra("nfc",getIntent().getBooleanExtra("nfc",false) );
                         startActivity(intent);
                         finish();
                     }
