@@ -1,8 +1,19 @@
 package com.othregensburg.ourglass.entity;
 
 public class Projekteinteilung {
-    String projekt;
-    String projekt_tatigkeit;
-    String tatigkeit;
-    int zeit;
+    public String projekt;
+    public String taetigkeit;
+    public String notiz;
+    public int minuten;
+
+    public Projekteinteilung(){
+
+    }
+
+    public Projekteinteilung(String taetigkeit, String projekt, String notiz, int minuten) {
+        this. projekt = projekt;
+        this.taetigkeit = taetigkeit;
+        this.notiz = notiz;
+        this.minuten = minuten;
+    }
 }

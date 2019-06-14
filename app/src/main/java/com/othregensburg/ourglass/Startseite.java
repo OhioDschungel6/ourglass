@@ -51,8 +51,8 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //NFC
 
+        //NFC
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         nfcAdapter.enableReaderMode(this, tag -> {
             onClick(findViewById(R.id.start));

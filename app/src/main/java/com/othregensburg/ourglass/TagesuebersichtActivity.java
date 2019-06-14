@@ -1,5 +1,6 @@
 package com.othregensburg.ourglass;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,13 +14,13 @@ import android.support.v7.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.othregensburg.ourglass.RecyclerAdapter.FirebaseAdapterStundenuebersicht;
 
 public class TagesuebersichtActivity extends AppDrawerBase implements FragmentTagesuebersicht.OnFragmentInteractionListener, FragmentStundeneinteilung.OnFragmentInteractionListener{
 
-    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +39,27 @@ public class TagesuebersichtActivity extends AppDrawerBase implements FragmentTa
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        Bundle extras = getIntent().getExtras();
+        String refUrl = extras.getString("DatabaseRef");
+        int minutesWorekd =extras.getInt("minutesWorked");
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
-        fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
-        //TODO: Testdaten, später vom aufrufenden Eintrag aus der Stundenübersicht übernehmen
-        Fragment fragment = FragmentTagesuebersicht.newInstance(1, 1, 2019);
+        Fragment fragment = FragmentTagesuebersicht.newInstance(refUrl, minutesWorekd);
         fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            //TODO: super.onBackPressed() würde reichen, aber Stundenübersicht lädt dann keine Daten -> entsprechende lifecycle methode fehlt wahrscheinlich
+            Intent intent = new Intent(this, Stundenuebersicht.class);
+            startActivity(intent);
+        }
     }
 
     @Override
