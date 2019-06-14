@@ -108,6 +108,7 @@ public class Stundenuebersicht extends AppDrawerBase {
         recyclerView.setAdapter(mAdapter);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setReverseLayout(true);
+        llm.setStackFromEnd(true);
         recyclerView.setLayoutManager(llm);
         mAdapter.startListening();
     }
