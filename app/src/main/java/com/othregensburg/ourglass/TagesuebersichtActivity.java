@@ -45,8 +45,6 @@ public class TagesuebersichtActivity extends AppDrawerBase implements FragmentTa
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
-        fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
         Fragment fragment = FragmentTagesuebersicht.newInstance(refUrl, minutesWorekd);
         fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
         fragmentTransaction.commit();
@@ -58,6 +56,7 @@ public class TagesuebersichtActivity extends AppDrawerBase implements FragmentTa
         if (count > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
+            //TODO: super.onBackPressed() würde reichen, aber Stundenübersicht lädt dann keine Daten -> entsprechende lifecycle methode fehlt wahrscheinlich
             Intent intent = new Intent(this, Stundenuebersicht.class);
             startActivity(intent);
         }

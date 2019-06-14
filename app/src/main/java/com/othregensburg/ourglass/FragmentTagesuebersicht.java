@@ -2,6 +2,7 @@ package com.othregensburg.ourglass;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -62,6 +63,7 @@ public class FragmentTagesuebersicht extends Fragment {
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private static final int PIE_CHART_TEXTSIZE = 14;
+    private static final String LABEL_MINUTES_UNTAGGED = "Nicht eingeteilt";
 
     private static final String ARG_REF_URL = "refUrl";
     private static final String ARG_MINUTES_WORKED = "minutesWorked";
@@ -126,22 +128,29 @@ public class FragmentTagesuebersicht extends Fragment {
         refEinteilungen.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                minutesUntagged = minutesWorked;
                 int n = 0;
                 List<SliceValue> pieData = new ArrayList<>();
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
-                    //TODO: grausam, wie gehts besser?
-                    /*
+                    //TODO: !!!grausam!!!, wie gehts besser?
+                    boolean alreadyExists = false;
                     for (SliceValue pd : pieData) {
-
+                        String pdLabel = String.copyValueOf(pd.getLabelAsChars());
+                        if(pdLabel.equals(einteilung.taetigkeit)){
+                            float minutes = pd.getValue();
+                            pd.setValue(minutes + einteilung.minuten);
+                            alreadyExists = true;
+                        }
                     }
-                    */
-                    pieData.add(new SliceValue(einteilung.minuten, getNextColor(n)).setLabel(einteilung.taetigkeit));
+                    if(!alreadyExists){
+                        pieData.add(new SliceValue(einteilung.minuten, getNextColor(n)).setLabel(einteilung.taetigkeit));
+                        n++;
+                    }
                     minutesUntagged -= einteilung.minuten;
-                    n++;
                 }
                 if (minutesUntagged > 0) {
-                    pieData.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel("Nicht eingeteilt"));
+                    pieData.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
                 }
                 PieChartData pieChartData = new PieChartData(pieData);
                 pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
@@ -156,42 +165,57 @@ public class FragmentTagesuebersicht extends Fragment {
                 pieChartView.setOnValueTouchListener(new PieChartOnValueSelectListener() {
                     @Override
                     public void onValueSelected(int arcIndex, SliceValue value) {
-                        Query selected = ref.child("einteilung").orderByChild("taetigkeit").equalTo(String.copyValueOf(value.getLabelAsChars()));
-                        selected.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                builder.setTitle(String.copyValueOf(value.getLabelAsChars()));
-                                //TODO: builder.setCustomTitle()
-
-                                View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details, (ViewGroup) getView(), false);
-                                LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
-
-                                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                                    Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
-                                    //attach to root?
-                                    View element = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details_entry, einteilungenList, false);
-                                    ((TextView)element.findViewById(R.id.textView_projekt)).setText(einteilung.projekt);
-                                    ((TextView) element.findViewById(R.id.textView_notiz)).setText(einteilung.notiz);
-                                    ((TextView) element.findViewById(R.id.textView_time)).setText(Integer.toString(einteilung.minuten));
-                                    einteilungenList.addView(element);
+                        String label = String.copyValueOf(value.getLabelAsChars());
+                        if(label.equals(LABEL_MINUTES_UNTAGGED)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setTitle(LABEL_MINUTES_UNTAGGED);
+                            //TODO:uneingeteilte Zeit anzeigen, button für neue einteilung einfügen
+                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
                                 }
-                                builder.setView(viewInflated);
+                            });
+                            builder.show();
+                        }
+                        else {
+                            Query selected = ref.child("einteilung").orderByChild("taetigkeit").equalTo(label);
+                            selected.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                    builder.setTitle(label);
+                                    //TODO: builder.setCustomTitle()
 
-                                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
+                                    View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details, (ViewGroup) getView(), false);
+                                    LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
+
+                                    for (DataSnapshot d : dataSnapshot.getChildren()) {
+                                        Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
+                                        //attach to root?
+                                        View element = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details_entry, einteilungenList, false);
+                                        ((TextView) element.findViewById(R.id.textView_projekt)).setText(einteilung.projekt);
+                                        ((TextView) element.findViewById(R.id.textView_notiz)).setText(einteilung.notiz);
+                                        ((TextView) element.findViewById(R.id.textView_time)).setText(Integer.toString(einteilung.minuten));
+                                        einteilungenList.addView(element);
                                     }
-                                });
-                                builder.show();
-                            }
+                                    builder.setView(viewInflated);
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.show();
+                                }
 
-                            }
-                        });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
                     }
 
                     @Override
@@ -202,21 +226,15 @@ public class FragmentTagesuebersicht extends Fragment {
 
                 FloatingActionButton fabStundeneinteilung = getView().findViewById(R.id.fab_stundeneinteilung);
                 if(minutesUntagged == 0) {
-                    //TODO: ausgrauen besser
-                    fabStundeneinteilung.setVisibility(View.INVISIBLE);
+                    fabStundeneinteilung.setEnabled(false);
+                    fabStundeneinteilung.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+                    fabStundeneinteilung.setAlpha(0.4f);
                 }
                 else {
                     fabStundeneinteilung.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                            //TODO: Ordner anim in res und integers.xml in values ist aus Musterlösung zur Fragmentsübung übernommen
-                            fragmentTransaction.setCustomAnimations(R.anim.alpha_transition_in, R.anim.alpha_transition_out);
-                            Fragment fragment = FragmentStundeneinteilung.newInstance(minutesUntagged, ref.toString(), minutesWorked);
-                            fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
-                            fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();
+                            switchToFragmentStundeneinteilung();
                         }
                     });
                 }
@@ -227,6 +245,15 @@ public class FragmentTagesuebersicht extends Fragment {
                 //Todo: DatabaseError
             }
         });
+    }
+
+    private void switchToFragmentStundeneinteilung(){
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment fragment = FragmentStundeneinteilung.newInstance(minutesUntagged, ref.toString(), minutesWorked);
+        fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     private int getNextColor (int n) {
