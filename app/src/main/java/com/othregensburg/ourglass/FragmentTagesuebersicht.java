@@ -169,8 +169,19 @@ public class FragmentTagesuebersicht extends Fragment {
                         if(label.equals(LABEL_MINUTES_UNTAGGED)) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                             builder.setTitle(LABEL_MINUTES_UNTAGGED);
-                            //TODO:uneingeteilte Zeit anzeigen, button für neue einteilung einfügen
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            Time timeUntagged = new Time(minutesUntagged);
+                            TextView textViewUntagged = new TextView(getContext());
+                            textViewUntagged.setText("Zeit: " + timeUntagged.toString());
+                            textViewUntagged.setTextSize(18);
+                            textViewUntagged.setPadding(80, 32  , 0, 0);
+                            builder.setView(textViewUntagged);
+                            builder.setPositiveButton("Einteilen", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    switchToFragmentStundeneinteilung();
+                                }
+                            });
+                            builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
@@ -185,7 +196,6 @@ public class FragmentTagesuebersicht extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                                     builder.setTitle(label);
-                                    //TODO: builder.setCustomTitle()
 
                                     View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details, (ViewGroup) getView(), false);
                                     LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
@@ -196,8 +206,18 @@ public class FragmentTagesuebersicht extends Fragment {
                                         View element = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details_entry, einteilungenList, false);
                                         ((TextView) element.findViewById(R.id.textView_projekt)).setText(einteilung.projekt);
                                         ((TextView) element.findViewById(R.id.textView_notiz)).setText(einteilung.notiz);
-                                        ((TextView) element.findViewById(R.id.textView_time)).setText(Integer.toString(einteilung.minuten));
+                                        String stringTime = new Time(einteilung.minuten).toString();
+                                        ((TextView) element.findViewById(R.id.textView_time)).setText(stringTime);
                                         einteilungenList.addView(element);
+                                        //TODO: Bearbeiten der Einteilungen möglich machen
+                                        /*
+                                        element.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                            }
+                                        });
+                                        */
                                     }
                                     builder.setView(viewInflated);
 
