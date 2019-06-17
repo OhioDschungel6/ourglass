@@ -11,6 +11,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -26,13 +27,21 @@ import com.othregensburg.ourglass.entity.Stamp;
 
 import java.util.Locale;
 
-public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Stamp,FirebaseAdapterStundenkorrektur.ViewHolder> {
+public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Stamp, FirebaseAdapterStundenkorrektur.ViewHolder> {
 
     private ConstraintLayout constraintLayout;
+    private CheckBox urlaubBox;
+    private CheckBox krankBox;
 
-    public FirebaseAdapterStundenkorrektur(@NonNull FirebaseRecyclerOptions<Stamp> options, ConstraintLayout cl) {
+    public FirebaseAdapterStundenkorrektur(@NonNull FirebaseRecyclerOptions<Stamp> options, ConstraintLayout cl, CheckBox urlaubBox, CheckBox krankBox) {
         super(options);
-        constraintLayout=cl;
+        constraintLayout = cl;
+        this.urlaubBox = urlaubBox;
+        this.krankBox = krankBox;
+
+        urlaubBox.setVisibility(View.VISIBLE);
+        krankBox.setVisibility(View.VISIBLE);
+
 
     }
 
@@ -40,15 +49,16 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Stamp model) {
         holder.startTime.setText(model.startzeit);
         holder.endTime.setText(model.endzeit);
-        holder.model=model;
-        holder.itemRef= getRef(position);
-
+        holder.model = model;
+        holder.itemRef = getRef(position);
+        urlaubBox.setVisibility(View.INVISIBLE);
+        krankBox.setVisibility(View.INVISIBLE);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        LayoutInflater mInflater=LayoutInflater.from(viewGroup.getContext());
+        LayoutInflater mInflater = LayoutInflater.from(viewGroup.getContext());
 
         View mItemView = mInflater.inflate(R.layout.entry, viewGroup, false);
         return new FirebaseAdapterStundenkorrektur.ViewHolder(mItemView);
@@ -60,26 +70,33 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
         final TextView endTime;
         final FloatingActionButton removeButton;
         DatabaseReference itemRef;
+
         ViewHolder(@NonNull final View itemView) {
             super(itemView);
-            startTime=itemView.findViewById(R.id.startTime);
-            endTime=itemView.findViewById(R.id.endTime);
+            startTime = itemView.findViewById(R.id.startTime);
+            endTime = itemView.findViewById(R.id.endTime);
             removeButton = itemView.findViewById(R.id.remove);
-            startTime.setOnClickListener(h->{
-                Pair<Integer,Integer> pair= model.pairStartzeit();
-                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogStartZeitCallback, pair.first,pair.second, true);
+            startTime.setOnClickListener(h -> {
+                Pair<Integer, Integer> pair = model.pairStartzeit();
+                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogStartZeitCallback, pair.first, pair.second, true);
                 tpd.show();
             });
-            endTime.setOnClickListener(h->{
-                Pair<Integer,Integer> pair= model.pairEndzeit();
-                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogEndZeitCallback, pair.first,pair.second, true);
+            endTime.setOnClickListener(h -> {
+                Pair<Integer, Integer> pair = model.pairEndzeit();
+                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogEndZeitCallback, pair.first, pair.second, true);
                 tpd.show();
             });
-            removeButton.setOnClickListener(h->{
+            removeButton.setOnClickListener(h -> {
+                if (getItemCount() == 1) {
+                    urlaubBox.setVisibility(View.VISIBLE);
+                    krankBox.setVisibility(View.VISIBLE);
+                }
                 itemRef.setValue(null);
+
             });
         }
-        private TimePickerDialog.OnTimeSetListener onTimeDialogStartZeitCallback= new TimePickerDialog.OnTimeSetListener() {
+
+        private TimePickerDialog.OnTimeSetListener onTimeDialogStartZeitCallback = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 if (endTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) >= 0) {
@@ -94,7 +111,7 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
 
             }
         };
-        private TimePickerDialog.OnTimeSetListener onTimeDialogEndZeitCallback= new TimePickerDialog.OnTimeSetListener() {
+        private TimePickerDialog.OnTimeSetListener onTimeDialogEndZeitCallback = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 if (startTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) <= 0) {

@@ -15,6 +15,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,6 +74,11 @@ public class Stundenkorrektur extends AppDrawerBase {
             ref.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //todo only use getItemCount
+                    if (mAdapter.getItemCount() == 0 ) {
+                        findViewById(R.id.checkBox_krank).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.checkBox_urlaub).setVisibility(View.INVISIBLE);
+                    }
                     if (dataSnapshot.getValue() != null) {
                         Stamp stamp=null;
                         for (DataSnapshot d :dataSnapshot.getChildren()) {
@@ -124,7 +130,6 @@ public class Stundenkorrektur extends AppDrawerBase {
 
         //Section RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
-        //TODO -2000 disgusting
         Query query = database
                 .getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s",user.getUid(), df.format(cal.getTime())))
                 .child("timestamps").orderByChild("startzeit");
@@ -134,10 +139,11 @@ public class Stundenkorrektur extends AppDrawerBase {
                 new FirebaseRecyclerOptions.Builder<Stamp>()
                         .setQuery(query, Stamp.class)
                         .build();
-        mAdapter= new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur));
+        mAdapter= new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur),findViewById(R.id.checkBox_urlaub),findViewById(R.id.checkBox_krank));
 
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         mAdapter.startListening();
 
 
@@ -166,7 +172,7 @@ public class Stundenkorrektur extends AppDrawerBase {
                             .build();
 
 
-            mAdapter=new FirebaseAdapterStundenkorrektur(options,findViewById(R.id.constraintStundenkorrektur));
+            mAdapter=new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur),findViewById(R.id.checkBox_urlaub),findViewById(R.id.checkBox_krank));
             RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
             recyclerView.setAdapter(mAdapter);
             mAdapter.startListening();

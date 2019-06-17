@@ -58,6 +58,29 @@
         app:layout_constraintTop_toBottomOf="@+id/datepicker_bar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <CheckBox
+        android:id="@+id/checkBox_urlaub"
+        app:layout_constraintTop_toBottomOf="@id/datepicker_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="Urlaub"
+        android:visibility="invisible"/>
+
+    <CheckBox
+        android:id="@+id/checkBox_krank"
+        app:layout_constraintTop_toBottomOf="@id/checkBox_urlaub"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="Krank"
+        android:visibility="invisible"/>
 
 
 </android.support.constraint.ConstraintLayout>
