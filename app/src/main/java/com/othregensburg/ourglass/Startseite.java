@@ -3,7 +3,10 @@ package com.othregensburg.ourglass;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.nfc.NfcAdapter;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -264,6 +267,7 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        vibrate();
         timeIsRunning = !timeIsRunning;
         DatabaseReference ref = database.getReference("user/" + user.getUid() + "/timeRunning");
         ref.setValue(timeIsRunning);
@@ -300,6 +304,15 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
 
                 }
             });
+        }
+    }
+
+    private void vibrate() {
+        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(70, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            v.vibrate(70);
         }
     }
 }
