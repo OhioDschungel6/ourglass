@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,7 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,17 +27,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.othregensburg.ourglass.entity.Arbeitstag;
 import com.othregensburg.ourglass.entity.Projekteinteilung;
 import com.othregensburg.ourglass.entity.Time;
-
-import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -74,6 +68,7 @@ public class FragmentTagesuebersicht extends Fragment {
     private Date date;
     private int minutesWorked;
     private int minutesUntagged;
+    private int nextColor = 0;
 
     private OnFragmentInteractionListener mListener;
 
@@ -131,36 +126,30 @@ public class FragmentTagesuebersicht extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 minutesUntagged = minutesWorked;
-                int n = 0;
-                Map<String, SliceValue> hashMap = new HashMap<>();
+                Map<String, SliceValue> sliceValues = new HashMap<>();
 
-                List<SliceValue> pieData = new ArrayList<>();
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
-                    //TODO: !!!grausam!!!, wie gehts besser?
-                    SliceValue sliceValue= hashMap.getOrDefault(einteilung.taetigkeit, new SliceValue(0, getNextColor(n)).setLabel(einteilung.taetigkeit));
-                    //todo value ändern
-                    hashMap.put(einteilung.taetigkeit, sliceValue);
-                    boolean alreadyExists = false;
-                    for (SliceValue pd : pieData) {
-                        String pdLabel = String.copyValueOf(pd.getLabelAsChars());
-                        if(pdLabel.equals(einteilung.taetigkeit)){
-                            float minutes = pd.getValue();
-                            pd.setValue(minutes + einteilung.minuten);
-                            alreadyExists = true;
-                        }
+                    SliceValue sv;
+                    if(sliceValues.containsKey(einteilung.taetigkeit)) {
+                        sv = sliceValues.get(einteilung.taetigkeit);
+                        float oldTime = sv.getValue();
+                        sv.setValue(oldTime + einteilung.minuten);
                     }
-                    if(!alreadyExists){
-                        pieData.add(new SliceValue(einteilung.minuten, getNextColor(n)).setLabel(einteilung.taetigkeit));
-                        n++;
+                    else {
+                        sv = new SliceValue(einteilung.minuten).setLabel(einteilung.taetigkeit);
                     }
+                    sliceValues.put(einteilung.taetigkeit, sv);
                     minutesUntagged -= einteilung.minuten;
                 }
-                if (minutesUntagged > 0) {
-                    //todo: add to hashmap
-                    pieData.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
+                List<SliceValue> sliceValuesList = new ArrayList<>(sliceValues.values());
+                for (SliceValue sv : sliceValuesList) {
+                    sv.setColor(getNextColor());
                 }
-                PieChartData pieChartData = new PieChartData(new ArrayList<>(hashMap.values()));
+                if (minutesUntagged > 0) {
+                    sliceValuesList.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
+                }
+                PieChartData pieChartData = new PieChartData(sliceValuesList);
                 pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
                 Time timeWorked = new Time(minutesWorked);
                 //Set size and color of font in the middle:
@@ -284,15 +273,19 @@ public class FragmentTagesuebersicht extends Fragment {
         fragmentTransaction.commit();
     }
 
-    private int getNextColor (int n) {
-        switch (n%4) {
-            //TODO: R.color richtig oder color.parse?
-            case 0: return ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
-            case 1: return ContextCompat.getColor(getContext(),R.color.colorAccent);
-            case 2: return ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
-            case 3: return ContextCompat.getColor(getContext(),R.color.pieChart_thirdColor);
-            default: return ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
+    private int getNextColor () {
+        int color = ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);;
+        switch (nextColor%4) {
+            case 0: color = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
+                break;
+            case 1: color = ContextCompat.getColor(getContext(),R.color.colorAccent);
+                break;
+            case 2: color = ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
+                break;
+            case 3: color = ContextCompat.getColor(getContext(),R.color.pieChart_thirdColor);
         }
+        nextColor++;
+        return color;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
