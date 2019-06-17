@@ -46,6 +46,7 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Calendar calendar = Calendar.getInstance();
+    private double dailyworktime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,8 +176,6 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
         //Todays worktime
         updateTodaysWorktime();
 
-        //months Worktime
-        updateMonthlyIsWorktime();
 
         //TimeStartButton
         ImageView start = findViewById(R.id.start);
@@ -190,10 +189,12 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Double anz = dataSnapshot.getValue(Double.class);
                 if (anz != null) {
+                    dailyworktime = anz;
                     double d = anz * getWorkdays();
                     sollStd.setText(String.format(Locale.GERMAN, "%d:%02d", (int) d, (int) ((d - (int) d) * 60)));
                 }
-
+                //months Worktime
+                updateMonthlyIsWorktime();
             }
 
             @Override
@@ -217,7 +218,7 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Arbeitstag arbeitstag = ds.getValue(Arbeitstag.class);
                     if (arbeitstag.krank || arbeitstag.urlaub) {
-                        //todo
+                        t.add(new Stamp("00:00", String.format(Locale.GERMAN, "%02d:%02d", (int) dailyworktime, (int) ((dailyworktime - ((int) dailyworktime)) * 60))));
                     } else {
                         if (arbeitstag.timestamps != null) {
                             for (Stamp stamp : arbeitstag.timestamps.values()) {

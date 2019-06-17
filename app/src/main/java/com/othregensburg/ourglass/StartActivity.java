@@ -61,7 +61,6 @@ public class StartActivity extends AppCompatActivity {
                 IdpResponse resp= (IdpResponse) data.getExtras().get("extra_idp_response");
 
                 if (resp!=null && resp.isNewUser()) {
-                    //TODO Intent UserData
                     Intent intent = new Intent(this, FirstLogin.class);
                     if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
                         intent.putExtra("nfc", true);
