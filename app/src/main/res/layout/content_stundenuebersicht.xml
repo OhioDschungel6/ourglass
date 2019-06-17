@@ -40,7 +40,6 @@
                 />
 
             <ImageView
-                android:id="@+id/imageCalender1"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 app:layout_constraintStart_toEndOf="@id/date1"
@@ -51,7 +50,6 @@
 
 
         <View
-            android:id="@+id/divider"
             android:layout_width="3dp"
             android:layout_height="32dp"
             android:background="@android:color/black" />
@@ -77,7 +75,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imageCalender2"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 app:layout_constraintStart_toEndOf="@id/date2"

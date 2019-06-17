@@ -6,8 +6,7 @@
     android:layout_marginTop="16dp"
     android:layout_marginBottom="16dp"
     android:layout_marginStart="60dp"
-    android:layout_marginEnd="60dp"
-    android:id="@+id/correctenContainer">
+    android:layout_marginEnd="60dp">
 
 
         <TextView
@@ -18,7 +17,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="-"
+            android:text="@string/minus_divider"
             />
 
         <TextView
@@ -29,7 +28,7 @@
             android:textSize="24sp"
             android:layout_gravity="center"
             android:textStyle="bold"
-            android:text="-" />
+            android:text="@string/minus_divider" />
 
         <TextView
             android:id="@+id/endTime"
@@ -39,7 +38,7 @@
             android:textSize="24sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="-"/>
+            android:text="@string/minus_divider"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/remove"
@@ -49,5 +48,6 @@
             android:background="@color/colorPrimary"
             android:layout_weight="1"
             android:clickable="true"
+            android:focusable="true"
             app:srcCompat="@drawable/ic_remove_circle_outline_black_24dp" />
     </LinearLayout>
