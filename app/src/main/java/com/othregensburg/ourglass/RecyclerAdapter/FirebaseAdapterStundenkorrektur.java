@@ -33,14 +33,36 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
     private CheckBox urlaubBox;
     private CheckBox krankBox;
 
-    public FirebaseAdapterStundenkorrektur(@NonNull FirebaseRecyclerOptions<Stamp> options, ConstraintLayout cl, CheckBox urlaubBox, CheckBox krankBox) {
+    public FirebaseAdapterStundenkorrektur(@NonNull FirebaseRecyclerOptions<Stamp> options, ConstraintLayout cl, CheckBox urlaubBox, CheckBox krankBox, DatabaseReference reference) {
         super(options);
         constraintLayout = cl;
         this.urlaubBox = urlaubBox;
         this.krankBox = krankBox;
 
-        urlaubBox.setVisibility(View.VISIBLE);
-        krankBox.setVisibility(View.VISIBLE);
+        this.urlaubBox.setVisibility(View.VISIBLE);
+        this.krankBox.setVisibility(View.VISIBLE);
+
+        this.urlaubBox.setChecked(false);
+        this.krankBox.setChecked(false);
+
+        this.urlaubBox.setOnClickListener(e ->{
+            if (this.urlaubBox.isChecked()) {
+                this.krankBox.setEnabled(false);
+            } else {
+                this.krankBox.setEnabled(true);
+            }
+            reference.child("urlaub").setValue(this.urlaubBox.isChecked());
+
+        });
+        this.krankBox.setOnClickListener(e->{
+            if (this.krankBox.isChecked()) {
+                this.urlaubBox.setEnabled(false);
+            } else {
+                this.urlaubBox.setEnabled(true);
+            }
+            reference.child("krank").setValue(this.krankBox.isChecked());
+        });
+
 
 
     }
