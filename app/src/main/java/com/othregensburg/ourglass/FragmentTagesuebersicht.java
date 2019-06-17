@@ -40,8 +40,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import lecho.lib.hellocharts.listener.PieChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.PieChartData;
@@ -130,10 +132,15 @@ public class FragmentTagesuebersicht extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 minutesUntagged = minutesWorked;
                 int n = 0;
+                Map<String, SliceValue> hashMap = new HashMap<>();
+
                 List<SliceValue> pieData = new ArrayList<>();
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
                     //TODO: !!!grausam!!!, wie gehts besser?
+                    SliceValue sliceValue= hashMap.getOrDefault(einteilung.taetigkeit, new SliceValue(0, getNextColor(n)).setLabel(einteilung.taetigkeit));
+                    //todo value ändern
+                    hashMap.put(einteilung.taetigkeit, sliceValue);
                     boolean alreadyExists = false;
                     for (SliceValue pd : pieData) {
                         String pdLabel = String.copyValueOf(pd.getLabelAsChars());
@@ -150,9 +157,10 @@ public class FragmentTagesuebersicht extends Fragment {
                     minutesUntagged -= einteilung.minuten;
                 }
                 if (minutesUntagged > 0) {
+                    //todo: add to hashmap
                     pieData.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
                 }
-                PieChartData pieChartData = new PieChartData(pieData);
+                PieChartData pieChartData = new PieChartData(new ArrayList<>(hashMap.values()));
                 pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
                 Time timeWorked = new Time(minutesWorked);
                 //Set size and color of font in the middle:
