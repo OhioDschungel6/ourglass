@@ -34,8 +34,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import lecho.lib.hellocharts.listener.PieChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.PieChartData;
@@ -66,6 +68,7 @@ public class FragmentTagesuebersicht extends Fragment {
     private Date date;
     private int minutesWorked;
     private int minutesUntagged;
+    private int nextColor = 0;
 
     private OnFragmentInteractionListener mListener;
 
@@ -123,30 +126,30 @@ public class FragmentTagesuebersicht extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 minutesUntagged = minutesWorked;
-                int n = 0;
-                List<SliceValue> pieData = new ArrayList<>();
+                Map<String, SliceValue> sliceValues = new HashMap<>();
+
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
-                    //TODO: !!!grausam!!!, wie gehts besser?
-                    boolean alreadyExists = false;
-                    for (SliceValue pd : pieData) {
-                        String pdLabel = String.copyValueOf(pd.getLabelAsChars());
-                        if(pdLabel.equals(einteilung.taetigkeit)){
-                            float minutes = pd.getValue();
-                            pd.setValue(minutes + einteilung.minuten);
-                            alreadyExists = true;
-                        }
+                    SliceValue sv;
+                    if(sliceValues.containsKey(einteilung.taetigkeit)) {
+                        sv = sliceValues.get(einteilung.taetigkeit);
+                        float oldTime = sv.getValue();
+                        sv.setValue(oldTime + einteilung.minuten);
                     }
-                    if(!alreadyExists){
-                        pieData.add(new SliceValue(einteilung.minuten, getNextColor(n)).setLabel(einteilung.taetigkeit));
-                        n++;
+                    else {
+                        sv = new SliceValue(einteilung.minuten).setLabel(einteilung.taetigkeit);
                     }
+                    sliceValues.put(einteilung.taetigkeit, sv);
                     minutesUntagged -= einteilung.minuten;
                 }
-                if (minutesUntagged > 0) {
-                    pieData.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
+                List<SliceValue> sliceValuesList = new ArrayList<>(sliceValues.values());
+                for (SliceValue sv : sliceValuesList) {
+                    sv.setColor(getNextColor());
                 }
-                PieChartData pieChartData = new PieChartData(pieData);
+                if (minutesUntagged > 0) {
+                    sliceValuesList.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
+                }
+                PieChartData pieChartData = new PieChartData(sliceValuesList);
                 pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
                 Time timeWorked = new Time(minutesWorked);
                 //Set size and color of font in the middle:
@@ -163,8 +166,19 @@ public class FragmentTagesuebersicht extends Fragment {
                         if(label.equals(LABEL_MINUTES_UNTAGGED)) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                             builder.setTitle(LABEL_MINUTES_UNTAGGED);
-                            //TODO:uneingeteilte Zeit anzeigen, button für neue einteilung einfügen
-                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            Time timeUntagged = new Time(minutesUntagged);
+                            TextView textViewUntagged = new TextView(getContext());
+                            textViewUntagged.setText("Zeit: " + timeUntagged.toString());
+                            textViewUntagged.setTextSize(18);
+                            textViewUntagged.setPadding(80, 32  , 0, 0);
+                            builder.setView(textViewUntagged);
+                            builder.setPositiveButton("Einteilen", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    switchToFragmentStundeneinteilung();
+                                }
+                            });
+                            builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
@@ -179,7 +193,6 @@ public class FragmentTagesuebersicht extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                                     builder.setTitle(label);
-                                    //TODO: builder.setCustomTitle()
 
                                     View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details, (ViewGroup) getView(), false);
                                     LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
@@ -190,8 +203,18 @@ public class FragmentTagesuebersicht extends Fragment {
                                         View element = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details_entry, einteilungenList, false);
                                         ((TextView) element.findViewById(R.id.textView_projekt)).setText(einteilung.projekt);
                                         ((TextView) element.findViewById(R.id.textView_notiz)).setText(einteilung.notiz);
-                                        ((TextView) element.findViewById(R.id.textView_time)).setText(Integer.toString(einteilung.minuten));
+                                        String stringTime = new Time(einteilung.minuten).toString();
+                                        ((TextView) element.findViewById(R.id.textView_time)).setText(stringTime);
                                         einteilungenList.addView(element);
+                                        //TODO: Bearbeiten der Einteilungen möglich machen
+                                        /*
+                                        element.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                            }
+                                        });
+                                        */
                                     }
                                     builder.setView(viewInflated);
 
@@ -250,15 +273,19 @@ public class FragmentTagesuebersicht extends Fragment {
         fragmentTransaction.commit();
     }
 
-    private int getNextColor (int n) {
-        switch (n%4) {
-            //TODO: R.color richtig oder color.parse?
-            case 0: return ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
-            case 1: return ContextCompat.getColor(getContext(),R.color.colorAccent);
-            case 2: return ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
-            case 3: return ContextCompat.getColor(getContext(),R.color.pieChart_thirdColor);
-            default: return ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
+    private int getNextColor () {
+        int color = ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);;
+        switch (nextColor%4) {
+            case 0: color = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
+                break;
+            case 1: color = ContextCompat.getColor(getContext(),R.color.colorAccent);
+                break;
+            case 2: color = ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
+                break;
+            case 3: color = ContextCompat.getColor(getContext(),R.color.pieChart_thirdColor);
         }
+        nextColor++;
+        return color;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

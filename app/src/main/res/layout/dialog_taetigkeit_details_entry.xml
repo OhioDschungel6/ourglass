@@ -14,7 +14,7 @@
     app:cardCornerRadius="8dp"
     android:minHeight="80dp">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="4"
-            android:text="Projekt: "
+            android:text="@string/dialog_taetigkeit_details_projekt"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,7 +46,7 @@
             android:layout_weight="1"
             app:layout_constraintStart_toEndOf="@id/textView_p"
             app:layout_constraintTop_toTopOf="parent"
-            android:maxWidth="240dp"/>
+            android:maxWidth="224dp"/>
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="4"
-            android:text="Notiz: "
+            android:text="@string/dialog_taetigkeit_details_notiz"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,7 +73,9 @@
             android:layout_weight="1"
             app:layout_constraintStart_toEndOf="@id/textView_n"
             app:layout_constraintTop_toTopOf="parent"
-            android:maxWidth="240dp"/>
+            android:maxWidth="224dp"/>
+            <!--TODO: maxWidth passt nicht -->
+
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -88,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="4"
-            android:text="Zeit: "
+            android:text="@string/dialog_taetigkeit_details_zeit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

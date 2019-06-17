@@ -1,4 +1,7 @@
 <resources>
+    <string name="dialog_taetigkeit_details_zeit">Zeit: </string>
+    <string name="dialog_taetigkeit_details_projekt">Projekt: </string>
+    <string name="dialog_taetigkeit_details_notiz">Notiz: </string>
     <string name="dialog_addTaetigkeit_title">Neue Tätigkeit hinzufügen</string>
     <string name="action_sign_out">Abmelden</string>
     <string name="sign_in_button_text">Anmelden</string>
