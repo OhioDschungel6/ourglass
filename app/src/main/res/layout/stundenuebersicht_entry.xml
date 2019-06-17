@@ -3,7 +3,6 @@
 <android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.MaterialComponents.CardView"
-    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
@@ -22,16 +21,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textSize="28sp"
-        android:textStyle="bold"
-        android:text="Montag, 29.April 2019" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/duration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:textSize="24sp"
-        android:text="8:26" />
+        android:textSize="24sp"/>
+
 
     <LinearLayout
         android:id="@+id/timesList"

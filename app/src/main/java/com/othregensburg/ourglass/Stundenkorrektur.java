@@ -1,28 +1,19 @@
 package com.othregensburg.ourglass;
 
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,15 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.othregensburg.ourglass.RecyclerAdapter.FirebaseAdapterStundenkorrektur;
-import com.othregensburg.ourglass.entity.Arbeitstag;
 import com.othregensburg.ourglass.entity.Stamp;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 public class Stundenkorrektur extends AppDrawerBase {
@@ -67,6 +54,7 @@ public class Stundenkorrektur extends AppDrawerBase {
         //Plus Button
         FloatingActionButton addTime = findViewById(R.id.addTime);
         addTime.setOnClickListener(e->{
+
 
             DatabaseReference ref =database.getReference(String.format(Locale.GERMAN,"arbeitstage/%s/%s",user.getUid(),df.format(cal.getTime())))
                     .child("timestamps");
