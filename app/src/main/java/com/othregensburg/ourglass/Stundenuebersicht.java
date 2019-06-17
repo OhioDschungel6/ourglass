@@ -1,19 +1,13 @@
 package com.othregensburg.ourglass;
 
 import android.app.DatePickerDialog;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -21,29 +15,15 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.othregensburg.ourglass.RecyclerAdapter.FirebaseAdapterStundenkorrektur;
 import com.othregensburg.ourglass.RecyclerAdapter.FirebaseAdapterStundenuebersicht;
-import com.othregensburg.ourglass.RecyclerAdapter.StundenuebersichtAdapter;
 import com.othregensburg.ourglass.entity.Arbeitstag;
-import com.othregensburg.ourglass.entity.Stamp;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
-import lecho.lib.hellocharts.model.Line;
 
 
 public class Stundenuebersicht extends AppDrawerBase {
@@ -108,6 +88,7 @@ public class Stundenuebersicht extends AppDrawerBase {
         recyclerView.setAdapter(mAdapter);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setReverseLayout(true);
+        llm.setStackFromEnd(true);
         recyclerView.setLayoutManager(llm);
         mAdapter.startListening();
     }
