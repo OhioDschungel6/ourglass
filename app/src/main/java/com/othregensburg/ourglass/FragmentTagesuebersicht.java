@@ -126,6 +126,7 @@ public class FragmentTagesuebersicht extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 minutesUntagged = minutesWorked;
+                //TODO: integer-hashmap und getordefault
                 Map<String, SliceValue> sliceValues = new HashMap<>();
 
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
