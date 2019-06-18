@@ -40,7 +40,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Startseite extends AppDrawerBase implements View.OnClickListener{
+public class Startseite extends AppDrawerBase implements View.OnClickListener {
 
     private boolean timeIsRunning = false;
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -60,7 +60,7 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         nfcAdapter.enableReaderMode(this, tag -> {
             onClick(findViewById(R.id.start));
-        } ,NfcAdapter.FLAG_READER_NFC_F |NfcAdapter.FLAG_READER_NFC_B| NfcAdapter.FLAG_READER_NFC_A|NfcAdapter.FLAG_READER_NFC_V,null);
+        }, NfcAdapter.FLAG_READER_NFC_F | NfcAdapter.FLAG_READER_NFC_B | NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_NFC_V, null);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -73,9 +73,39 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_homescreen);
 
+        //Heute Krank oder im Urlaub
+        DateFormat sickFormat = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
+        calendar = Calendar.getInstance();
+        DatabaseReference refKrankUrlaub = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s", user.getUid(), sickFormat.format(calendar.getTime())));
+        refKrankUrlaub.child("urlaub").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists() && dataSnapshot.getValue(Boolean.class)) {
+                    ((TextView) findViewById(R.id.worktime)).setText("Urlaub");
+                    findViewById(R.id.start).setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        refKrankUrlaub.child("krank").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists() && dataSnapshot.getValue(Boolean.class)) {
+                    ((TextView) findViewById(R.id.worktime)).setText("Krank");
+                    findViewById(R.id.start).setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         //TimeRunning
-
-
         DatabaseReference ref = database.getReference("user/" + user.getUid() + "/timeRunning");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -86,7 +116,7 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
                     finish();
                 }
                 timeIsRunning = dataSnapshot.getValue(Boolean.class);
-                if (getIntent().getBooleanExtra("nfc",false)) {
+                if (getIntent().getBooleanExtra("nfc", false)) {
                     //if Started via NFC
                     onClick(findViewById(R.id.start));
                 }
@@ -121,7 +151,7 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
 
     private void addRefreshTimer() {
         Timer timer = new Timer(true);
-        Date now= Calendar.getInstance().getTime();
+        Date now = Calendar.getInstance().getTime();
         now.setSeconds(0);
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -139,7 +169,7 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
                 updateMonthlyIsWorktime();
 
             }
-        },now,60000);
+        }, now, 60000);
     }
 
     private void updateTodaysWorktime() {
@@ -155,7 +185,7 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
                         Stamp s = d.getValue(Stamp.class);
                         if (s.endzeit == null) {
                             DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
-                            calendar= Calendar.getInstance();
+                            calendar = Calendar.getInstance();
                             s.endzeit = df.format(calendar.getTime());
                         }
                         t.add(s);
@@ -181,6 +211,11 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
         ImageView start = findViewById(R.id.start);
         start.setOnClickListener(this);
 
+        loadSollAndIststd();
+
+    }
+
+    private void loadSollAndIststd() {
         //Sollstd:
         TextView sollStd = findViewById(R.id.textView_sollStdAnz);
         DatabaseReference sollStdRef = database.getReference(String.format(Locale.GERMAN, "user/%s/Sollstd", user.getUid()));
@@ -202,7 +237,6 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
 
             }
         });
-
     }
 
     public void updateMonthlyIsWorktime() {
