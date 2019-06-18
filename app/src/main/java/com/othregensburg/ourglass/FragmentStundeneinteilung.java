@@ -29,7 +29,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.othregensburg.ourglass.entity.Projekteinteilung;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -219,8 +221,38 @@ public class FragmentStundeneinteilung extends Fragment {
                             .setAction("Action", null).show();
                 }
                 else {
-                    DatabaseReference einteilung = ref.child("einteilung").push();
-                    einteilung.setValue(new Projekteinteilung(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress()));
+                    //TODO: multipath update, aber wie neues Element zu einteilungen hinzufügen (was push macht)
+
+                    Projekteinteilung projekteinteilung = new Projekteinteilung(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress());
+
+                    String einteilungKey = ref.child("einteilung").push().getKey();
+                    Map<String, Object> updates = new HashMap<>();
+                    //userUpdates.put("gracehop/nickname", "Amazing Grace");
+                    //userUpdates.put("alanisawesome", new User(null, null, "Alan The Machine"));
+                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + einteilungKey, projekteinteilung);
+
+                    DatabaseReference refProjekt = database.getReference("/projekte/" + projekteinteilung.projekt + "/" + user.getUid());
+                    refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
+                                updates.put("projekte/" + projekteinteilung.projekt + "/" + user.getUid() + "/zeit", oldTime + projekteinteilung.minuten);
+                            }
+                            else {
+                                updates.put("projekte/" + projekteinteilung.projekt + "/" + user.getUid() + "/zeit", projekteinteilung.minuten);
+                                updates.put("projekte/" + projekteinteilung.projekt + "/" + user.getUid() + "/name", user.getDisplayName());
+                            }
+
+                            database.getReference().updateChildren(updates);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
 
                     getActivity().getSupportFragmentManager().popBackStack();
                 }
