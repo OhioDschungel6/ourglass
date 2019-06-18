@@ -23,5 +23,6 @@
     <string name="title_activity_teamuebersicht">Teamübersicht</string>
     <string name="title_activity_projektuebersicht">Projektübersicht</string>
     <string name="title_activity_tagesuebersicht">Tagesübersicht</string>
+    <string name="stundenkorrektur_checkbox_snackbar">Um Zeiten hinzuzufügen bitte Checkboxen leeren</string>
 
 </resources>

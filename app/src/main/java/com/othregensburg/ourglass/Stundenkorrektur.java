@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -81,15 +82,18 @@ public class Stundenkorrektur extends AppDrawerBase {
                     CheckBox krankbox = findViewById(R.id.checkBox_krank);
 
                     if (mAdapter.getItemCount() == 0 ) {
-                        krankbox.setVisibility(View.INVISIBLE);
-                        urlaubsbox.setVisibility(View.INVISIBLE);
+                        if (krankbox.isChecked() || urlaubsbox.isChecked()) {
+                            //todo Text ändern
+                            Snackbar.make(findViewById(R.id.constraintStundenkorrektur), R.string.stundenkorrektur_checkbox_snackbar, Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                            return;
+                        } else {
+                            krankbox.setVisibility(View.INVISIBLE);
+                            urlaubsbox.setVisibility(View.INVISIBLE);
+                        }
                     }
-                    if (krankbox.isChecked() || urlaubsbox.isChecked()) {
-                        //todo Text ändern
-                        Snackbar.make(findViewById(R.id.constraintStundenkorrektur), "Um Zeiten hinzuzufügen bitte Checkboxen leeren", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
-                    else if (dataSnapshot.getValue() != null) {
+
+                    if (dataSnapshot.getValue() != null) {
                         Stamp stamp=null;
                         for (DataSnapshot d :dataSnapshot.getChildren()) {
                             stamp= d.getValue(Stamp.class);

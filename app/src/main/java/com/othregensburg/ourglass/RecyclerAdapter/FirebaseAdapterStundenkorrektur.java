@@ -20,8 +20,11 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.othregensburg.ourglass.R;
 import com.othregensburg.ourglass.entity.Stamp;
 
@@ -42,8 +45,46 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
         this.urlaubBox.setVisibility(View.VISIBLE);
         this.krankBox.setVisibility(View.VISIBLE);
 
-        this.urlaubBox.setChecked(false);
-        this.krankBox.setChecked(false);
+
+        reference.child("urlaub").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Boolean checked = dataSnapshot.getValue(Boolean.class);
+                    urlaubBox.setChecked(checked);
+                    krankBox.setEnabled(!checked);
+                } else {
+                    urlaubBox.setChecked(false);
+                    krankBox.setEnabled(true);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        reference.child("krank").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Boolean checked = dataSnapshot.getValue(Boolean.class);
+                    krankBox.setChecked(checked);
+                    urlaubBox.setEnabled(!checked);
+                } else {
+                    krankBox.setChecked(false);
+                    urlaubBox.setEnabled(true);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         this.urlaubBox.setOnClickListener(e ->{
             if (this.urlaubBox.isChecked()) {
@@ -112,6 +153,10 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
                 if (getItemCount() == 1) {
                     urlaubBox.setVisibility(View.VISIBLE);
                     krankBox.setVisibility(View.VISIBLE);
+                }
+                if ("".equals(endTime.getText().toString())) {
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("user/" + FirebaseAuth.getInstance().getUid() + "/timeRunning");
+                    ref.setValue(false);
                 }
                 itemRef.setValue(null);
 
