@@ -127,30 +127,23 @@ public class FragmentTagesuebersicht extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 minutesUntagged = minutesWorked;
                 //TODO: integer-hashmap und getordefault
-                Map<String, SliceValue> sliceValues = new HashMap<>();
+                Map<String, Integer> mapTaetigkeiten = new HashMap<>();
 
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
-                    SliceValue sv;
-                    if(sliceValues.containsKey(einteilung.taetigkeit)) {
-                        sv = sliceValues.get(einteilung.taetigkeit);
-                        float oldTime = sv.getValue();
-                        sv.setValue(oldTime + einteilung.minuten);
-                    }
-                    else {
-                        sv = new SliceValue(einteilung.minuten).setLabel(einteilung.taetigkeit);
-                    }
-                    sliceValues.put(einteilung.taetigkeit, sv);
+                    int minutesTaetigkeit = mapTaetigkeiten.getOrDefault(einteilung.taetigkeit,0);
+                    minutesTaetigkeit += einteilung.minuten;
+                    mapTaetigkeiten.put(einteilung.taetigkeit, minutesTaetigkeit);
                     minutesUntagged -= einteilung.minuten;
                 }
-                List<SliceValue> sliceValuesList = new ArrayList<>(sliceValues.values());
-                for (SliceValue sv : sliceValuesList) {
-                    sv.setColor(getNextColor());
+                List<SliceValue> sliceValues = new ArrayList<>();
+                for (Map.Entry<String, Integer> entry : mapTaetigkeiten.entrySet()) {
+                    sliceValues.add(new SliceValue(entry.getValue(), getNextColor()).setLabel(entry.getKey()));
                 }
                 if (minutesUntagged > 0) {
-                    sliceValuesList.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
+                    sliceValues.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
                 }
-                PieChartData pieChartData = new PieChartData(sliceValuesList);
+                PieChartData pieChartData = new PieChartData(sliceValues);
                 pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
                 Time timeWorked = new Time(minutesWorked);
                 //Set size and color of font in the middle:
