@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -75,11 +77,19 @@ public class Stundenkorrektur extends AppDrawerBase {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     //todo only use getItemCount
+                    CheckBox urlaubsbox = findViewById(R.id.checkBox_urlaub);
+                    CheckBox krankbox = findViewById(R.id.checkBox_krank);
+
                     if (mAdapter.getItemCount() == 0 ) {
-                        findViewById(R.id.checkBox_krank).setVisibility(View.INVISIBLE);
-                        findViewById(R.id.checkBox_urlaub).setVisibility(View.INVISIBLE);
+                        krankbox.setVisibility(View.INVISIBLE);
+                        urlaubsbox.setVisibility(View.INVISIBLE);
                     }
-                    if (dataSnapshot.getValue() != null) {
+                    if (krankbox.isChecked() || urlaubsbox.isChecked()) {
+                        //todo Text ändern
+                        Snackbar.make(findViewById(R.id.constraintStundenkorrektur), "Um Zeiten hinzuzufügen bitte Checkboxen leeren", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                    else if (dataSnapshot.getValue() != null) {
                         Stamp stamp=null;
                         for (DataSnapshot d :dataSnapshot.getChildren()) {
                             stamp= d.getValue(Stamp.class);
