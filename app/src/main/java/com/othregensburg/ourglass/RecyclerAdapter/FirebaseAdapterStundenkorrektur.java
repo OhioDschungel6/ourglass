@@ -89,19 +89,23 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
         this.urlaubBox.setOnClickListener(e ->{
             if (this.urlaubBox.isChecked()) {
                 this.krankBox.setEnabled(false);
+                reference.child("urlaub").setValue(this.urlaubBox.isChecked());
             } else {
                 this.krankBox.setEnabled(true);
+                reference.setValue(null);
             }
-            reference.child("urlaub").setValue(this.urlaubBox.isChecked());
+
 
         });
         this.krankBox.setOnClickListener(e->{
             if (this.krankBox.isChecked()) {
                 this.urlaubBox.setEnabled(false);
+                reference.child("krank").setValue(this.krankBox.isChecked());
             } else {
                 this.urlaubBox.setEnabled(true);
+                reference.setValue(null);
             }
-            reference.child("krank").setValue(this.krankBox.isChecked());
+
         });
 
 
