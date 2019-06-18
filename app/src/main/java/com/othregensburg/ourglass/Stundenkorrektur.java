@@ -4,12 +4,21 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.Pair;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -61,6 +70,22 @@ public class Stundenkorrektur extends AppDrawerBase {
             ref.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    //todo only use getItemCount
+                    CheckBox urlaubsbox = findViewById(R.id.checkBox_urlaub);
+                    CheckBox krankbox = findViewById(R.id.checkBox_krank);
+
+                    if (mAdapter.getItemCount() == 0 ) {
+                        if (krankbox.isChecked() || urlaubsbox.isChecked()) {
+                            //todo Text ändern
+                            Snackbar.make(findViewById(R.id.constraintStundenkorrektur), R.string.stundenkorrektur_checkbox_snackbar, Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                            return;
+                        } else {
+                            krankbox.setVisibility(View.INVISIBLE);
+                            urlaubsbox.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
                     if (dataSnapshot.getValue() != null) {
                         Stamp stamp=null;
                         for (DataSnapshot d :dataSnapshot.getChildren()) {
@@ -112,7 +137,6 @@ public class Stundenkorrektur extends AppDrawerBase {
 
         //Section RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
-        //TODO -2000 disgusting
         Query query = database
                 .getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s",user.getUid(), df.format(cal.getTime())))
                 .child("timestamps").orderByChild("startzeit");
@@ -122,10 +146,12 @@ public class Stundenkorrektur extends AppDrawerBase {
                 new FirebaseRecyclerOptions.Builder<Stamp>()
                         .setQuery(query, Stamp.class)
                         .build();
-        mAdapter= new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur));
+        mAdapter= new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur),findViewById(R.id.checkBox_urlaub),findViewById(R.id.checkBox_krank),
+                database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s",user.getUid(), df.format(cal.getTime()))));
 
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         mAdapter.startListening();
 
 
@@ -154,7 +180,9 @@ public class Stundenkorrektur extends AppDrawerBase {
                             .build();
 
 
-            mAdapter=new FirebaseAdapterStundenkorrektur(options,findViewById(R.id.constraintStundenkorrektur));
+            mAdapter=new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur),
+                    findViewById(R.id.checkBox_urlaub),findViewById(R.id.checkBox_krank),
+                    database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s",user.getUid(), df.format(cal.getTime()))));
             RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
             recyclerView.setAdapter(mAdapter);
             mAdapter.startListening();
