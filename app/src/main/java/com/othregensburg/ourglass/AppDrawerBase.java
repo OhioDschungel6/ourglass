@@ -70,9 +70,6 @@ public class AppDrawerBase extends AppCompatActivity
         } else if (id == R.id.nav_projekt && getClass()!= Projektuebersicht.class) {
             Intent intent = new Intent(this, Projektuebersicht.class);
             startActivity(intent);
-        } else if (id == R.id.nav_team && getClass()!= Teamuebersicht.class) {
-            Intent intent = new Intent(this, Teamuebersicht.class);
-            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

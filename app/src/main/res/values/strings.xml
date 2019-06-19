@@ -4,6 +4,7 @@
     <string name="dialog_taetigkeit_details_notiz">Notiz: </string>
     <string name="dialog_addTaetigkeit_title">Neue Tätigkeit hinzufügen</string>
     <string name="dialog_edit_einteilung_title">Einteilung bearbeiten</string>
+    <string name="dialog_addProjekt_title">Neues Projekt hinzufügen</string>
     <string name="action_sign_out">Abmelden</string>
     <string name="sign_in_button_text">Anmelden</string>
     <string name="stundeneinteilung_spinnerPrompt_taetigkeit">Wähle eine Aktivität</string>
@@ -28,5 +29,7 @@
     <string name="title_activity_projektuebersicht">Projektübersicht</string>
     <string name="title_activity_tagesuebersicht">Tagesübersicht</string>
     <string name="minus_divider">-</string>
+    <string name="stundenkorrektur_checkbox_snackbar">Um Zeiten hinzuzufügen bitte Checkboxen leeren</string>
+
 
 </resources>

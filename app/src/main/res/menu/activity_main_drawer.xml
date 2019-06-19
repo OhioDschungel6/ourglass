@@ -17,12 +17,8 @@
             android:icon="@drawable/ic_menu_zeitkorrektur"
             android:title="@string/nav_drawer_korrektur" />
         <item
-            android:id="@+id/nav_team"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/nav_drawer_team" />
-        <item
             android:id="@+id/nav_projekt"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_project_black_24dp"
             android:title="@string/nav_drawer_projekt" />
     </group>
 
