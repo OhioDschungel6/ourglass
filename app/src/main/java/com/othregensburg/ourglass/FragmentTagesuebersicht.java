@@ -16,7 +16,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -126,7 +128,6 @@ public class FragmentTagesuebersicht extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 minutesUntagged = minutesWorked;
-                //TODO: integer-hashmap und getordefault
                 Map<String, Integer> mapTaetigkeiten = new HashMap<>();
 
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
@@ -198,17 +199,38 @@ public class FragmentTagesuebersicht extends Fragment {
                                         ((TextView) element.findViewById(R.id.textView_projekt)).setText(einteilung.projekt);
                                         ((TextView) element.findViewById(R.id.textView_notiz)).setText(einteilung.notiz);
                                         String stringTime = new Time(einteilung.minuten).toString();
-                                        ((TextView) element.findViewById(R.id.textView_time)).setText(stringTime);
+                                        TextView textViewTime = element.findViewById(R.id.dialog_taetigkeit_textView_time);
+                                        textViewTime.setText(stringTime);
                                         einteilungenList.addView(element);
                                         //TODO: Bearbeiten der Einteilungen möglich machen
-                                        /*
+
                                         element.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
+                                                SeekBar seekBar = element.findViewById(R.id.seekBar_editTime);
+                                                Button button = element.findViewById(R.id.button_save);
+                                                seekBar.setMax(einteilung.minuten + minutesUntagged);
+                                                seekBar.setProgress(einteilung.minuten);
+                                                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                                    @Override
+                                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                                        textViewTime.setText(Integer.toString(progress));
+                                                    }
 
+                                                    @Override
+                                                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                                                    }
+                                                });
+                                                seekBar.setVisibility(View.VISIBLE);
+                                                button.setVisibility(View.VISIBLE);
                                             }
                                         });
-                                        */
                                     }
                                     builder.setView(viewInflated);
 
