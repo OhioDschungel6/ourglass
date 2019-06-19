@@ -8,7 +8,7 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/new_taetigkeit"
+            android:id="@+id/editText_new"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

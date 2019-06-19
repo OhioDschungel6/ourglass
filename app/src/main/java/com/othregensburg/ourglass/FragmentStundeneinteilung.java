@@ -125,8 +125,8 @@ public class FragmentStundeneinteilung extends Fragment {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle(R.string.dialog_addTaetigkeit_title);
 
-                    View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_taetigkeit, (ViewGroup) getView(), false);
-                    final EditText editTextNewTaetigkeit = (EditText) viewInflated.findViewById(R.id.new_taetigkeit);
+                    View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add, (ViewGroup) getView(), false);
+                    final EditText editTextNewTaetigkeit = (EditText) viewInflated.findViewById(R.id.editText_new);
                     builder.setView(viewInflated);
 
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -175,22 +175,6 @@ public class FragmentStundeneinteilung extends Fragment {
                 //TODO: db error handle
             }
         });
-
-        /*
-        spinnerProjekt.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(((String) parent.getItemAtPosition(position)).equals(ADD_PROJEKT)) {
-                    //add project
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        */
 
         seekBarTime.setMax(minutesUntagged);
         seekBarTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
