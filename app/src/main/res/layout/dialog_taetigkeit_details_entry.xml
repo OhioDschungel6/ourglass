@@ -15,6 +15,7 @@
     android:minHeight="80dp">
 
 <LinearLayout
+    android:id="@+id/dialog_taetigkeit_entry_linearLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -95,7 +96,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView_time"
+            android:id="@+id/dialog_taetigkeit_textView_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -103,6 +104,7 @@
             app:layout_constraintStart_toEndOf="@id/textView_t"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
+
 
 </LinearLayout>
 

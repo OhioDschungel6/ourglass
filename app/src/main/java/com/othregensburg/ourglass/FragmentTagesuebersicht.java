@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +17,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -126,31 +129,23 @@ public class FragmentTagesuebersicht extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 minutesUntagged = minutesWorked;
-                //TODO: integer-hashmap und getordefault
-                Map<String, SliceValue> sliceValues = new HashMap<>();
+                Map<String, Integer> mapTaetigkeiten = new HashMap<>();
 
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
-                    SliceValue sv;
-                    if(sliceValues.containsKey(einteilung.taetigkeit)) {
-                        sv = sliceValues.get(einteilung.taetigkeit);
-                        float oldTime = sv.getValue();
-                        sv.setValue(oldTime + einteilung.minuten);
-                    }
-                    else {
-                        sv = new SliceValue(einteilung.minuten).setLabel(einteilung.taetigkeit);
-                    }
-                    sliceValues.put(einteilung.taetigkeit, sv);
+                    int minutesTaetigkeit = mapTaetigkeiten.getOrDefault(einteilung.taetigkeit,0);
+                    minutesTaetigkeit += einteilung.minuten;
+                    mapTaetigkeiten.put(einteilung.taetigkeit, minutesTaetigkeit);
                     minutesUntagged -= einteilung.minuten;
                 }
-                List<SliceValue> sliceValuesList = new ArrayList<>(sliceValues.values());
-                for (SliceValue sv : sliceValuesList) {
-                    sv.setColor(getNextColor());
+                List<SliceValue> sliceValues = new ArrayList<>();
+                for (Map.Entry<String, Integer> entry : mapTaetigkeiten.entrySet()) {
+                    sliceValues.add(new SliceValue(entry.getValue(), getNextColor()).setLabel(entry.getKey()));
                 }
                 if (minutesUntagged > 0) {
-                    sliceValuesList.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
+                    sliceValues.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
                 }
-                PieChartData pieChartData = new PieChartData(sliceValuesList);
+                PieChartData pieChartData = new PieChartData(sliceValues);
                 pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
                 Time timeWorked = new Time(minutesWorked);
                 //Set size and color of font in the middle:
@@ -205,17 +200,92 @@ public class FragmentTagesuebersicht extends Fragment {
                                         ((TextView) element.findViewById(R.id.textView_projekt)).setText(einteilung.projekt);
                                         ((TextView) element.findViewById(R.id.textView_notiz)).setText(einteilung.notiz);
                                         String stringTime = new Time(einteilung.minuten).toString();
-                                        ((TextView) element.findViewById(R.id.textView_time)).setText(stringTime);
+                                        TextView textViewTime = element.findViewById(R.id.dialog_taetigkeit_textView_time);
+                                        textViewTime.setText(stringTime);
                                         einteilungenList.addView(element);
-                                        //TODO: Bearbeiten der Einteilungen möglich machen
-                                        /*
+
                                         element.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
+                                                //TODO: DialogFragment
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                                builder.setTitle(R.string.dialog_edit_einteilung_title);
 
+                                                View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_einteilung, (ViewGroup) getView(), false);
+                                                final SeekBar seekBar =  viewInflated.findViewById(R.id.dialog_edit_einteilung_seekBar);
+                                                final TextView textView = viewInflated.findViewById(R.id.dialog_edit_einteilung_textView);
+
+                                                seekBar.setMax(einteilung.minuten + minutesUntagged);
+                                                seekBar.setProgress(einteilung.minuten);
+                                                Time time = new Time(einteilung.minuten);
+                                                textView.setText(time.toString());
+                                                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                                    @Override
+                                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                                        Time time = new Time(progress);
+                                                        textView.setText(time.toString());
+                                                    }
+
+                                                    @Override
+                                                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                                                    }
+                                                });
+
+                                                builder.setView(viewInflated);
+
+                                                builder.setPositiveButton("Speichern", (dialog, which) -> {
+                                                    Map<String, Object> updates = new HashMap<>();
+                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", seekBar.getProgress());
+
+                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/" + user.getUid());
+                                                    refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
+                                                            updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime + seekBar.getProgress() - einteilung.minuten);
+
+                                                            database.getReference().updateChildren(updates);
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                                });
+
+                                                builder.setNegativeButton("Abbrechen", (dialog, which) -> dialog.cancel());
+
+                                                builder.setNeutralButton("Löschen", ((dialog, which) -> {
+                                                    Map<String, Object> updates = new HashMap<>();
+                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
+
+                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/" + user.getUid());
+                                                    refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
+                                                            updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime - einteilung.minuten);
+
+                                                            database.getReference().updateChildren(updates);
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                                }));
+
+                                                builder.show();
                                             }
                                         });
-                                        */
                                     }
                                     builder.setView(viewInflated);
 

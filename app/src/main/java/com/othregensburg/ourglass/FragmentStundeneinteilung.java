@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.othregensburg.ourglass.entity.Projekteinteilung;
+import com.othregensburg.ourglass.entity.Time;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -181,7 +182,8 @@ public class FragmentStundeneinteilung extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 TextView textViewTime = getView().findViewById(R.id.textView_time);
-                textViewTime.setText(Integer.toString(progress));
+                Time time = new Time(progress);
+                textViewTime.setText(time.toString());
             }
 
             @Override
@@ -205,8 +207,6 @@ public class FragmentStundeneinteilung extends Fragment {
                             .setAction("Action", null).show();
                 }
                 else {
-                    //TODO: multipath update, aber wie neues Element zu einteilungen hinzufügen (was push macht)
-
                     Projekteinteilung projekteinteilung = new Projekteinteilung(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress());
 
                     String einteilungKey = ref.child("einteilung").push().getKey();
@@ -216,16 +216,18 @@ public class FragmentStundeneinteilung extends Fragment {
                     updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + einteilungKey, projekteinteilung);
 
                     DatabaseReference refProjekt = database.getReference("/projekte/" + projekteinteilung.projekt + "/" + user.getUid());
+                    String path = "projekte/" + projekteinteilung.projekt + "/mitarbeiter/" + user.getUid() + "/";
                     refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(dataSnapshot.exists()){
                                 int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
-                                updates.put("projekte/" + projekteinteilung.projekt + "/" + user.getUid() + "/zeit", oldTime + projekteinteilung.minuten);
+                                updates.put(path + "zeit", oldTime + projekteinteilung.minuten);
                             }
                             else {
-                                updates.put("projekte/" + projekteinteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", projekteinteilung.minuten);
-                                updates.put("projekte/" + projekteinteilung.projekt + "/mitarbeiter/" + user.getUid() + "/name", user.getDisplayName());
+                                updates.put(path + "zeit", projekteinteilung.minuten);
+                                updates.put(path + "name", user.getDisplayName());
+
                             }
 
                             database.getReference().updateChildren(updates);
