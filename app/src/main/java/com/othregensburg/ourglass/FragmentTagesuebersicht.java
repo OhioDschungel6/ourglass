@@ -217,7 +217,8 @@ public class FragmentTagesuebersicht extends Fragment {
 
                                                 seekBar.setMax(einteilung.minuten + minutesUntagged);
                                                 seekBar.setProgress(einteilung.minuten);
-                                                textView.setText(Integer.toString(einteilung.minuten));
+                                                Time time = new Time(einteilung.minuten);
+                                                textView.setText(time.toString());
                                                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                                                     @Override
                                                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -261,7 +262,7 @@ public class FragmentTagesuebersicht extends Fragment {
 
                                                 builder.setNegativeButton("Abbrechen", (dialog, which) -> dialog.cancel());
 
-                                                builder.setNeutralButton("Einteilung löschen", ((dialog, which) -> {
+                                                builder.setNeutralButton("Löschen", ((dialog, which) -> {
                                                     Map<String, Object> updates = new HashMap<>();
                                                     updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
 
@@ -281,6 +282,7 @@ public class FragmentTagesuebersicht extends Fragment {
                                                         }
                                                     });
                                                 }));
+
                                                 builder.show();
                                             }
                                         });
