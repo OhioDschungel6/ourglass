@@ -15,6 +15,8 @@ import com.othregensburg.ourglass.R;
 import com.othregensburg.ourglass.entity.Projektmitglied;
 import com.othregensburg.ourglass.entity.Stamp;
 
+import java.util.Locale;
+
 public class FirebaseAdapterProjektuebersicht extends FirebaseRecyclerAdapter<Projektmitglied, FirebaseAdapterProjektuebersicht.ViewHolder> {
 
     public FirebaseAdapterProjektuebersicht(@NonNull FirebaseRecyclerOptions<Projektmitglied> options) {
@@ -24,7 +26,7 @@ public class FirebaseAdapterProjektuebersicht extends FirebaseRecyclerAdapter<Pr
     @Override
     protected void onBindViewHolder(@NonNull FirebaseAdapterProjektuebersicht.ViewHolder holder, int position, @NonNull Projektmitglied model) {
         holder.name.setText(model.name);
-        holder.zeit.setText(""+model.zeit);
+        holder.zeit.setText(String.format(Locale.GERMAN, "Zeit: %d Std %02d Min", model.zeit / 60, model.zeit % 60));
     }
 
     @NonNull

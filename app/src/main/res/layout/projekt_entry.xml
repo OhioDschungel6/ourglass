@@ -26,6 +26,8 @@
             android:id="@+id/hour_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="8dp"/>
+
     </LinearLayout>
 </android.support.design.card.MaterialCardView>
