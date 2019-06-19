@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -207,14 +208,16 @@ public class FragmentTagesuebersicht extends Fragment {
                                         element.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
+                                                ConstraintLayout editLayout = element.findViewById(R.id.dialog_taetigkeit_layout_edit);
                                                 SeekBar seekBar = element.findViewById(R.id.seekBar_editTime);
-                                                Button button = element.findViewById(R.id.button_save);
+                                                FloatingActionButton fabSave = element.findViewById(R.id.button_save);
                                                 seekBar.setMax(einteilung.minuten + minutesUntagged);
                                                 seekBar.setProgress(einteilung.minuten);
                                                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                                                     @Override
                                                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                                        textViewTime.setText(Integer.toString(progress));
+                                                        Time time = new Time(progress);
+                                                        textViewTime.setText(time.toString());
                                                     }
 
                                                     @Override
@@ -227,8 +230,7 @@ public class FragmentTagesuebersicht extends Fragment {
 
                                                     }
                                                 });
-                                                seekBar.setVisibility(View.VISIBLE);
-                                                button.setVisibility(View.VISIBLE);
+                                                editLayout.setVisibility(View.VISIBLE);
                                             }
                                         });
                                     }

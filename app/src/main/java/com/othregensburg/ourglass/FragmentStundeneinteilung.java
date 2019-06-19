@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.othregensburg.ourglass.entity.Projekteinteilung;
+import com.othregensburg.ourglass.entity.Time;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -197,7 +198,8 @@ public class FragmentStundeneinteilung extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 TextView textViewTime = getView().findViewById(R.id.textView_time);
-                textViewTime.setText(Integer.toString(progress));
+                Time time = new Time(progress);
+                textViewTime.setText(time.toString());
             }
 
             @Override

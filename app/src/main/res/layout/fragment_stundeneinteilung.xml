@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_gravity="center"
-            android:text="0" />
+            android:text="0:00" />
 
         <SeekBar
             android:id="@+id/seekBar_time"
@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_fab_check" />
+        app:srcCompat="@drawable/ic_fab_done" />
 
 
 
