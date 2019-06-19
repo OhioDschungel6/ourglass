@@ -43,7 +43,8 @@ public class FirebaseAdapterProjektuebersicht extends FirebaseRecyclerAdapter<Pr
     @Override
     protected void onBindViewHolder(@NonNull FirebaseAdapterProjektuebersicht.ViewHolder holder, int position, @NonNull Projektmitglied model) {
         holder.name.setText(model.name);
-        holder.zeit.setText(String.format(Locale.GERMAN, "Zeit: %d Std %02d Min", model.zeit / 60, model.zeit % 60));
+        holder.zeit.setText(String.format(Locale.GERMAN, "Zeit: %d Std %d Min", model.zeit / 60, model.zeit % 60));
+        holder.min = model.zeit;
     }
 
     @NonNull
@@ -60,11 +61,12 @@ public class FirebaseAdapterProjektuebersicht extends FirebaseRecyclerAdapter<Pr
         final TextView name;
         final TextView zeit;
         private static final int PIE_CHART_TEXTSIZE = 14;
-
+        int min;
         ViewHolder(@NonNull final View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name_field);
             zeit = itemView.findViewById(R.id.hour_field);
+
 
             itemView.setOnClickListener(v -> {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(itemView.getContext());
@@ -84,6 +86,8 @@ public class FirebaseAdapterProjektuebersicht extends FirebaseRecyclerAdapter<Pr
 
                         PieChartData pieChartData = new PieChartData(sliceValuesList);
                         pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
+                        pieChartData.setHasCenterCircle(true).setCenterText1(String.format(Locale.GERMAN,"%d Std %d Min", min/60, min%60)).setCenterText1FontSize(16
+                        );
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
 
                             sliceValuesList.add(new SliceValue(child.getValue(Integer.class)).setLabel(child.getKey()).setColor(getNextColor()));
