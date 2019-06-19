@@ -85,9 +85,8 @@ public class FirebaseAdapterProjektuebersicht extends FirebaseRecyclerAdapter<Pr
                         PieChartData pieChartData = new PieChartData(sliceValuesList);
                         pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            //todo nicht Projektmitglied missbrauchen
-                            Projektmitglied pm = child.getValue(Projektmitglied.class);
-                            sliceValuesList.add(new SliceValue(pm.zeit).setLabel(pm.name).setColor(getNextColor()));
+
+                            sliceValuesList.add(new SliceValue(child.getValue(Integer.class)).setLabel(child.getKey()).setColor(getNextColor()));
                         }
                         pie.setPieChartData(pieChartData);
                         dialog.setView(pie);
