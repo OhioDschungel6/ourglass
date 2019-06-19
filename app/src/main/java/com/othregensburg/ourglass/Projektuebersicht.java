@@ -90,7 +90,7 @@ public class Projektuebersicht extends AppDrawerBase {
                     //todo Timo?
                 } else {
                     RecyclerView recyclerView = findViewById(R.id.projekt_recycler);
-                    String s = (String) parent.getItemAtPosition(position);
+                    String s = ((String) parent.getItemAtPosition(position)) + "/mitarbeiter";
                     Query query = FirebaseDatabase.getInstance()
                             .getReference("projekte/").child(s);
 
