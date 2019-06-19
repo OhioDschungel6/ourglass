@@ -240,8 +240,8 @@ public class FragmentStundeneinteilung extends Fragment {
                                 updates.put("projekte/" + projekteinteilung.projekt + "/" + user.getUid() + "/zeit", oldTime + projekteinteilung.minuten);
                             }
                             else {
-                                updates.put("projekte/" + projekteinteilung.projekt + "/" + user.getUid() + "/zeit", projekteinteilung.minuten);
-                                updates.put("projekte/" + projekteinteilung.projekt + "/" + user.getUid() + "/name", user.getDisplayName());
+                                updates.put("projekte/" + projekteinteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", projekteinteilung.minuten);
+                                updates.put("projekte/" + projekteinteilung.projekt + "/mitarbeiter/" + user.getUid() + "/name", user.getDisplayName());
                             }
 
                             database.getReference().updateChildren(updates);
