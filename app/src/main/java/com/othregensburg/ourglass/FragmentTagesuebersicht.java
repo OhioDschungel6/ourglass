@@ -208,9 +208,9 @@ public class FragmentTagesuebersicht extends Fragment {
                                         element.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                ConstraintLayout editLayout = element.findViewById(R.id.dialog_taetigkeit_layout_edit);
-                                                SeekBar seekBar = element.findViewById(R.id.seekBar_editTime);
-                                                FloatingActionButton fabSave = element.findViewById(R.id.button_save);
+
+
+                                                /*
                                                 seekBar.setMax(einteilung.minuten + minutesUntagged);
                                                 seekBar.setProgress(einteilung.minuten);
                                                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -230,7 +230,7 @@ public class FragmentTagesuebersicht extends Fragment {
 
                                                     }
                                                 });
-                                                editLayout.setVisibility(View.VISIBLE);
+                                                */
                                             }
                                         });
                                     }
