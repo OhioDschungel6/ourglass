@@ -3,6 +3,7 @@
     <string name="dialog_taetigkeit_details_projekt">Projekt: </string>
     <string name="dialog_taetigkeit_details_notiz">Notiz: </string>
     <string name="dialog_addTaetigkeit_title">Neue Tätigkeit hinzufügen</string>
+    <string name="dialog_edit_einteilung_title">Einteilung bearbeiten</string>
     <string name="action_sign_out">Abmelden</string>
     <string name="sign_in_button_text">Anmelden</string>
     <string name="stundeneinteilung_spinnerPrompt_taetigkeit">Wähle eine Aktivität</string>

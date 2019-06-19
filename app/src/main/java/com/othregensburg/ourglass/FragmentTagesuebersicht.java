@@ -203,21 +203,26 @@ public class FragmentTagesuebersicht extends Fragment {
                                         TextView textViewTime = element.findViewById(R.id.dialog_taetigkeit_textView_time);
                                         textViewTime.setText(stringTime);
                                         einteilungenList.addView(element);
-                                        //TODO: Bearbeiten der Einteilungen möglich machen
 
                                         element.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
+                                                //TODO: DialogFragment
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                                builder.setTitle(R.string.dialog_edit_einteilung_title);
 
+                                                View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_einteilung, (ViewGroup) getView(), false);
+                                                final SeekBar seekBar =  viewInflated.findViewById(R.id.dialog_edit_einteilung_seekBar);
+                                                final TextView textView = viewInflated.findViewById(R.id.dialog_edit_einteilung_textView);
 
-                                                /*
                                                 seekBar.setMax(einteilung.minuten + minutesUntagged);
                                                 seekBar.setProgress(einteilung.minuten);
+                                                textView.setText(Integer.toString(einteilung.minuten));
                                                 seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                                                     @Override
                                                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                                                         Time time = new Time(progress);
-                                                        textViewTime.setText(time.toString());
+                                                        textView.setText(time.toString());
                                                     }
 
                                                     @Override
@@ -230,7 +235,53 @@ public class FragmentTagesuebersicht extends Fragment {
 
                                                     }
                                                 });
-                                                */
+
+                                                builder.setView(viewInflated);
+
+                                                builder.setPositiveButton("Speichern", (dialog, which) -> {
+                                                    Map<String, Object> updates = new HashMap<>();
+                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", seekBar.getProgress());
+
+                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/" + user.getUid());
+                                                    refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
+                                                            updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime + seekBar.getProgress() - einteilung.minuten);
+
+                                                            database.getReference().updateChildren(updates);
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                                });
+
+                                                builder.setNegativeButton("Abbrechen", (dialog, which) -> dialog.cancel());
+
+                                                builder.setNeutralButton("Einteilung löschen", ((dialog, which) -> {
+                                                    Map<String, Object> updates = new HashMap<>();
+                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
+
+                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/" + user.getUid());
+                                                    refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
+                                                            updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime - einteilung.minuten);
+
+                                                            database.getReference().updateChildren(updates);
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                                }));
+                                                builder.show();
                                             }
                                         });
                                     }
