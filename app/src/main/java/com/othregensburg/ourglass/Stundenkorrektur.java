@@ -185,6 +185,15 @@ public class Stundenkorrektur extends AppDrawerBase {
     };
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.startListening();
+
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         mAdapter.stopListening();
