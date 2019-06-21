@@ -99,6 +99,14 @@ public class Stundenuebersicht extends AppDrawerBase {
         mAdapter.stopListening();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenuebersicht);
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.startListening();
+    }
+
     private DatePickerDialog.OnDateSetListener dateDialogFirstDate = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
