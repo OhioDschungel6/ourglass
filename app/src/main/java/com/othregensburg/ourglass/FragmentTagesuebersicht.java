@@ -243,7 +243,7 @@ public class FragmentTagesuebersicht extends Fragment {
                                                     Map<String, Object> updates = new HashMap<>();
                                                     updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", seekBar.getProgress());
 
-                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/" + user.getUid());
+                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid());
                                                     refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -266,7 +266,7 @@ public class FragmentTagesuebersicht extends Fragment {
                                                     Map<String, Object> updates = new HashMap<>();
                                                     updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
 
-                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/" + user.getUid());
+                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid());
                                                     refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
