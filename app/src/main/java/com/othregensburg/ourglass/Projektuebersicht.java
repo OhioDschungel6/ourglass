@@ -80,7 +80,7 @@ public class Projektuebersicht extends AppDrawerBase {
         projektSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (ADD_PROJEKT.equals((String) parent.getItemAtPosition(position))) {
+                if (ADD_PROJEKT.equals(parent.getItemAtPosition(position))) {
                     //TODO: DialogFragment
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                     builder.setTitle(R.string.dialog_addProjekt_title);
@@ -91,7 +91,6 @@ public class Projektuebersicht extends AppDrawerBase {
 
                     builder.setPositiveButton("Ok", (dialog, which) -> {
                         String newProject = editTextNewProject.getText().toString();
-                        //TODO: nicht nur true speichern, sondern entity klasse projekt erstellen und dort abspeichern
                         FirebaseDatabase.getInstance().getReference("projekte/" + newProject).setValue(true);
                         projektAdapter.add(newProject);
                         projektAdapter.remove(ADD_PROJEKT);
@@ -105,7 +104,7 @@ public class Projektuebersicht extends AppDrawerBase {
                     builder.show();
                 } else {
                     RecyclerView recyclerView = findViewById(R.id.projekt_recycler);
-                    String s = ((String) parent.getItemAtPosition(position)) + "/mitarbeiter";
+                    String s = (parent.getItemAtPosition(position)) + "/mitarbeiter";
                     Query query = FirebaseDatabase.getInstance()
                             .getReference("projekte/").child(s);
 

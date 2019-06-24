@@ -41,7 +41,7 @@ public class AppDrawerBase extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (getClass() != Startseite.class && getClass() != TagesuebersichtActivity.class){
@@ -54,10 +54,9 @@ public class AppDrawerBase extends AppCompatActivity
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        //TODO: finish falsch, Callstack ändern
         if (id == R.id.nav_homescreen && getClass()!= Startseite.class) {
             Intent intent = new Intent(this, Startseite.class);
             startActivity(intent);
@@ -72,7 +71,7 @@ public class AppDrawerBase extends AppCompatActivity
             startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -97,11 +96,7 @@ public class AppDrawerBase extends AppCompatActivity
         } else if (id == R.id.action_sign_out) {
             AuthUI.getInstance()
                     .signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        public void onComplete(@NonNull Task<Void> task) {
-                            getBackToStartActivity();
-                        }
-                    });
+                    .addOnCompleteListener(task -> getBackToStartActivity());
             return true;
         }
 

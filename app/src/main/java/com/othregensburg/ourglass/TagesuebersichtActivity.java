@@ -49,9 +49,7 @@ public class TagesuebersichtActivity extends AppDrawerBase implements FragmentTa
         if (count > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
-            //TODO: super.onBackPressed() würde reichen, aber Stundenübersicht lädt dann keine Daten -> entsprechende lifecycle methode fehlt wahrscheinlich
-            Intent intent = new Intent(this, Stundenuebersicht.class);
-            startActivity(intent);
+            super.onBackPressed();
         }
     }
 

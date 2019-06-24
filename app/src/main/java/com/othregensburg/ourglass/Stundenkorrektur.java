@@ -68,14 +68,14 @@ public class Stundenkorrektur extends AppDrawerBase {
             ref.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    //todo only use getItemCount
+
                     CheckBox urlaubsbox = findViewById(R.id.checkBox_urlaub);
                     CheckBox krankbox = findViewById(R.id.checkBox_krank);
 
                     if (mAdapter.getItemCount() == 0) {
                         if (krankbox.isChecked() || urlaubsbox.isChecked()) {
                             //todo Text ändern
-                            Snackbar.make(findViewById(R.id.constraintStundenkorrektur), R.string.stundenkorrektur_checkbox_snackbar, Snackbar.LENGTH_LONG)
+                            Snackbar.make(findViewById(R.id.constraintStundenkorrektur),R.string.stundenkorrektur_checkbox_snackbar, Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                             return;
                         } else {
