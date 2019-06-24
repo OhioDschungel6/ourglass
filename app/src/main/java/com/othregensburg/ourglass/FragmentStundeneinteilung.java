@@ -42,8 +42,6 @@ public class FragmentStundeneinteilung extends Fragment {
     private static final String ARG_REF_URL = "refUrl";
     private static final String ARG_MINUTES_WORKED = "minutesWorked";
 
-    private static final String ADD_TAETIGKEIT = "neue Tätigkeit hinzufügen";
-
     private int minutesUntagged;
     private int minutesWorekd;
     private DatabaseReference ref;
@@ -95,7 +93,7 @@ public class FragmentStundeneinteilung extends Fragment {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     taetigkeiten.add(d.getKey());
                 }
-                taetigkeiten.add(ADD_TAETIGKEIT);
+                taetigkeiten.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
                 taetigkeitAdapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, taetigkeiten);
                 spinnerTaetigkeit.setAdapter(taetigkeitAdapter);
             }
@@ -109,10 +107,10 @@ public class FragmentStundeneinteilung extends Fragment {
         spinnerTaetigkeit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if((parent.getItemAtPosition(position)).equals(ADD_TAETIGKEIT)) {
+                if((parent.getItemAtPosition(position)).equals(getString(R.string.fragment_stundeneinteilung_add_taetigkeit))) {
                     //TODO: DialogFragment
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle(R.string.dialog_addTaetigkeit_title);
+                    builder.setTitle(R.string.fragment_stundeneinteilung_add_taetigkeit);
 
                     View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add, (ViewGroup) getView(), false);
                     final EditText editTextNewTaetigkeit = viewInflated.findViewById(R.id.editText_new);
@@ -122,8 +120,8 @@ public class FragmentStundeneinteilung extends Fragment {
                         String newTaetigkeit = editTextNewTaetigkeit.getText().toString();
                         database.getReference("user/"+user.getUid()+"/taetigkeiten/" + newTaetigkeit).setValue(true);
                         taetigkeitAdapter.add(newTaetigkeit);
-                        taetigkeitAdapter.remove(ADD_TAETIGKEIT);
-                        taetigkeitAdapter.add(ADD_TAETIGKEIT);
+                        taetigkeitAdapter.remove(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
+                        taetigkeitAdapter.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
                         spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit));
                     });
                     builder.setNegativeButton("Abbrechen", (dialog, which) -> {

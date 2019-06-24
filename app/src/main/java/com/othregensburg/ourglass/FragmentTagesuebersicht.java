@@ -49,8 +49,6 @@ public class FragmentTagesuebersicht extends Fragment {
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private static final int PIE_CHART_TEXTSIZE = 14;
-    //TODO: string resource
-    private static final String LABEL_MINUTES_UNTAGGED = "Nicht eingeteilt";
 
     private static final String ARG_REF_URL = "refUrl";
     private static final String ARG_MINUTES_WORKED = "minutesWorked";
@@ -121,7 +119,7 @@ public class FragmentTagesuebersicht extends Fragment {
                     sliceValues.add(new SliceValue(entry.getValue(), getNextColor()).setLabel(entry.getKey()));
                 }
                 if (minutesUntagged > 0) {
-                    sliceValues.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(LABEL_MINUTES_UNTAGGED));
+                    sliceValues.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(getString(R.string.fragment_tagesuebersicht_label_minutes_untagged)));
                 }
                 PieChartData pieChartData = new PieChartData(sliceValues);
                 pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
@@ -137,9 +135,9 @@ public class FragmentTagesuebersicht extends Fragment {
                     @Override
                     public void onValueSelected(int arcIndex, SliceValue value) {
                         String label = String.copyValueOf(value.getLabelAsChars());
-                        if(label.equals(LABEL_MINUTES_UNTAGGED)) {
+                        if(label.equals(getString(R.string.fragment_tagesuebersicht_label_minutes_untagged))) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setTitle(LABEL_MINUTES_UNTAGGED);
+                            builder.setTitle(getString(R.string.fragment_tagesuebersicht_label_minutes_untagged));
                             Time timeUntagged = new Time(minutesUntagged);
                             TextView textViewUntagged = new TextView(getContext());
                             textViewUntagged.setText(getString(R.string.dialog_taetigkeit_details_untagged_time, timeUntagged.toString()));
