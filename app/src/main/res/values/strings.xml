@@ -1,4 +1,5 @@
 <resources>
+    <string name="dialog_taetigkeit_details_untagged_time">Zeit: %1$s</string>
     <string name="dialog_taetigkeit_details_zeit">Zeit: </string>
     <string name="dialog_taetigkeit_details_projekt">Projekt: </string>
     <string name="dialog_taetigkeit_details_notiz">Notiz: </string>

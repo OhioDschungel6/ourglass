@@ -1,13 +1,10 @@
 package com.othregensburg.ourglass;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,7 +14,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -48,20 +44,12 @@ import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.view.PieChartView;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragmentTagesuebersicht.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragmentTagesuebersicht#newInstance} factory method to
- * create an instance of this fragment.
- */
-
 public class FragmentTagesuebersicht extends Fragment {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private static final int PIE_CHART_TEXTSIZE = 14;
+    //TODO: string resource
     private static final String LABEL_MINUTES_UNTAGGED = "Nicht eingeteilt";
 
     private static final String ARG_REF_URL = "refUrl";
@@ -73,18 +61,9 @@ public class FragmentTagesuebersicht extends Fragment {
     private int minutesUntagged;
     private int nextColor = 0;
 
-    private OnFragmentInteractionListener mListener;
-
     public FragmentTagesuebersicht() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment FragmentTagesuebersicht.
-     */
 
     public static FragmentTagesuebersicht newInstance(String refUrl, int minutesWorked) {
         FragmentTagesuebersicht fragment = new FragmentTagesuebersicht();
@@ -110,7 +89,6 @@ public class FragmentTagesuebersicht extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_tagesuebersicht, container, false);
     }
 
@@ -164,22 +142,12 @@ public class FragmentTagesuebersicht extends Fragment {
                             builder.setTitle(LABEL_MINUTES_UNTAGGED);
                             Time timeUntagged = new Time(minutesUntagged);
                             TextView textViewUntagged = new TextView(getContext());
-                            textViewUntagged.setText("Zeit: " + timeUntagged.toString());
+                            textViewUntagged.setText(getString(R.string.dialog_taetigkeit_details_untagged_time, timeUntagged.toString()));
                             textViewUntagged.setTextSize(18);
                             textViewUntagged.setPadding(80, 32  , 0, 0);
                             builder.setView(textViewUntagged);
-                            builder.setPositiveButton("Einteilen", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    switchToFragmentStundeneinteilung();
-                                }
-                            });
-                            builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                            builder.setPositiveButton("Einteilen", (dialog, which) -> switchToFragmentStundeneinteilung());
+                            builder.setNegativeButton("Abbrechen", (dialog, which) -> dialog.dismiss());
                             builder.show();
                         }
                         else {
@@ -204,97 +172,88 @@ public class FragmentTagesuebersicht extends Fragment {
                                         textViewTime.setText(stringTime);
                                         einteilungenList.addView(element);
 
-                                        element.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                //TODO: DialogFragment
-                                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                                builder.setTitle(R.string.dialog_edit_einteilung_title);
+                                        element.setOnClickListener(v -> {
+                                            //TODO: DialogFragment
+                                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+                                            builder1.setTitle(R.string.dialog_edit_einteilung_title);
 
-                                                View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_einteilung, (ViewGroup) getView(), false);
-                                                final SeekBar seekBar =  viewInflated.findViewById(R.id.dialog_edit_einteilung_seekBar);
-                                                final TextView textView = viewInflated.findViewById(R.id.dialog_edit_einteilung_textView);
+                                            View viewInflated1 = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_einteilung, (ViewGroup) getView(), false);
+                                            final SeekBar seekBar =  viewInflated1.findViewById(R.id.dialog_edit_einteilung_seekBar);
+                                            final TextView textView = viewInflated1.findViewById(R.id.dialog_edit_einteilung_textView);
 
-                                                seekBar.setMax(einteilung.minuten + minutesUntagged);
-                                                seekBar.setProgress(einteilung.minuten);
-                                                Time time = new Time(einteilung.minuten);
-                                                textView.setText(time.toString());
-                                                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                            seekBar.setMax(einteilung.minuten + minutesUntagged);
+                                            seekBar.setProgress(einteilung.minuten);
+                                            Time time = new Time(einteilung.minuten);
+                                            textView.setText(time.toString());
+                                            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                                @Override
+                                                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                                    Time time = new Time(progress);
+                                                    textView.setText(time.toString());
+                                                }
+
+                                                @Override
+                                                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                                                }
+
+                                                @Override
+                                                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                                                }
+                                            });
+
+                                            builder1.setView(viewInflated1);
+
+                                            builder1.setPositiveButton("Speichern", (dialog, which) -> {
+                                                Map<String, Object> updates = new HashMap<>();
+                                                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", seekBar.getProgress());
+
+                                                DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid());
+                                                refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
-                                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                                                        Time time = new Time(progress);
-                                                        textView.setText(time.toString());
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                                        int oldTime = dataSnapshot1.child("zeit").getValue(Integer.class);
+                                                        updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime + seekBar.getProgress() - einteilung.minuten);
+
+                                                        database.getReference().updateChildren(updates);
                                                     }
 
                                                     @Override
-                                                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onStopTrackingTouch(SeekBar seekBar) {
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                                     }
                                                 });
+                                            });
 
-                                                builder.setView(viewInflated);
+                                            builder1.setNegativeButton("Abbrechen", (dialog, which) -> dialog.cancel());
 
-                                                builder.setPositiveButton("Speichern", (dialog, which) -> {
-                                                    Map<String, Object> updates = new HashMap<>();
-                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", seekBar.getProgress());
+                                            builder1.setNeutralButton("Löschen", ((dialog, which) -> {
+                                                Map<String, Object> updates = new HashMap<>();
+                                                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
 
-                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid());
-                                                    refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
-                                                            updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime + seekBar.getProgress() - einteilung.minuten);
+                                                DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid());
+                                                refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                                        int oldTime = dataSnapshot1.child("zeit").getValue(Integer.class);
+                                                        updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime - einteilung.minuten);
 
-                                                            database.getReference().updateChildren(updates);
-                                                        }
+                                                        database.getReference().updateChildren(updates);
+                                                    }
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                        }
-                                                    });
+                                                    }
                                                 });
+                                            }));
 
-                                                builder.setNegativeButton("Abbrechen", (dialog, which) -> dialog.cancel());
-
-                                                builder.setNeutralButton("Löschen", ((dialog, which) -> {
-                                                    Map<String, Object> updates = new HashMap<>();
-                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
-
-                                                    DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid());
-                                                    refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
-                                                            updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime - einteilung.minuten);
-
-                                                            database.getReference().updateChildren(updates);
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                        }
-                                                    });
-                                                }));
-
-                                                builder.show();
-                                            }
+                                            builder1.show();
                                         });
                                     }
                                     builder.setView(viewInflated);
 
-                                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
+                                    builder.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
                                     builder.show();
                                 }
 
@@ -319,12 +278,7 @@ public class FragmentTagesuebersicht extends Fragment {
                     fabStundeneinteilung.setAlpha(0.4f);
                 }
                 else {
-                    fabStundeneinteilung.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            switchToFragmentStundeneinteilung();
-                        }
-                    });
+                    fabStundeneinteilung.setOnClickListener(view1 -> switchToFragmentStundeneinteilung());
                 }
             }
 
@@ -345,7 +299,7 @@ public class FragmentTagesuebersicht extends Fragment {
     }
 
     private int getNextColor () {
-        int color = ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);;
+        int color = ContextCompat.getColor(getContext(),R.color.colorPrimaryDark);
         switch (nextColor%4) {
             case 0: color = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark);
                 break;
@@ -357,44 +311,5 @@ public class FragmentTagesuebersicht extends Fragment {
         }
         nextColor++;
         return color;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }
