@@ -1,8 +1,8 @@
 <resources>
+    <string name="dialog_taetigkeit_details_untagged_time">Zeit: %1$s</string>
     <string name="dialog_taetigkeit_details_zeit">Zeit: </string>
     <string name="dialog_taetigkeit_details_projekt">Projekt: </string>
     <string name="dialog_taetigkeit_details_notiz">Notiz: </string>
-    <string name="dialog_addTaetigkeit_title">Neue Tätigkeit hinzufügen</string>
     <string name="dialog_edit_einteilung_title">Einteilung bearbeiten</string>
     <string name="dialog_addProjekt_title">Neues Projekt hinzufügen</string>
     <string name="action_sign_out">Abmelden</string>
@@ -30,6 +30,8 @@
     <string name="title_activity_tagesuebersicht">Tagesübersicht</string>
     <string name="minus_divider">-</string>
     <string name="stundenkorrektur_checkbox_snackbar">Zeiten hinzufügen nicht möglich während Krank oder Urlaub ausgewählt ist</string>
+    <string name="fragment_tagesuebersicht_label_minutes_untagged">Nicht eingeteilt</string>
+    <string name="fragment_stundeneinteilung_add_taetigkeit">Neue Tätigkeit hinzufügen</string>
 
 
 </resources>

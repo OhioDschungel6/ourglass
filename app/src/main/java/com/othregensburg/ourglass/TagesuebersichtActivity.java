@@ -11,7 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 
-public class TagesuebersichtActivity extends AppDrawerBase implements FragmentTagesuebersicht.OnFragmentInteractionListener, FragmentStundeneinteilung.OnFragmentInteractionListener{
+public class TagesuebersichtActivity extends AppDrawerBase {
 
 
 
@@ -51,10 +51,5 @@ public class TagesuebersichtActivity extends AppDrawerBase implements FragmentTa
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }

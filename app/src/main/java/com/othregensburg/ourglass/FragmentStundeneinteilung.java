@@ -34,15 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragmentStundeneinteilung.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragmentStundeneinteilung#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentStundeneinteilung extends Fragment {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -51,15 +42,11 @@ public class FragmentStundeneinteilung extends Fragment {
     private static final String ARG_REF_URL = "refUrl";
     private static final String ARG_MINUTES_WORKED = "minutesWorked";
 
-    private static final String ADD_TAETIGKEIT = "neue Tätigkeit hinzufügen";
-    private static final String ADD_PROJEKT = "neues Projekt hinzufügen";
-
     private int minutesUntagged;
     private int minutesWorekd;
     private DatabaseReference ref;
 
     private ArrayAdapter<String> taetigkeitAdapter;
-    private OnFragmentInteractionListener mListener;
 
     public FragmentStundeneinteilung() {
         // Required empty public constructor
@@ -86,8 +73,7 @@ public class FragmentStundeneinteilung extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_stundeneinteilung, container, false);
     }
 
@@ -107,7 +93,7 @@ public class FragmentStundeneinteilung extends Fragment {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     taetigkeiten.add(d.getKey());
                 }
-                taetigkeiten.add(ADD_TAETIGKEIT);
+                taetigkeiten.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
                 taetigkeitAdapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, taetigkeiten);
                 spinnerTaetigkeit.setAdapter(taetigkeitAdapter);
             }
@@ -121,32 +107,26 @@ public class FragmentStundeneinteilung extends Fragment {
         spinnerTaetigkeit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(((String) parent.getItemAtPosition(position)).equals(ADD_TAETIGKEIT)) {
+                if((parent.getItemAtPosition(position)).equals(getString(R.string.fragment_stundeneinteilung_add_taetigkeit))) {
                     //TODO: DialogFragment
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle(R.string.dialog_addTaetigkeit_title);
+                    builder.setTitle(R.string.fragment_stundeneinteilung_add_taetigkeit);
 
                     View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add, (ViewGroup) getView(), false);
-                    final EditText editTextNewTaetigkeit = (EditText) viewInflated.findViewById(R.id.editText_new);
+                    final EditText editTextNewTaetigkeit = viewInflated.findViewById(R.id.editText_new);
                     builder.setView(viewInflated);
 
-                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String newTaetigkeit = editTextNewTaetigkeit.getText().toString();
-                            database.getReference("user/"+user.getUid()+"/taetigkeiten/" + newTaetigkeit).setValue(true);
-                            taetigkeitAdapter.add(newTaetigkeit);
-                            taetigkeitAdapter.remove(ADD_TAETIGKEIT);
-                            taetigkeitAdapter.add(ADD_TAETIGKEIT);
-                            spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit));
-                        }
+                    builder.setPositiveButton("Ok", (dialog, which) -> {
+                        String newTaetigkeit = editTextNewTaetigkeit.getText().toString();
+                        database.getReference("user/"+user.getUid()+"/taetigkeiten/" + newTaetigkeit).setValue(true);
+                        taetigkeitAdapter.add(newTaetigkeit);
+                        taetigkeitAdapter.remove(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
+                        taetigkeitAdapter.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
+                        spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit));
                     });
-                    builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                            spinnerTaetigkeit.setSelection(0);
-                        }
+                    builder.setNegativeButton("Abbrechen", (dialog, which) -> {
+                        dialog.cancel();
+                        spinnerTaetigkeit.setSelection(0);
                     });
                     builder.show();
                 }
@@ -166,7 +146,6 @@ public class FragmentStundeneinteilung extends Fragment {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
                     projekte.add(d.getKey());
                 }
-                //projekte.add(ADD_PROJEKT);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, projekte);
                 spinnerProjekt.setAdapter(adapter);
             }
@@ -198,90 +177,46 @@ public class FragmentStundeneinteilung extends Fragment {
         });
 
         FloatingActionButton fabSave = getView().findViewById(R.id.fab_save);
-        fabSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(seekBarTime.getProgress() == 0) {
-                    //TODO: Snackbar Texte in strings.xml?
-                    Snackbar.make(getActivity().findViewById(R.id.fragment_stundeneinteilung_frameLayout), "Bitte Zeit angeben!", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-                else {
-                    Projekteinteilung projekteinteilung = new Projekteinteilung(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress());
+        fabSave.setOnClickListener(v -> {
+            if(seekBarTime.getProgress() == 0) {
+                //TODO: Snackbar Texte in strings.xml?
+                Snackbar.make(getActivity().findViewById(R.id.fragment_stundeneinteilung_frameLayout), "Bitte Zeit angeben!", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+            else {
+                Projekteinteilung projekteinteilung = new Projekteinteilung(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress());
 
-                    String einteilungKey = ref.child("einteilung").push().getKey();
-                    Map<String, Object> updates = new HashMap<>();
-                    //userUpdates.put("gracehop/nickname", "Amazing Grace");
-                    //userUpdates.put("alanisawesome", new User(null, null, "Alan The Machine"));
-                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + einteilungKey, projekteinteilung);
+                String einteilungKey = ref.child("einteilung").push().getKey();
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + einteilungKey, projekteinteilung);
 
-                    DatabaseReference refProjekt = database.getReference("/projekte/" + projekteinteilung.projekt + "/" + user.getUid());
-                    String path = "projekte/" + projekteinteilung.projekt + "/mitarbeiter/" + user.getUid() + "/";
-                    refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()){
-                                int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
-                                updates.put(path + "zeit", oldTime + projekteinteilung.minuten);
-                            }
-                            else {
-                                updates.put(path + "zeit", projekteinteilung.minuten);
-                                updates.put(path + "name", user.getDisplayName());
+                DatabaseReference refProjekt = database.getReference("/projekte/" + projekteinteilung.projekt + "/" + user.getUid());
+                String path = "projekte/" + projekteinteilung.projekt + "/mitarbeiter/" + user.getUid() + "/";
+                refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
+                            updates.put(path + "zeit", oldTime + projekteinteilung.minuten);
+                        }
+                        else {
+                            updates.put(path + "zeit", projekteinteilung.minuten);
+                            updates.put(path + "name", user.getDisplayName());
 
-                            }
-
-                            database.getReference().updateChildren(updates);
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        database.getReference().updateChildren(updates);
+                    }
 
-                        }
-                    });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 
-                    getActivity().getSupportFragmentManager().popBackStack();
-                }
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }
