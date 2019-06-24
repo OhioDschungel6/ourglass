@@ -45,7 +45,6 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
         this.urlaubBox.setVisibility(View.VISIBLE);
         this.krankBox.setVisibility(View.VISIBLE);
 
-
         reference.child("urlaub").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

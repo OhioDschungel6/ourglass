@@ -28,8 +28,9 @@ public class AppDrawerBase extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //NFC
-        if (getClass() != Startseite.class) {
-            NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (getClass() != Startseite.class && nfcAdapter!=null) {
+
             nfcAdapter.enableReaderMode(this, tag -> {
                 Intent intent = new Intent(this, Startseite.class);
                 intent.putExtra("nfc", true);
