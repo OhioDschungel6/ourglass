@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass.entity;
+package com.othregensburg.ourglass.Entity;
 
 import java.util.Locale;
 

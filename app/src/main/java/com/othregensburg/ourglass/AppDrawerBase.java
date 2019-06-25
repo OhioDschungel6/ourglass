@@ -10,15 +10,15 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.othregensburg.ourglass.Correction.CorrectionActivity;
+import com.othregensburg.ourglass.Login.StartActivity;
+import com.othregensburg.ourglass.ProjectOverview.ProjectOverviewActivity;
+import com.othregensburg.ourglass.TimeOverview.DailyOverview.DailyOverviewActivity;
+import com.othregensburg.ourglass.TimeOverview.TimeOverviewActivity;
 
 public class AppDrawerBase extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,10 +29,10 @@ public class AppDrawerBase extends AppCompatActivity
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //NFC
         NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (getClass() != Startseite.class && nfcAdapter!=null) {
+        if (getClass() != Homescreen.class && nfcAdapter!=null) {
 
             nfcAdapter.enableReaderMode(this, tag -> {
-                Intent intent = new Intent(this, Startseite.class);
+                Intent intent = new Intent(this, Homescreen.class);
                 intent.putExtra("nfc", true);
                 startActivity(intent);
             } ,NfcAdapter.FLAG_READER_NFC_F |NfcAdapter.FLAG_READER_NFC_B| NfcAdapter.FLAG_READER_NFC_A|NfcAdapter.FLAG_READER_NFC_V,null);
@@ -45,8 +45,8 @@ public class AppDrawerBase extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (getClass() != Startseite.class && getClass() != TagesuebersichtActivity.class){
-            Intent intent = new Intent(this, Startseite.class);
+        } else if (getClass() != Homescreen.class && getClass() != DailyOverviewActivity.class){
+            Intent intent = new Intent(this, Homescreen.class);
             startActivity(intent);
         }
         else {
@@ -58,17 +58,17 @@ public class AppDrawerBase extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_homescreen && getClass()!= Startseite.class) {
-            Intent intent = new Intent(this, Startseite.class);
+        if (id == R.id.nav_homescreen && getClass()!= Homescreen.class) {
+            Intent intent = new Intent(this, Homescreen.class);
             startActivity(intent);
-        } else if (id == R.id.nav_stundenuebersicht && getClass()!= Stundenuebersicht.class && getClass() != TagesuebersichtActivity.class) {
-            Intent intent = new Intent(this, Stundenuebersicht.class);
+        } else if (id == R.id.nav_stundenuebersicht && getClass()!= TimeOverviewActivity.class && getClass() != DailyOverviewActivity.class) {
+            Intent intent = new Intent(this, TimeOverviewActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_korrektur && getClass()!= Stundenkorrektur.class) {
-            Intent intent = new Intent(this, Stundenkorrektur.class);
+        } else if (id == R.id.nav_korrektur && getClass()!= CorrectionActivity.class) {
+            Intent intent = new Intent(this, CorrectionActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_projekt && getClass()!= Projektuebersicht.class) {
-            Intent intent = new Intent(this, Projektuebersicht.class);
+        } else if (id == R.id.nav_projekt && getClass()!= ProjectOverviewActivity.class) {
+            Intent intent = new Intent(this, ProjectOverviewActivity.class);
             startActivity(intent);
         }
 

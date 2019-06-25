@@ -1,29 +1,22 @@
-package com.othregensburg.ourglass.RecyclerAdapter;
+package com.othregensburg.ourglass.TimeOverview;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
 import com.othregensburg.ourglass.R;
-import com.othregensburg.ourglass.TagesuebersichtActivity;
-import com.othregensburg.ourglass.entity.Arbeitstag;
-import com.othregensburg.ourglass.entity.Stamp;
-import com.othregensburg.ourglass.entity.Time;
+import com.othregensburg.ourglass.Entity.Workday;
+import com.othregensburg.ourglass.Entity.Stamp;
+import com.othregensburg.ourglass.Entity.Time;
+import com.othregensburg.ourglass.TimeOverview.DailyOverview.DailyOverviewActivity;
 
 
 import java.text.DateFormat;
@@ -35,18 +28,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Arbeitstag,FirebaseAdapterStundenuebersicht.ViewHolder> {
+public class FirebaseAdapterTimeOverview extends FirebaseRecyclerAdapter<Workday, FirebaseAdapterTimeOverview.ViewHolder> {
 
     private DateFormat df = new SimpleDateFormat("EEEE, dd.MM.yy", Locale.GERMANY);
     private Context con;
 
-    public FirebaseAdapterStundenuebersicht(@NonNull FirebaseRecyclerOptions<Arbeitstag> options, Context context) {
+    public FirebaseAdapterTimeOverview(@NonNull FirebaseRecyclerOptions<Workday> options, Context context) {
         super(options);
         this.con=context;
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull ViewHolder viewHolder, int position, @NonNull Arbeitstag model) {
+    protected void onBindViewHolder(@NonNull ViewHolder viewHolder, int position, @NonNull Workday model) {
         String key = getRef(position).getKey();
         viewHolder.tag.setText(df.format(new Date(Integer.parseInt(key.substring(0,2))+100,Integer.parseInt(key.substring(2,4))-1,Integer.parseInt(key.substring(4)))));
         Time t=new Time();
@@ -81,7 +74,7 @@ public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Ar
             @Override
             public void onClick(View view) {
                 if(!model.krank && !model.urlaub) {
-                    Intent intent = new Intent(con, TagesuebersichtActivity.class);
+                    Intent intent = new Intent(con, DailyOverviewActivity.class);
                     // Extra z.B.: https://ourglass-84f4d.firebaseio.com/arbeitstage/DV8i9rsyXUdXtWA30SCTmiEnfib2/190222
                     intent.putExtra("DatabaseRef", getRef(position).toString());
                     intent.putExtra("minutesWorked", t.getMinutes());
@@ -95,7 +88,7 @@ public class FirebaseAdapterStundenuebersicht extends FirebaseRecyclerAdapter<Ar
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View mItemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.stundenuebersicht_entry, viewGroup, false);
-        return new FirebaseAdapterStundenuebersicht.ViewHolder(mItemView);
+        return new FirebaseAdapterTimeOverview.ViewHolder(mItemView);
     }
 
 

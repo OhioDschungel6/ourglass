@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass;
+package com.othregensburg.ourglass.ProjectOverview;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,18 +23,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.othregensburg.ourglass.RecyclerAdapter.FirebaseAdapterProjektuebersicht;
-import com.othregensburg.ourglass.entity.Projektmitglied;
+import com.othregensburg.ourglass.AppDrawerBase;
+import com.othregensburg.ourglass.Entity.ProjectMember;
+import com.othregensburg.ourglass.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Projektuebersicht extends AppDrawerBase {
+public class ProjectOverviewActivity extends AppDrawerBase {
 
-    private static final String ADD_PROJEKT = "neues Projekt hinzufügen";
+    private static final String ADD_PROJEKT = "Neues Projekt hinzufügen";
     private ArrayAdapter<String> projektAdapter;
-    private FirebaseAdapterProjektuebersicht mAdapter;
+    private FirebaseAdapterProjectOverview mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,12 +106,12 @@ public class Projektuebersicht extends AppDrawerBase {
                     Query query = FirebaseDatabase.getInstance()
                             .getReference("projekte/").child(s);
 
-                    FirebaseRecyclerOptions<Projektmitglied> options =
-                            new FirebaseRecyclerOptions.Builder<Projektmitglied>()
-                                    .setQuery(query, Projektmitglied.class)
+                    FirebaseRecyclerOptions<ProjectMember> options =
+                            new FirebaseRecyclerOptions.Builder<ProjectMember>()
+                                    .setQuery(query, ProjectMember.class)
                                     .build();
                     recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                    mAdapter = new FirebaseAdapterProjektuebersicht(options);
+                    mAdapter = new FirebaseAdapterProjectOverview(options);
                     recyclerView.setAdapter(mAdapter);
                     mAdapter.startListening();
                 }

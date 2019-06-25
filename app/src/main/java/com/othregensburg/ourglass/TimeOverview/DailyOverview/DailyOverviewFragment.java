@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass;
+package com.othregensburg.ourglass.TimeOverview.DailyOverview;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -25,8 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.othregensburg.ourglass.entity.Projekteinteilung;
-import com.othregensburg.ourglass.entity.Time;
+import com.othregensburg.ourglass.Entity.ProjectClassification;
+import com.othregensburg.ourglass.Entity.Time;
+import com.othregensburg.ourglass.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,7 +45,7 @@ import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.view.PieChartView;
 
 
-public class FragmentTagesuebersicht extends Fragment {
+public class DailyOverviewFragment extends Fragment {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -59,12 +60,12 @@ public class FragmentTagesuebersicht extends Fragment {
     private int minutesUntagged;
     private int nextColor = 0;
 
-    public FragmentTagesuebersicht() {
+    public DailyOverviewFragment() {
         // Required empty public constructor
     }
 
-    public static FragmentTagesuebersicht newInstance(String refUrl, int minutesWorked) {
-        FragmentTagesuebersicht fragment = new FragmentTagesuebersicht();
+    public static DailyOverviewFragment newInstance(String refUrl, int minutesWorked) {
+        DailyOverviewFragment fragment = new DailyOverviewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_REF_URL, refUrl);
         args.putInt(ARG_MINUTES_WORKED, minutesWorked);
@@ -108,7 +109,7 @@ public class FragmentTagesuebersicht extends Fragment {
                 Map<String, Integer> mapTaetigkeiten = new HashMap<>();
 
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
+                    ProjectClassification einteilung = d.getValue(ProjectClassification.class);
                     int minutesTaetigkeit = mapTaetigkeiten.getOrDefault(einteilung.taetigkeit,0);
                     minutesTaetigkeit += einteilung.minuten;
                     mapTaetigkeiten.put(einteilung.taetigkeit, minutesTaetigkeit);
@@ -160,7 +161,7 @@ public class FragmentTagesuebersicht extends Fragment {
                                     LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
 
                                     for (DataSnapshot d : dataSnapshot.getChildren()) {
-                                        Projekteinteilung einteilung = d.getValue(Projekteinteilung.class);
+                                        ProjectClassification einteilung = d.getValue(ProjectClassification.class);
                                         //attach to root?
                                         View element = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details_entry, einteilungenList, false);
                                         ((TextView) element.findViewById(R.id.textView_projekt)).setText(einteilung.projekt);
@@ -290,7 +291,7 @@ public class FragmentTagesuebersicht extends Fragment {
     private void switchToFragmentStundeneinteilung(){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment = FragmentStundeneinteilung.newInstance(minutesUntagged, ref.toString());
+        Fragment fragment = TagTimeFragment.newInstance(minutesUntagged, ref.toString());
         fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

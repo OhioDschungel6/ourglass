@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/constraintStundenkorrektur"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Stundenkorrektur"
+    tools:context=".Correction.CorrectionActivity"
     tools:layout_editor_absoluteY="56dp"
     tools:showIn="@layout/app_bar_stundenkorrektur">
 

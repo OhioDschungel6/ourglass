@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass;
+package com.othregensburg.ourglass.TimeOverview;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -17,8 +17,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.othregensburg.ourglass.RecyclerAdapter.FirebaseAdapterStundenuebersicht;
-import com.othregensburg.ourglass.entity.Arbeitstag;
+import com.othregensburg.ourglass.AppDrawerBase;
+import com.othregensburg.ourglass.R;
+import com.othregensburg.ourglass.Entity.Workday;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,11 +27,11 @@ import java.util.Calendar;
 import java.util.Locale;
 
 
-public class Stundenuebersicht extends AppDrawerBase {
+public class TimeOverviewActivity extends AppDrawerBase {
 
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private FirebaseAdapterStundenuebersicht mAdapter;
+    private FirebaseAdapterTimeOverview mAdapter;
     private Calendar firstDate = Calendar.getInstance();
     private Calendar secondDate = Calendar.getInstance();
 
@@ -79,11 +80,11 @@ public class Stundenuebersicht extends AppDrawerBase {
                 .getReference("arbeitstage/"+user.getUid())
                 .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
 
-        FirebaseRecyclerOptions<Arbeitstag> options =
-                new FirebaseRecyclerOptions.Builder<Arbeitstag>()
-                        .setQuery(query, Arbeitstag.class)
+        FirebaseRecyclerOptions<Workday> options =
+                new FirebaseRecyclerOptions.Builder<Workday>()
+                        .setQuery(query, Workday.class)
                         .build();
-        mAdapter= new FirebaseAdapterStundenuebersicht(options,this);
+        mAdapter= new FirebaseAdapterTimeOverview(options,this);
 
         recyclerView.setAdapter(mAdapter);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -128,11 +129,11 @@ public class Stundenuebersicht extends AppDrawerBase {
                         .getReference("arbeitstage/"+user.getUid())
                         .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
 
-                FirebaseRecyclerOptions<Arbeitstag> options =
-                        new FirebaseRecyclerOptions.Builder<Arbeitstag>()
-                                .setQuery(query, Arbeitstag.class)
+                FirebaseRecyclerOptions<Workday> options =
+                        new FirebaseRecyclerOptions.Builder<Workday>()
+                                .setQuery(query, Workday.class)
                                 .build();
-                mAdapter= new FirebaseAdapterStundenuebersicht(options,getBaseContext());
+                mAdapter= new FirebaseAdapterTimeOverview(options,getBaseContext());
                 recyclerView.setAdapter(mAdapter);
                 mAdapter.startListening();
             }
@@ -160,11 +161,11 @@ public class Stundenuebersicht extends AppDrawerBase {
                         .getReference("arbeitstage/"+user.getUid())
                         .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
 
-                FirebaseRecyclerOptions<Arbeitstag> options =
-                        new FirebaseRecyclerOptions.Builder<Arbeitstag>()
-                                .setQuery(query, Arbeitstag.class)
+                FirebaseRecyclerOptions<Workday> options =
+                        new FirebaseRecyclerOptions.Builder<Workday>()
+                                .setQuery(query, Workday.class)
                                 .build();
-                mAdapter= new FirebaseAdapterStundenuebersicht(options,getBaseContext());
+                mAdapter= new FirebaseAdapterTimeOverview(options,getBaseContext());
                 recyclerView.setAdapter(mAdapter);
                 mAdapter.startListening();
             }

@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass;
+package com.othregensburg.ourglass.Login;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -13,6 +13,8 @@ import android.widget.ImageView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.othregensburg.ourglass.R;
+import com.othregensburg.ourglass.Homescreen;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,7 +53,7 @@ public class StartActivity extends AppCompatActivity {
                 IdpResponse resp= (IdpResponse) data.getExtras().get("extra_idp_response");
 
                 if (resp!=null && resp.isNewUser()) {
-                    Intent intent = new Intent(this, FirstLogin.class);
+                    Intent intent = new Intent(this, FirstLoginActivity.class);
                     if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
                         intent.putExtra("nfc", true);
                     } else {
@@ -60,7 +62,7 @@ public class StartActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    Intent intent = new Intent(this, Startseite.class);
+                    Intent intent = new Intent(this, Homescreen.class);
                     if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
                         intent.putExtra("nfc", true);
                     } else {

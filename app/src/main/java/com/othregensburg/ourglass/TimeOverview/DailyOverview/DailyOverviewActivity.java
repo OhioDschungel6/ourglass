@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass;
+package com.othregensburg.ourglass.TimeOverview.DailyOverview;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -9,7 +9,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 
-public class TagesuebersichtActivity extends AppDrawerBase {
+import com.othregensburg.ourglass.AppDrawerBase;
+import com.othregensburg.ourglass.R;
+
+public class DailyOverviewActivity extends AppDrawerBase {
 
 
 
@@ -36,7 +39,7 @@ public class TagesuebersichtActivity extends AppDrawerBase {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment = FragmentTagesuebersicht.newInstance(refUrl, minutesWorekd);
+        Fragment fragment = DailyOverviewFragment.newInstance(refUrl, minutesWorekd);
         fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
         fragmentTransaction.commit();
     }

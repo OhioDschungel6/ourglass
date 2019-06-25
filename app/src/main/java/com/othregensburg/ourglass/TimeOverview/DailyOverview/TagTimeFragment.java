@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass;
+package com.othregensburg.ourglass.TimeOverview.DailyOverview;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,15 +23,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.othregensburg.ourglass.entity.Projekteinteilung;
-import com.othregensburg.ourglass.entity.Time;
+import com.othregensburg.ourglass.Entity.ProjectClassification;
+import com.othregensburg.ourglass.Entity.Time;
+import com.othregensburg.ourglass.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FragmentStundeneinteilung extends Fragment {
+public class TagTimeFragment extends Fragment {
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -43,12 +44,12 @@ public class FragmentStundeneinteilung extends Fragment {
 
     private ArrayAdapter<String> taetigkeitAdapter;
 
-    public FragmentStundeneinteilung() {
+    public TagTimeFragment() {
         // Required empty public constructor
     }
 
-    public static FragmentStundeneinteilung newInstance(int minutesUntagged, String refUrl) {
-        FragmentStundeneinteilung fragment = new FragmentStundeneinteilung();
+    public static TagTimeFragment newInstance(int minutesUntagged, String refUrl) {
+        TagTimeFragment fragment = new TagTimeFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_MINUTES_UNTAGGED, minutesUntagged);
         args.putString(ARG_REF_URL, refUrl);
@@ -177,23 +178,23 @@ public class FragmentStundeneinteilung extends Fragment {
                         .setAction("Action", null).show();
             }
             else {
-                Projekteinteilung projekteinteilung = new Projekteinteilung(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress());
+                ProjectClassification projectClassification = new ProjectClassification(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress());
 
                 String einteilungKey = ref.child("einteilung").push().getKey();
                 Map<String, Object> updates = new HashMap<>();
-                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + einteilungKey, projekteinteilung);
+                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + einteilungKey, projectClassification);
 
-                DatabaseReference refProjekt = database.getReference("/projekte/" + projekteinteilung.projekt + "/" + user.getUid());
-                String path = "projekte/" + projekteinteilung.projekt + "/mitarbeiter/" + user.getUid() + "/";
+                DatabaseReference refProjekt = database.getReference("/projekte/" + projectClassification.projekt + "/" + user.getUid());
+                String path = "projekte/" + projectClassification.projekt + "/mitarbeiter/" + user.getUid() + "/";
                 refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
                             int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
-                            updates.put(path + "zeit", oldTime + projekteinteilung.minuten);
+                            updates.put(path + "zeit", oldTime + projectClassification.minuten);
                         }
                         else {
-                            updates.put(path + "zeit", projekteinteilung.minuten);
+                            updates.put(path + "zeit", projectClassification.minuten);
                             updates.put(path + "name", user.getDisplayName());
 
                         }

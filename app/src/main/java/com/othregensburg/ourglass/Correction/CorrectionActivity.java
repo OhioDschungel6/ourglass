@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass;
+package com.othregensburg.ourglass.Correction;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -26,15 +26,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.othregensburg.ourglass.RecyclerAdapter.FirebaseAdapterStundenkorrektur;
-import com.othregensburg.ourglass.entity.Stamp;
+import com.othregensburg.ourglass.AppDrawerBase;
+import com.othregensburg.ourglass.Correction.FirebaseAdapterStundenkorrektur;
+import com.othregensburg.ourglass.Entity.Stamp;
+import com.othregensburg.ourglass.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class Stundenkorrektur extends AppDrawerBase {
+public class CorrectionActivity extends AppDrawerBase {
 
     final Calendar cal = Calendar.getInstance();
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

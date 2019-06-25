@@ -17,7 +17,7 @@
 
 
 
-        <activity android:name=".StartActivity">
+        <activity android:name=".Login.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -31,27 +31,27 @@
 
         </activity>
         <activity
-            android:name=".TagesuebersichtActivity"
+            android:name=".TimeOverview.DailyOverview.DailyOverviewActivity"
             android:label="@string/title_activity_tagesuebersicht"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Stundenuebersicht"
+            android:name=".TimeOverview.TimeOverviewActivity"
             android:label="@string/title_activity_stundenuebersicht"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Projektuebersicht"
+            android:name=".ProjectOverview.ProjectOverviewActivity"
             android:label="@string/title_activity_projektuebersicht"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Stundenkorrektur"
+            android:name=".Correction.CorrectionActivity"
             android:label="@string/title_activity_stundenkorrektur"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Startseite"
+            android:name=".Homescreen"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".FirstLogin" />
+        <activity android:name=".Login.FirstLoginActivity" />
     </application>
 
 </manifest>

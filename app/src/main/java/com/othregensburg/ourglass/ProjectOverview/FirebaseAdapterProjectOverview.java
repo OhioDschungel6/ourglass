@@ -1,7 +1,6 @@
-package com.othregensburg.ourglass.RecyclerAdapter;
+package com.othregensburg.ourglass.ProjectOverview;
 
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,32 +9,30 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
 import com.othregensburg.ourglass.R;
-import com.othregensburg.ourglass.entity.Projektmitglied;
-import com.othregensburg.ourglass.entity.Stamp;
+import com.othregensburg.ourglass.Entity.ProjectMember;
 
 import java.util.Locale;
 
-public class FirebaseAdapterProjektuebersicht extends FirebaseRecyclerAdapter<Projektmitglied, FirebaseAdapterProjektuebersicht.ViewHolder> {
+public class FirebaseAdapterProjectOverview extends FirebaseRecyclerAdapter<ProjectMember, FirebaseAdapterProjectOverview.ViewHolder> {
 
-    public FirebaseAdapterProjektuebersicht(@NonNull FirebaseRecyclerOptions<Projektmitglied> options) {
+    public FirebaseAdapterProjectOverview(@NonNull FirebaseRecyclerOptions<ProjectMember> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull FirebaseAdapterProjektuebersicht.ViewHolder holder, int position, @NonNull Projektmitglied model) {
+    protected void onBindViewHolder(@NonNull FirebaseAdapterProjectOverview.ViewHolder holder, int position, @NonNull ProjectMember model) {
         holder.name.setText(model.name);
         holder.zeit.setText(String.format(Locale.GERMAN, "Zeit: %d Std %02d Min", model.zeit / 60, model.zeit % 60));
     }
 
     @NonNull
     @Override
-    public FirebaseAdapterProjektuebersicht.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public FirebaseAdapterProjectOverview.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater mInflater = LayoutInflater.from(viewGroup.getContext());
 
         View mItemView = mInflater.inflate(R.layout.projekt_entry, viewGroup, false);
-        return new FirebaseAdapterProjektuebersicht.ViewHolder(mItemView);
+        return new FirebaseAdapterProjectOverview.ViewHolder(mItemView);
     }
 
 

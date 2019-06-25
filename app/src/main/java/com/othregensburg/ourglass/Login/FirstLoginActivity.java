@@ -1,4 +1,4 @@
-package com.othregensburg.ourglass;
+package com.othregensburg.ourglass.Login;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -17,9 +17,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.othregensburg.ourglass.entity.User;
+import com.othregensburg.ourglass.Entity.User;
+import com.othregensburg.ourglass.R;
+import com.othregensburg.ourglass.Homescreen;
 
-public class FirstLogin extends AppCompatActivity {
+public class FirstLoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,10 +74,10 @@ public class FirstLogin extends AppCompatActivity {
                 seekBarWeeklyWorkHours.setVisibility(View.GONE);
                 fab_confirm.setVisibility(View.GONE);
                 findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-                FirebaseDatabase.getInstance().getReference("user/"+ FirebaseAuth.getInstance().getUid()).setValue(new User(sName, sFirstname, workhours / 5.0), new DatabaseReference.CompletionListener() {
+                FirebaseDatabase.getInstance().getReference("user/"+ FirebaseAuth.getInstance().getUid()).setValue(new User(workhours / 5.0), new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                        Intent intent = new Intent(getBaseContext(), Startseite.class);
+                        Intent intent = new Intent(getBaseContext(), Homescreen.class);
                         intent.putExtra("nfc",getIntent().getBooleanExtra("nfc",false) );
                         startActivity(intent);
                         finish();

@@ -24,9 +24,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.othregensburg.ourglass.entity.Arbeitstag;
-import com.othregensburg.ourglass.entity.Stamp;
-import com.othregensburg.ourglass.entity.Time;
+import com.othregensburg.ourglass.Entity.Workday;
+import com.othregensburg.ourglass.Entity.Stamp;
+import com.othregensburg.ourglass.Entity.Time;
+import com.othregensburg.ourglass.Login.FirstLoginActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,7 +37,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Startseite extends AppDrawerBase implements View.OnClickListener{
+public class Homescreen extends AppDrawerBase implements View.OnClickListener{
 
     private boolean timeIsRunning = false;
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -79,7 +80,7 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    Intent intent = new Intent(getBaseContext(), FirstLogin.class);
+                    Intent intent = new Intent(getBaseContext(), FirstLoginActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -214,12 +215,12 @@ public class Startseite extends AppDrawerBase implements View.OnClickListener{
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Time t = new Time();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Arbeitstag arbeitstag = ds.getValue(Arbeitstag.class);
-                    if (arbeitstag.krank || arbeitstag.urlaub) {
+                    Workday workday = ds.getValue(Workday.class);
+                    if (workday.krank || workday.urlaub) {
                         t.add(new Stamp("00:00", String.format(Locale.GERMAN, "%02d:%02d", (int) dailyworktime, (int) ((dailyworktime - ((int) dailyworktime)) * 60))));
                     } else {
-                        if (arbeitstag.timestamps != null) {
-                            for (Stamp stamp : arbeitstag.timestamps.values()) {
+                        if (workday.timestamps != null) {
+                            for (Stamp stamp : workday.timestamps.values()) {
                                 if (stamp.endzeit == null) {
                                     DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
                                     calendar = Calendar.getInstance();
