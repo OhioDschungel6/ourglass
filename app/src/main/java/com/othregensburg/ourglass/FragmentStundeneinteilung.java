@@ -1,8 +1,5 @@
 package com.othregensburg.ourglass;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -69,11 +66,11 @@ public class FragmentStundeneinteilung extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_stundeneinteilung, container, false);
     }
 
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         SeekBar seekBarTime = view.findViewById(R.id.seekBar_time);

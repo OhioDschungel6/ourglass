@@ -35,10 +35,6 @@
             android:label="@string/title_activity_tagesuebersicht"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Teamuebersicht"
-            android:label="@string/title_activity_teamuebersicht"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".Stundenuebersicht"
             android:label="@string/title_activity_stundenuebersicht"
             android:theme="@style/AppTheme.NoActionBar" />
