@@ -290,7 +290,7 @@ public class FragmentTagesuebersicht extends Fragment {
     private void switchToFragmentStundeneinteilung(){
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment = FragmentStundeneinteilung.newInstance(minutesUntagged, ref.toString(), minutesWorked);
+        Fragment fragment = FragmentStundeneinteilung.newInstance(minutesUntagged, ref.toString());
         fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

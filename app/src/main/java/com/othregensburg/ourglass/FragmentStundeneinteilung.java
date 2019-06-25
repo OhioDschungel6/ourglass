@@ -40,10 +40,8 @@ public class FragmentStundeneinteilung extends Fragment {
 
     private static final String ARG_MINUTES_UNTAGGED = "minutesUntagged";
     private static final String ARG_REF_URL = "refUrl";
-    private static final String ARG_MINUTES_WORKED = "minutesWorked";
 
     private int minutesUntagged;
-    private int minutesWorekd;
     private DatabaseReference ref;
 
     private ArrayAdapter<String> taetigkeitAdapter;
@@ -52,12 +50,11 @@ public class FragmentStundeneinteilung extends Fragment {
         // Required empty public constructor
     }
 
-    public static FragmentStundeneinteilung newInstance(int minutesUntagged, String refUrl, int minutesWorked) {
+    public static FragmentStundeneinteilung newInstance(int minutesUntagged, String refUrl) {
         FragmentStundeneinteilung fragment = new FragmentStundeneinteilung();
         Bundle args = new Bundle();
         args.putInt(ARG_MINUTES_UNTAGGED, minutesUntagged);
         args.putString(ARG_REF_URL, refUrl);
-        args.putInt(ARG_MINUTES_WORKED, minutesWorked);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,7 +65,6 @@ public class FragmentStundeneinteilung extends Fragment {
         if (getArguments() != null) {
             minutesUntagged = getArguments().getInt(ARG_MINUTES_UNTAGGED);
             ref = database.getReferenceFromUrl(getArguments().getString(ARG_REF_URL));
-            minutesWorekd = getArguments().getInt(ARG_MINUTES_WORKED);
         }
     }
 
