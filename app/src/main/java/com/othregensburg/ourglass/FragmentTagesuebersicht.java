@@ -32,7 +32,9 @@ import com.othregensburg.ourglass.entity.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -54,7 +56,7 @@ public class FragmentTagesuebersicht extends Fragment {
     private static final String ARG_MINUTES_WORKED = "minutesWorked";
 
     private DatabaseReference ref;
-    private Date date;
+    private Calendar date;
     private int minutesWorked;
     private int minutesUntagged;
     private int nextColor = 0;
@@ -81,7 +83,7 @@ public class FragmentTagesuebersicht extends Fragment {
             minutesUntagged = minutesWorked;
             ref = database.getReferenceFromUrl(refUrl);
             String key = ref.getKey();
-            date = new Date(Integer.parseInt(key.substring(0,2))+100,Integer.parseInt(key.substring(2,4))-1,Integer.parseInt(key.substring(4)));
+            date = new GregorianCalendar(Integer.parseInt(key.substring(0,2)) + 2000,Integer.parseInt(key.substring(2,4))-1,Integer.parseInt(key.substring(4)));
         }
     }
 
@@ -96,7 +98,7 @@ public class FragmentTagesuebersicht extends Fragment {
 
         TextView textViewDate = getView().findViewById(R.id.date);
         DateFormat df = new SimpleDateFormat("EEEE dd.MM.yy", Locale.GERMANY);
-        textViewDate.setText(df.format(date));
+        textViewDate.setText(df.format(date.getTime()));
 
         DatabaseReference refEinteilungen = ref.child("/einteilung");
 
