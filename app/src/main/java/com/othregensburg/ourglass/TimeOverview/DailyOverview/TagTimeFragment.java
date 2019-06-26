@@ -195,7 +195,14 @@ public class TagTimeFragment extends Fragment {
                         else {
                             updates.put(path + "zeit", projectClassification.minuten);
                             updates.put(path + "name", user.getDisplayName());
+                        }
 
+                        DataSnapshot dsTaetigkeit = dataSnapshot.child("taetigkeiten/" + projectClassification.taetigkeit);
+                        if (!dsTaetigkeit.exists()) {
+                            updates.put(path + "taetigkeiten/" + projectClassification.taetigkeit, projectClassification.minuten);
+                        } else {
+                            int oldTime = dsTaetigkeit.getValue(Integer.class);
+                            updates.put(path + "taetigkeiten/" + projectClassification.taetigkeit, oldTime + projectClassification.minuten);
                         }
 
                         database.getReference().updateChildren(updates);

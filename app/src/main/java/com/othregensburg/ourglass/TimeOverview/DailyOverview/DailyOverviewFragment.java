@@ -210,6 +210,7 @@ public class DailyOverviewFragment extends Fragment {
 
                                             editBuilder.setView(viewInflated1);
 
+                                            String path = "projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid() + "/";
                                             editBuilder.setPositiveButton("Speichern", (dialog, which) -> {
                                                 Map<String, Object> updates = new HashMap<>();
                                                 updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", seekBar.getProgress());
@@ -217,9 +218,12 @@ public class DailyOverviewFragment extends Fragment {
                                                 DatabaseReference refProjekt = database.getReference("/projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid());
                                                 refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
-                                                        int oldTime = dataSnapshot1.child("zeit").getValue(Integer.class);
-                                                        updates.put("projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime + seekBar.getProgress() - classification.minuten);
+                                                    public void onDataChange(@NonNull DataSnapshot ds) {
+                                                        int oldTimeProject = ds.child("zeit").getValue(Integer.class);
+                                                        updates.put(path + "zeit", oldTimeProject + seekBar.getProgress() - classification.minuten);
+
+                                                        int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
+                                                        updates.put(path + "taetigkeiten/" + classification.taetigkeit, oldTimeTaetigkeit + seekBar.getProgress() - classification.minuten);
 
                                                         database.getReference().updateChildren(updates);
                                                     }
@@ -241,8 +245,11 @@ public class DailyOverviewFragment extends Fragment {
                                                 refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot ds) {
-                                                        int oldTime = ds.child("zeit").getValue(Integer.class);
-                                                        updates.put("projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime - classification.minuten);
+                                                        int oldTimeProject = ds.child("zeit").getValue(Integer.class);
+                                                        updates.put(path + "zeit", oldTimeProject - classification.minuten);
+
+                                                        int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
+                                                        updates.put(path + "taetigkeiten/" + classification.taetigkeit, oldTimeTaetigkeit - classification.minuten);
 
                                                         database.getReference().updateChildren(updates);
                                                     }
