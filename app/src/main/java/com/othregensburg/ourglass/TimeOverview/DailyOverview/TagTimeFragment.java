@@ -102,7 +102,6 @@ public class TagTimeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if((parent.getItemAtPosition(position)).equals(getString(R.string.fragment_stundeneinteilung_add_taetigkeit))) {
-                    //TODO: DialogFragment
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle(R.string.fragment_stundeneinteilung_add_taetigkeit);
 
@@ -180,11 +179,11 @@ public class TagTimeFragment extends Fragment {
             else {
                 ProjectClassification projectClassification = new ProjectClassification(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress());
 
-                String einteilungKey = ref.child("einteilung").push().getKey();
+                String classificationKey = ref.child("einteilung").push().getKey();
                 Map<String, Object> updates = new HashMap<>();
-                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + einteilungKey, projectClassification);
+                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + classificationKey, projectClassification);
 
-                DatabaseReference refProjekt = database.getReference("/projekte/" + projectClassification.projekt + "/" + user.getUid());
+                DatabaseReference refProjekt = database.getReference("/projekte/" + projectClassification.projekt + "/mitarbeiter/" + user.getUid());
                 String path = "projekte/" + projectClassification.projekt + "/mitarbeiter/" + user.getUid() + "/";
                 refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -196,7 +195,14 @@ public class TagTimeFragment extends Fragment {
                         else {
                             updates.put(path + "zeit", projectClassification.minuten);
                             updates.put(path + "name", user.getDisplayName());
+                        }
 
+                        DataSnapshot dsTaetigkeit = dataSnapshot.child("taetigkeiten/" + projectClassification.taetigkeit);
+                        if (!dsTaetigkeit.exists()) {
+                            updates.put(path + "taetigkeiten/" + projectClassification.taetigkeit, projectClassification.minuten);
+                        } else {
+                            int oldTime = dsTaetigkeit.getValue(Integer.class);
+                            updates.put(path + "taetigkeiten/" + projectClassification.taetigkeit, oldTime + projectClassification.minuten);
                         }
 
                         database.getReference().updateChildren(updates);

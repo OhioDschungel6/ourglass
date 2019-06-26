@@ -101,8 +101,7 @@ public class DailyOverviewFragment extends Fragment {
 
         DatabaseReference refEinteilungen = ref.child("/einteilung");
 
-
-        refEinteilungen.addListenerForSingleValueEvent(new ValueEventListener() {
+        refEinteilungen.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 minutesUntagged = minutesWorked;
@@ -151,38 +150,45 @@ public class DailyOverviewFragment extends Fragment {
                         }
                         else {
                             Query selected = ref.child("einteilung").orderByChild("taetigkeit").equalTo(label);
-                            selected.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            AlertDialog.Builder detailBuilder = new AlertDialog.Builder(getContext());
+                            detailBuilder.setTitle(label);
+                            View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details, (ViewGroup) getView(), false);
+                            LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
+                            detailBuilder.setView(viewInflated);
+                            detailBuilder.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
+                            AlertDialog detailDialog = detailBuilder.show();
+
+                            selected.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                    builder.setTitle(label);
+                                    if (!dataSnapshot.exists()) {
+                                        detailDialog.dismiss();
+                                    }
 
-                                    View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details, (ViewGroup) getView(), false);
-                                    LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
-
+                                    einteilungenList.removeAllViews();
                                     for (DataSnapshot d : dataSnapshot.getChildren()) {
-                                        ProjectClassification einteilung = d.getValue(ProjectClassification.class);
-                                        //attach to root?
+                                        ProjectClassification classification = d.getValue(ProjectClassification.class);
                                         View element = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details_entry, einteilungenList, false);
-                                        ((TextView) element.findViewById(R.id.textView_projekt)).setText(einteilung.projekt);
-                                        ((TextView) element.findViewById(R.id.textView_notiz)).setText(einteilung.notiz);
-                                        String stringTime = new Time(einteilung.minuten).toString();
+                                        ((TextView) element.findViewById(R.id.textView_projekt)).setText(classification.projekt);
+                                        ((TextView) element.findViewById(R.id.textView_notiz)).setText(classification.notiz);
+                                        String stringTime = new Time(classification.minuten).toString();
                                         TextView textViewTime = element.findViewById(R.id.dialog_taetigkeit_textView_time);
                                         textViewTime.setText(stringTime);
                                         einteilungenList.addView(element);
 
                                         element.setOnClickListener(v -> {
-                                            //TODO: DialogFragment
-                                            AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
-                                            builder1.setTitle(R.string.dialog_edit_einteilung_title);
+                                            //TODO: fullscreen dialog?
+                                            AlertDialog.Builder editBuilder = new AlertDialog.Builder(getContext());
+                                            editBuilder.setTitle(R.string.dialog_edit_einteilung_title);
 
                                             View viewInflated1 = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_einteilung, (ViewGroup) getView(), false);
                                             final SeekBar seekBar =  viewInflated1.findViewById(R.id.dialog_edit_einteilung_seekBar);
                                             final TextView textView = viewInflated1.findViewById(R.id.dialog_edit_einteilung_textView);
 
-                                            seekBar.setMax(einteilung.minuten + minutesUntagged);
-                                            seekBar.setProgress(einteilung.minuten);
-                                            Time time = new Time(einteilung.minuten);
+                                            seekBar.setMax(classification.minuten + minutesUntagged);
+                                            seekBar.setProgress(classification.minuten);
+                                            Time time = new Time(classification.minuten);
                                             textView.setText(time.toString());
                                             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                                                 @Override
@@ -202,18 +208,22 @@ public class DailyOverviewFragment extends Fragment {
                                                 }
                                             });
 
-                                            builder1.setView(viewInflated1);
+                                            editBuilder.setView(viewInflated1);
 
-                                            builder1.setPositiveButton("Speichern", (dialog, which) -> {
+                                            String path = "projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid() + "/";
+                                            editBuilder.setPositiveButton("Speichern", (dialog, which) -> {
                                                 Map<String, Object> updates = new HashMap<>();
                                                 updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", seekBar.getProgress());
 
-                                                DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid());
+                                                DatabaseReference refProjekt = database.getReference("/projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid());
                                                 refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
-                                                        int oldTime = dataSnapshot1.child("zeit").getValue(Integer.class);
-                                                        updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime + seekBar.getProgress() - einteilung.minuten);
+                                                    public void onDataChange(@NonNull DataSnapshot ds) {
+                                                        int oldTimeProject = ds.child("zeit").getValue(Integer.class);
+                                                        updates.put(path + "zeit", oldTimeProject + seekBar.getProgress() - classification.minuten);
+
+                                                        int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
+                                                        updates.put(path + "taetigkeiten/" + classification.taetigkeit, oldTimeTaetigkeit + seekBar.getProgress() - classification.minuten);
 
                                                         database.getReference().updateChildren(updates);
                                                     }
@@ -225,18 +235,21 @@ public class DailyOverviewFragment extends Fragment {
                                                 });
                                             });
 
-                                            builder1.setNegativeButton("Abbrechen", (dialog, which) -> dialog.cancel());
+                                            editBuilder.setNegativeButton("Abbrechen", (dialog, which) -> dialog.cancel());
 
-                                            builder1.setNeutralButton("Löschen", ((dialog, which) -> {
+                                            editBuilder.setNeutralButton("Löschen", ((dialog, which) -> {
                                                 Map<String, Object> updates = new HashMap<>();
                                                 updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
 
-                                                DatabaseReference refProjekt = database.getReference("/projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid());
+                                                DatabaseReference refProjekt = database.getReference("/projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid());
                                                 refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
-                                                        int oldTime = dataSnapshot1.child("zeit").getValue(Integer.class);
-                                                        updates.put("projekte/" + einteilung.projekt + "/mitarbeiter/" + user.getUid() + "/zeit", oldTime - einteilung.minuten);
+                                                    public void onDataChange(@NonNull DataSnapshot ds) {
+                                                        int oldTimeProject = ds.child("zeit").getValue(Integer.class);
+                                                        updates.put(path + "zeit", oldTimeProject - classification.minuten);
+
+                                                        int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
+                                                        updates.put(path + "taetigkeiten/" + classification.taetigkeit, oldTimeTaetigkeit - classification.minuten);
 
                                                         database.getReference().updateChildren(updates);
                                                     }
@@ -247,13 +260,9 @@ public class DailyOverviewFragment extends Fragment {
                                                 });
                                             }));
 
-                                            builder1.show();
+                                            editBuilder.show();
                                         });
                                     }
-                                    builder.setView(viewInflated);
-
-                                    builder.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
-                                    builder.show();
                                 }
 
                                 @Override
@@ -293,6 +302,7 @@ public class DailyOverviewFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = TagTimeFragment.newInstance(minutesUntagged, ref.toString());
         fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
