@@ -183,7 +183,7 @@ public class TagTimeFragment extends Fragment {
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + classificationKey, projectClassification);
 
-                DatabaseReference refProjekt = database.getReference("/projekte/" + projectClassification.projekt + "/" + user.getUid());
+                DatabaseReference refProjekt = database.getReference("/projekte/" + projectClassification.projekt + "/mitarbeiter/" + user.getUid());
                 String path = "projekte/" + projectClassification.projekt + "/mitarbeiter/" + user.getUid() + "/";
                 refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
