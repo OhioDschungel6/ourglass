@@ -213,7 +213,13 @@ public class DailyOverviewFragment extends Fragment {
                                             String path = "projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid() + "/";
                                             editBuilder.setPositiveButton("Speichern", (dialog, which) -> {
                                                 Map<String, Object> updates = new HashMap<>();
-                                                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", seekBar.getProgress());
+
+                                                int newTime = seekBar.getProgress();
+                                                if (newTime > 0) {
+                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", newTime);
+                                                } else {
+                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
+                                                }
 
                                                 DatabaseReference refProjekt = database.getReference("/projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid());
                                                 refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
