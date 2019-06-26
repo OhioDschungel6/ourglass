@@ -226,10 +226,20 @@ public class DailyOverviewFragment extends Fragment {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot ds) {
                                                         int oldTimeProject = ds.child("zeit").getValue(Integer.class);
-                                                        updates.put(path + "zeit", oldTimeProject + seekBar.getProgress() - classification.minuten);
+                                                        int newTimeProject = oldTimeProject + seekBar.getProgress() - classification.minuten;
+                                                        if (newTimeProject > 0) {
+                                                            updates.put(path + "zeit", newTimeProject);
 
-                                                        int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
-                                                        updates.put(path + "taetigkeiten/" + classification.taetigkeit, oldTimeTaetigkeit + seekBar.getProgress() - classification.minuten);
+                                                            int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
+                                                            int newTimeTaetigkeit = oldTimeTaetigkeit + seekBar.getProgress() - classification.minuten;
+                                                            if (newTimeTaetigkeit > 0) {
+                                                                updates.put(path + "taetigkeiten/" + classification.taetigkeit, newTimeTaetigkeit);
+                                                            } else {
+                                                                updates.put(path + "taetigkeiten/" + classification.taetigkeit, null);
+                                                            }
+                                                        } else {
+                                                            updates.put(path, null);
+                                                        }
 
                                                         database.getReference().updateChildren(updates);
                                                     }
@@ -252,10 +262,20 @@ public class DailyOverviewFragment extends Fragment {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot ds) {
                                                         int oldTimeProject = ds.child("zeit").getValue(Integer.class);
-                                                        updates.put(path + "zeit", oldTimeProject - classification.minuten);
+                                                        int newTimeProject = oldTimeProject - classification.minuten;
+                                                        if (newTimeProject > 0) {
+                                                            updates.put(path + "zeit", newTimeProject);
 
-                                                        int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
-                                                        updates.put(path + "taetigkeiten/" + classification.taetigkeit, oldTimeTaetigkeit - classification.minuten);
+                                                            int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
+                                                            int newTimeTaetigkeit = oldTimeTaetigkeit - classification.minuten;
+                                                            if (newTimeTaetigkeit > 0) {
+                                                                updates.put(path + "taetigkeiten/" + classification.taetigkeit, newTimeTaetigkeit);
+                                                            } else {
+                                                                updates.put(path + "taetigkeiten/" + classification.taetigkeit, null);
+                                                            }
+                                                        } else {
+                                                            updates.put(path, null);
+                                                        }
 
                                                         database.getReference().updateChildren(updates);
                                                     }
