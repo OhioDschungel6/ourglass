@@ -157,11 +157,15 @@ public class DailyOverviewFragment extends Fragment {
                             LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
                             detailBuilder.setView(viewInflated);
                             detailBuilder.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
-                            detailBuilder.show();
+                            AlertDialog detailDialog = detailBuilder.show();
 
                             selected.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (!dataSnapshot.exists()) {
+                                        detailDialog.dismiss();
+                                    }
+
                                     einteilungenList.removeAllViews();
                                     for (DataSnapshot d : dataSnapshot.getChildren()) {
                                         ProjectClassification classification = d.getValue(ProjectClassification.class);
