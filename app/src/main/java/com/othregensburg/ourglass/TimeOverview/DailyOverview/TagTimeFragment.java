@@ -102,7 +102,6 @@ public class TagTimeFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if((parent.getItemAtPosition(position)).equals(getString(R.string.fragment_stundeneinteilung_add_taetigkeit))) {
-                    //TODO: DialogFragment
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle(R.string.fragment_stundeneinteilung_add_taetigkeit);
 

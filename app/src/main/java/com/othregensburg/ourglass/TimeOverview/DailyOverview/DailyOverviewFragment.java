@@ -101,7 +101,6 @@ public class DailyOverviewFragment extends Fragment {
 
         DatabaseReference refEinteilungen = ref.child("/einteilung");
 
-
         refEinteilungen.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -172,7 +171,7 @@ public class DailyOverviewFragment extends Fragment {
                                         einteilungenList.addView(element);
 
                                         element.setOnClickListener(v -> {
-                                            //TODO: DialogFragment
+                                            //TODO: fullscreen dialog?
                                             AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
                                             builder1.setTitle(R.string.dialog_edit_einteilung_title);
 
@@ -293,6 +292,7 @@ public class DailyOverviewFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = TagTimeFragment.newInstance(minutesUntagged, ref.toString());
         fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
