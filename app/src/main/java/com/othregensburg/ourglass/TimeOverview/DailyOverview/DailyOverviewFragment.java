@@ -312,6 +312,9 @@ public class DailyOverviewFragment extends Fragment {
                     fabStundeneinteilung.setAlpha(0.4f);
                 }
                 else {
+                    fabStundeneinteilung.setEnabled(true);
+                    fabStundeneinteilung.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(),R.color.colorAccent)));
+                    fabStundeneinteilung.setAlpha(1f);
                     fabStundeneinteilung.setOnClickListener(view1 -> switchToFragmentStundeneinteilung());
                 }
             }
