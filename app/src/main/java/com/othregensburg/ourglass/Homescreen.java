@@ -12,6 +12,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -102,7 +103,7 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
+                Log.d("DatabaseError","The read failed: " + databaseError.getCode());
             }
         });
 
@@ -165,8 +166,8 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("DatabaseError","The read failed: " + databaseError.getCode());
             }
         });
     }
@@ -197,8 +198,8 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("DatabaseError","The read failed: " + databaseError.getCode());
             }
         });
 
@@ -235,8 +236,8 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("DatabaseError","The read failed: " + databaseError.getCode());
             }
         });
     }
@@ -300,9 +301,9 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
+                public void onCancelled(DatabaseError databaseError) {
+                Log.d("DatabaseError","The read failed: " + databaseError.getCode());
+            }
             });
         }
     }
