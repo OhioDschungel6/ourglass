@@ -70,6 +70,7 @@ public class TimeOverviewActivity extends AppDrawerBase {
         ConstraintLayout c2 = findViewById(R.id.datePickerRight);
         c2.setOnClickListener(e->{
             DatePickerDialog dpd = new DatePickerDialog(this, dateDialogSecondDate, secondDate.get(Calendar.YEAR), secondDate.get(Calendar.MONTH), secondDate.get(Calendar.DAY_OF_MONTH));
+
             dpd.show();
         });
 
@@ -133,7 +134,7 @@ public class TimeOverviewActivity extends AppDrawerBase {
                         new FirebaseRecyclerOptions.Builder<Workday>()
                                 .setQuery(query, Workday.class)
                                 .build();
-                mAdapter= new FirebaseAdapterTimeOverview(options,getBaseContext());
+                mAdapter= new FirebaseAdapterTimeOverview(options,view.getContext());
                 recyclerView.setAdapter(mAdapter);
                 mAdapter.startListening();
             }
