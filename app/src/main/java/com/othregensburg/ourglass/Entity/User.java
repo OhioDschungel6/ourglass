@@ -1,8 +1,8 @@
 package com.othregensburg.ourglass.Entity;
 
 public class User {
-    double Sollstd;
-    boolean timeRunning=false;
+    public double Sollstd;
+    public boolean timeRunning=false;
 
     public User() {
     }

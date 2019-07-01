@@ -7,61 +7,42 @@
     android:layout_height="match_parent"
     tools:context=".Login.FirstLoginActivity">
 
-    <EditText
-        android:id="@+id/firstname"
-        android:layout_width="250dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Vorname"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="160dp"/>
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <EditText
-        android:id="@+id/secondname"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Nachname"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/firstname"
-        android:layout_marginTop="32dp" />
 
-    <TextView
-        android:id="@+id/textView_weeklyWorkTimeLabel"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:text="Wöchentliche Arbeitszeit:"
-        android:ems="10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/secondname"
-        android:layout_marginTop="32dp" />
 
-    <TextView
-        android:id="@+id/textView_weeklyWorkTime"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:gravity="center"
-        android:ems="10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView_weeklyWorkTimeLabel"
-        android:layout_marginTop="16dp" />
+        <TextView
+            android:id="@+id/textView_weeklyWorkTimeLabel"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="@string/firstLogin_woechentliche_arbeitszeit_label" />
 
-    <SeekBar
-        android:id="@+id/seekBar_weeklyWorkTime"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView_weeklyWorkTime"
-        android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/textView_weeklyWorkTime"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:gravity="center"
+            android:text="0" />
+
+        <SeekBar
+            android:id="@+id/seekBar_weeklyWorkTime"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/confirmData"

@@ -32,6 +32,7 @@
     <string name="stundenkorrektur_checkbox_snackbar">Zeiten hinzufügen nicht möglich während Krank oder Urlaub ausgewählt ist</string>
     <string name="fragment_tagesuebersicht_label_minutes_untagged">Nicht eingeteilt</string>
     <string name="fragment_stundeneinteilung_add_taetigkeit">Neue Tätigkeit hinzufügen</string>
+    <string name="firstLogin_woechentliche_arbeitszeit_label">Wöchentliche Arbeitszeit:</string>
 
 
 </resources>

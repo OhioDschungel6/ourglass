@@ -28,8 +28,6 @@ public class FirstLoginActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_firstlogin);
 
-        EditText name = findViewById(R.id.secondname);
-        EditText firstname = findViewById(R.id.firstname);
         SeekBar seekBarWeeklyWorkHours = findViewById(R.id.seekBar_weeklyWorkTime);
         TextView textViewWeeklyWorkHours = findViewById(R.id.textView_weeklyWorkTime);
         FloatingActionButton fab_confirm = findViewById(R.id.confirmData);
@@ -53,22 +51,14 @@ public class FirstLoginActivity extends AppCompatActivity {
         });
 
         fab_confirm.setOnClickListener(e->{
-            String sName = name.getText().toString();
-            String sFirstname =firstname.getText().toString();
             Double workhours = seekBarWeeklyWorkHours.getProgress() / 2.0;
 
-            if (sName.isEmpty() || sFirstname.isEmpty()) {
-                Snackbar.make(findViewById(R.id.constraintLogin), "Bitte vollständigen Namen angeben!", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-            else if (workhours == 0.0) {
+            if (workhours == 0.0) {
                 Snackbar.make(findViewById(R.id.constraintLogin), "Bitte Anzahl Wochenstunden angeben!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
             else {
                 //TODO: Problem bei FloatingActionButton?
-                firstname.setVisibility(View.GONE);
-                name.setVisibility(View.GONE);
                 findViewById(R.id.textView_weeklyWorkTimeLabel).setVisibility(View.GONE);
                 textViewWeeklyWorkHours.setVisibility(View.GONE);
                 seekBarWeeklyWorkHours.setVisibility(View.GONE);
