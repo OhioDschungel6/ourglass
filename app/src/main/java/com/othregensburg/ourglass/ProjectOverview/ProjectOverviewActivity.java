@@ -111,7 +111,7 @@ public class ProjectOverviewActivity extends AppDrawerBase {
                                     .setQuery(query, ProjectMember.class)
                                     .build();
                     recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                    mAdapter = new FirebaseAdapterProjectOverview(options);
+                    mAdapter = new FirebaseAdapterProjectOverview(options,getBaseContext());
                     recyclerView.setAdapter(mAdapter);
                     mAdapter.startListening();
                 }
