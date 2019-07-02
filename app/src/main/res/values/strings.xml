@@ -24,7 +24,7 @@
     <string name="nav_drawer_projekt">Projekte</string>
     <string name="nav_drawer_team">Team</string>
     <string name="title_activity_stundenuebersicht">Stundenübersicht</string>
-    <string name="title_activity_stundenkorrektur">Stundenkorrektur</string>
+    <string name="title_activity_stundenkorrektur">Zeitkorrektur</string>
     <string name="title_activity_teamuebersicht">Teamübersicht</string>
     <string name="title_activity_projektuebersicht">Projektübersicht</string>
     <string name="title_activity_tagesuebersicht">Tagesübersicht</string>
