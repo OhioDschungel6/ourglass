@@ -13,6 +13,11 @@ import android.widget.ImageView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.othregensburg.ourglass.R;
 import com.othregensburg.ourglass.Homescreen;
 
@@ -32,13 +37,28 @@ public class StartActivity extends AppCompatActivity {
         AnimationDrawable ad = (AnimationDrawable) img.getDrawable();
         ad.start();
 
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setLogo(R.drawable.hourglass_full)
-                        .build(),
-                RC_SIGN_IN);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            //LoggedIn
+            Intent intent = new Intent(this, Homescreen.class);
+            if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+                intent.putExtra("nfc", true);
+            } else {
+                intent.putExtra("nfc", false);
+            }
+            startActivity(intent);
+            finish();
+        } else {
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder().setIsSmartLockEnabled(true)
+                            .setAvailableProviders(providers)
+                            .setLogo(R.drawable.hourglass_full)
+                            .build(),
+                    RC_SIGN_IN);
+        }
+
+
+
     }
 
     @Override
@@ -51,6 +71,7 @@ public class StartActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 IdpResponse resp= (IdpResponse) data.getExtras().get("extra_idp_response");
+                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
                 if (resp!=null && resp.isNewUser()) {
                     Intent intent = new Intent(this, FirstLoginActivity.class);
