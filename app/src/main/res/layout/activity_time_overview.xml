@@ -9,7 +9,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar_stundenkorrektur"
+        layout="@layout/app_bar_time_overview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

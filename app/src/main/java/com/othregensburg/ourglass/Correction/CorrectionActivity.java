@@ -27,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.othregensburg.ourglass.AppDrawerBase;
-import com.othregensburg.ourglass.Correction.FirebaseAdapterStundenkorrektur;
 import com.othregensburg.ourglass.Entity.Stamp;
 import com.othregensburg.ourglass.R;
 
@@ -41,7 +40,7 @@ public class CorrectionActivity extends AppDrawerBase {
     final Calendar cal = Calendar.getInstance();
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private FirebaseAdapterStundenkorrektur mAdapter;
+    private FirebaseAdapterCorrection mAdapter;
     private DateFormat df = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
     private DateFormat textFormatter = new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
 
@@ -49,7 +48,7 @@ public class CorrectionActivity extends AppDrawerBase {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stundenkorrektur);
+        setContentView(R.layout.activity_correction);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -139,7 +138,7 @@ public class CorrectionActivity extends AppDrawerBase {
                         .setQuery(query, Stamp.class)
                         .build();
 
-                mAdapter = new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur), findViewById(R.id.checkBox_urlaub), findViewById(R.id.checkBox_krank),
+                mAdapter = new FirebaseAdapterCorrection(options, findViewById(R.id.constraintStundenkorrektur), findViewById(R.id.checkBox_urlaub), findViewById(R.id.checkBox_krank),
                         database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s", user.getUid(), df.format(cal.getTime()))));
 
         recyclerView.setAdapter(mAdapter);
@@ -171,7 +170,7 @@ public class CorrectionActivity extends AppDrawerBase {
                             .build();
 
 
-            mAdapter = new FirebaseAdapterStundenkorrektur(options, findViewById(R.id.constraintStundenkorrektur),
+            mAdapter = new FirebaseAdapterCorrection(options, findViewById(R.id.constraintStundenkorrektur),
                     findViewById(R.id.checkBox_urlaub), findViewById(R.id.checkBox_krank),
                     database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s", user.getUid(), df.format(cal.getTime()))));
             RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);

@@ -42,7 +42,7 @@ public class ProjectOverviewActivity extends AppDrawerBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_projektuebersicht);
+        setContentView(R.layout.activity_project_overview);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

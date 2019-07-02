@@ -70,7 +70,7 @@ public class TagTimeFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_stundeneinteilung, container, false);
+        return inflater.inflate(R.layout.fragment_tag_time, container, false);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

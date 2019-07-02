@@ -27,13 +27,13 @@ import com.othregensburg.ourglass.Entity.Stamp;
 
 import java.util.Locale;
 
-public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Stamp, FirebaseAdapterStundenkorrektur.ViewHolder> {
+public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, FirebaseAdapterCorrection.ViewHolder> {
 
     private ConstraintLayout constraintLayout;
     private CheckBox urlaubBox;
     private CheckBox krankBox;
 
-    public FirebaseAdapterStundenkorrektur(@NonNull FirebaseRecyclerOptions<Stamp> options, ConstraintLayout cl, CheckBox urlaubBox, CheckBox krankBox, DatabaseReference reference) {
+    public FirebaseAdapterCorrection(@NonNull FirebaseRecyclerOptions<Stamp> options, ConstraintLayout cl, CheckBox urlaubBox, CheckBox krankBox, DatabaseReference reference) {
         super(options);
         constraintLayout = cl;
         this.urlaubBox = urlaubBox;
@@ -123,8 +123,8 @@ public class FirebaseAdapterStundenkorrektur extends FirebaseRecyclerAdapter<Sta
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater mInflater = LayoutInflater.from(viewGroup.getContext());
 
-        View mItemView = mInflater.inflate(R.layout.entry, viewGroup, false);
-        return new FirebaseAdapterStundenkorrektur.ViewHolder(mItemView);
+        View mItemView = mInflater.inflate(R.layout.correction_entry, viewGroup, false);
+        return new FirebaseAdapterCorrection.ViewHolder(mItemView);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

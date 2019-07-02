@@ -87,7 +87,7 @@ public class FirebaseAdapterTimeOverview extends FirebaseRecyclerAdapter<Workday
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View mItemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.stundenuebersicht_entry, viewGroup, false);
+        View mItemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.time_overview_entry, viewGroup, false);
         return new FirebaseAdapterTimeOverview.ViewHolder(mItemView);
     }
 

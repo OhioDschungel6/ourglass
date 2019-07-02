@@ -51,7 +51,7 @@ public class FirebaseAdapterProjectOverview extends FirebaseRecyclerAdapter<Proj
     public FirebaseAdapterProjectOverview.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater mInflater = LayoutInflater.from(viewGroup.getContext());
 
-        View mItemView = mInflater.inflate(R.layout.projekt_entry, viewGroup, false);
+        View mItemView = mInflater.inflate(R.layout.project_entry, viewGroup, false);
         return new FirebaseAdapterProjectOverview.ViewHolder(mItemView);
     }
 

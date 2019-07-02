@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".TimeOverview.TimeOverviewActivity"
-    tools:showIn="@layout/app_bar_stundenuebersicht">
+    tools:showIn="@layout/app_bar_time_overview">
 
     <LinearLayout
         android:id="@+id/dateBarStundenuebersicht"
