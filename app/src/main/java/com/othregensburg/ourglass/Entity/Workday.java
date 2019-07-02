@@ -4,8 +4,8 @@ import java.util.Map;
 
 public class Workday {
 
-    public boolean urlaub;
-    public boolean krank;
+    public boolean holiday;
+    public boolean ill;
     public Map<String,Stamp> timestamps;
-    public Map<String, ProjectClassification> einteilung;
+    public Map<String, ProjectClassification> classification;
 }

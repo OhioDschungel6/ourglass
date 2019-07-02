@@ -42,8 +42,8 @@ public class FirebaseAdapterProjectOverview extends FirebaseRecyclerAdapter<Proj
     @Override
     protected void onBindViewHolder(@NonNull FirebaseAdapterProjectOverview.ViewHolder holder, int position, @NonNull ProjectMember model) {
         holder.name.setText(model.name);
-        holder.zeit.setText(String.format(Locale.GERMAN, "Zeit: %d Std %d Min", model.zeit / 60, model.zeit % 60));
-        holder.min = model.zeit;
+        holder.time.setText(String.format(Locale.GERMAN, "Zeit: %d Std %d Min", model.time / 60, model.time % 60));
+        holder.min = model.time;
     }
 
     @NonNull
@@ -58,14 +58,14 @@ public class FirebaseAdapterProjectOverview extends FirebaseRecyclerAdapter<Proj
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
-        final TextView zeit;
+        final TextView time;
         private static final int PIE_CHART_TEXTSIZE = 14;
         int min;
 
         ViewHolder(@NonNull final View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name_field);
-            zeit = itemView.findViewById(R.id.hour_field);
+            time = itemView.findViewById(R.id.hour_field);
 
 
             itemView.setOnClickListener(v -> {
@@ -80,7 +80,7 @@ public class FirebaseAdapterProjectOverview extends FirebaseRecyclerAdapter<Proj
                     }
                 });
 
-                getRef(getAdapterPosition()).child("taetigkeiten").addListenerForSingleValueEvent(new ValueEventListener() {
+                getRef(getAdapterPosition()).child("activities").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         PieChartData pieChartData = new PieChartData(sliceValuesList);

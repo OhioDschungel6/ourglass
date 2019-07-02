@@ -23,7 +23,7 @@
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:text="@string/firstLogin_woechentliche_arbeitszeit_label" />
+            android:text="@string/firstLogin_weekly_worktime_label" />
 
 
         <TextView

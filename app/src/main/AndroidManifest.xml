@@ -32,19 +32,19 @@
         </activity>
         <activity
             android:name=".TimeOverview.DailyOverview.DailyOverviewActivity"
-            android:label="@string/title_activity_tagesuebersicht"
+            android:label="@string/title_activity_daily_overview"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TimeOverview.TimeOverviewActivity"
-            android:label="@string/title_activity_stundenuebersicht"
+            android:label="@string/title_activity_time_overview"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ProjectOverview.ProjectOverviewActivity"
-            android:label="@string/title_activity_projektuebersicht"
+            android:label="@string/title_activity_project_overview"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Correction.CorrectionActivity"
-            android:label="@string/title_activity_stundenkorrektur"
+            android:label="@string/title_activity_correction"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Homescreen"

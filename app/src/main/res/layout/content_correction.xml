@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/constraintStundenkorrektur"
+    android:id="@+id/constraintCorrection"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Correction.CorrectionActivity"
     tools:layout_editor_absoluteY="56dp"
@@ -51,14 +51,14 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView_stundenkorrektur"
+        android:id="@+id/recyclerView_correction"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/datepicker_bar"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <CheckBox
-        android:id="@+id/checkBox_urlaub"
+        android:id="@+id/checkBox_holiday"
         app:layout_constraintTop_toBottomOf="@id/datepicker_bar"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"
@@ -66,19 +66,19 @@
         android:layout_margin="16dp"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:text="Urlaub"
+        android:text="@string/correction_holidaybox"
         android:visibility="invisible"/>
 
     <CheckBox
-        android:id="@+id/checkBox_krank"
-        app:layout_constraintTop_toBottomOf="@id/checkBox_urlaub"
+        android:id="@+id/checkBox_ill"
+        android:text="@string/illbox"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:text="Krank"
+        app:layout_constraintTop_toBottomOf="@id/checkBox_holiday"
         android:visibility="invisible"/>
 
 

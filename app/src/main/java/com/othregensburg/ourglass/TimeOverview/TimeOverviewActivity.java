@@ -18,8 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.othregensburg.ourglass.AppDrawerBase;
-import com.othregensburg.ourglass.R;
 import com.othregensburg.ourglass.Entity.Workday;
+import com.othregensburg.ourglass.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,6 +35,75 @@ public class TimeOverviewActivity extends AppDrawerBase {
     private Calendar firstDate = Calendar.getInstance();
     private Calendar secondDate = Calendar.getInstance();
 
+    private DatePickerDialog.OnDateSetListener dateDialogFirstDate = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            c.set(Calendar.MONTH, month);
+            c.set(Calendar.YEAR, year);
+            if (c.compareTo(secondDate) < 0) {
+                firstDate = c;
+                TextView textView_firstDate = findViewById(R.id.date1);
+                DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
+                textView_firstDate.setText(df.format(firstDate.getTime()));
+
+
+                //new Query
+                DateFormat queryDate = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
+                RecyclerView recyclerView = findViewById(R.id.recyclerView_time_overview);
+                Query query = database
+                        .getReference("workdays/" + user.getUid())
+                        .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
+
+                FirebaseRecyclerOptions<Workday> options =
+                        new FirebaseRecyclerOptions.Builder<Workday>()
+                                .setQuery(query, Workday.class)
+                                .build();
+                mAdapter = new FirebaseAdapterTimeOverview(options, view.getContext());
+                recyclerView.setAdapter(mAdapter);
+                mAdapter.startListening();
+            }
+        }
+    };
+    private DatePickerDialog.OnDateSetListener dateDialogSecondDate = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            c.set(Calendar.MONTH, month);
+            c.set(Calendar.YEAR, year);
+            if (c.compareTo(firstDate) > 0) {
+                secondDate = c;
+                TextView textView_secondDate = findViewById(R.id.date2);
+                DateFormat df = new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
+                textView_secondDate.setText(df.format(secondDate.getTime()));
+
+
+                //new Query
+                DateFormat queryDate = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
+                RecyclerView recyclerView = findViewById(R.id.recyclerView_time_overview);
+                Query query = database
+                        .getReference("workdays/" + user.getUid())
+                        .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
+
+                FirebaseRecyclerOptions<Workday> options =
+                        new FirebaseRecyclerOptions.Builder<Workday>()
+                                .setQuery(query, Workday.class)
+                                .build();
+                mAdapter = new FirebaseAdapterTimeOverview(options, getBaseContext());
+                recyclerView.setAdapter(mAdapter);
+                mAdapter.startListening();
+            }
+        }
+    };
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +113,7 @@ public class TimeOverviewActivity extends AppDrawerBase {
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_stundenuebersicht);
+        navigationView.setCheckedItem(R.id.nav_time_overview);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -76,9 +145,9 @@ public class TimeOverviewActivity extends AppDrawerBase {
 
         //Section RecyclerView
         DateFormat queryDate = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenuebersicht);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_time_overview);
         Query query = database
-                .getReference("arbeitstage/"+user.getUid())
+                .getReference("workdays/" + user.getUid())
                 .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
 
         FirebaseRecyclerOptions<Workday> options =
@@ -96,80 +165,10 @@ public class TimeOverviewActivity extends AppDrawerBase {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        mAdapter.stopListening();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenuebersicht);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_time_overview);
         recyclerView.setAdapter(mAdapter);
         mAdapter.startListening();
     }
-
-    private DatePickerDialog.OnDateSetListener dateDialogFirstDate = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            c.set(Calendar.MONTH,month);
-            c.set(Calendar.YEAR,year);
-            if (c.compareTo(secondDate)<0) {
-                firstDate=c;
-                TextView textView_firstDate = findViewById(R.id.date1);
-                DateFormat df= new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
-                textView_firstDate.setText(df.format(firstDate.getTime()));
-
-
-                //new Query
-                DateFormat queryDate = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
-                RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenuebersicht);
-                Query query = database
-                        .getReference("arbeitstage/"+user.getUid())
-                        .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
-
-                FirebaseRecyclerOptions<Workday> options =
-                        new FirebaseRecyclerOptions.Builder<Workday>()
-                                .setQuery(query, Workday.class)
-                                .build();
-                mAdapter= new FirebaseAdapterTimeOverview(options,view.getContext());
-                recyclerView.setAdapter(mAdapter);
-                mAdapter.startListening();
-            }
-        }
-    };
-
-    private DatePickerDialog.OnDateSetListener dateDialogSecondDate = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            Calendar c = Calendar.getInstance();
-            c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            c.set(Calendar.MONTH,month);
-            c.set(Calendar.YEAR,year);
-            if (c.compareTo(firstDate)>0) {
-                secondDate=c;
-                TextView textView_secondDate = findViewById(R.id.date2);
-                DateFormat df= new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
-                textView_secondDate.setText(df.format(secondDate.getTime()));
-
-
-                //new Query
-                DateFormat queryDate = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
-                RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenuebersicht);
-                Query query = database
-                        .getReference("arbeitstage/"+user.getUid())
-                        .orderByKey().startAt(queryDate.format(firstDate.getTime())).endAt(queryDate.format(secondDate.getTime()));
-
-                FirebaseRecyclerOptions<Workday> options =
-                        new FirebaseRecyclerOptions.Builder<Workday>()
-                                .setQuery(query, Workday.class)
-                                .build();
-                mAdapter= new FirebaseAdapterTimeOverview(options,getBaseContext());
-                recyclerView.setAdapter(mAdapter);
-                mAdapter.startListening();
-            }
-        }
-    };
 }

@@ -17,7 +17,7 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/minus_divider"
+            android:text="@string/divider"
             />
 
         <TextView
@@ -28,7 +28,7 @@
             android:textSize="24sp"
             android:layout_gravity="center"
             android:textStyle="bold"
-            android:text="@string/minus_divider" />
+            android:text="@string/divider" />
 
         <TextView
             android:id="@+id/endTime"
@@ -38,7 +38,7 @@
             android:textSize="24sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/minus_divider"/>
+            android:text="@string/divider" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/remove"

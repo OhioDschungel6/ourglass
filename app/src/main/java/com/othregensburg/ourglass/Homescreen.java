@@ -25,9 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.othregensburg.ourglass.Entity.Workday;
 import com.othregensburg.ourglass.Entity.Stamp;
 import com.othregensburg.ourglass.Entity.Time;
+import com.othregensburg.ourglass.Entity.Workday;
 import com.othregensburg.ourglass.Login.FirstLoginActivity;
 
 import java.text.DateFormat;
@@ -62,14 +62,14 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
             } ,NfcAdapter.FLAG_READER_NFC_F |NfcAdapter.FLAG_READER_NFC_B| NfcAdapter.FLAG_READER_NFC_A|NfcAdapter.FLAG_READER_NFC_V,null);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_homescreen);
 
@@ -91,12 +91,12 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
                     onClick(findViewById(R.id.start));
                 }
                 if (timeIsRunning) {
-                    ImageView img = (ImageView) findViewById(R.id.start);
+                    ImageView img = findViewById(R.id.start);
                     img.setImageResource(R.drawable.hourglass_animation);
                     AnimationDrawable ad = (AnimationDrawable) img.getDrawable();
                     ad.start();
                 } else {
-                    ImageView img = (ImageView) findViewById(R.id.start);
+                    ImageView img = findViewById(R.id.start);
                     img.setImageResource(R.drawable.hourglass_full);
                 }
             }
@@ -145,7 +145,7 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
     private void updateTodaysWorktime() {
         //Todays worktime
         TextView todayWorktime = findViewById(R.id.worktime);
-        DatabaseReference worktime = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d/timestamps", user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
+        DatabaseReference worktime = database.getReference(String.format(Locale.GERMAN, "workdays/%s/%02d%02d%02d/timestamps", user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
         worktime.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -153,10 +153,10 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot d : dataSnapshot.getChildren()) {
                         Stamp s = d.getValue(Stamp.class);
-                        if (s.endzeit == null) {
+                        if (s.end == null) {
                             DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
                             calendar= Calendar.getInstance();
-                            s.endzeit = df.format(calendar.getTime());
+                            s.end = df.format(calendar.getTime());
                         }
                         t.add(s);
                     }
@@ -208,7 +208,7 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
     public void updateMonthlyIsWorktime() {
         //months isWorktime
         TextView monthTime = findViewById(R.id.textView_istStdAnz);
-        Query monthTimeQuery = database.getReference("arbeitstage/" + user.getUid())
+        Query monthTimeQuery = database.getReference("workdays/" + user.getUid())
                 .orderByKey()
                 .startAt(String.format(Locale.GERMAN, "%02d%02d%02d", calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, 1));
         monthTimeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -217,15 +217,15 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
                 Time t = new Time();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Workday workday = ds.getValue(Workday.class);
-                    if (workday.krank || workday.urlaub) {
+                    if (workday.ill || workday.holiday) {
                         t.add(new Stamp("00:00", String.format(Locale.GERMAN, "%02d:%02d", (int) dailyworktime, (int) ((dailyworktime - ((int) dailyworktime)) * 60))));
                     } else {
                         if (workday.timestamps != null) {
                             for (Stamp stamp : workday.timestamps.values()) {
-                                if (stamp.endzeit == null) {
+                                if (stamp.end == null) {
                                     DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
                                     calendar = Calendar.getInstance();
-                                    stamp.endzeit = df.format(calendar.getTime());
+                                    stamp.end = df.format(calendar.getTime());
                                 }
                                 t.add(stamp);
                             }
@@ -278,7 +278,7 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
             AnimationDrawable ad = (AnimationDrawable) img.getDrawable();
             ad.start();
             calendar = Calendar.getInstance();
-            DatabaseReference reference = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d",
+            DatabaseReference reference = database.getReference(String.format(Locale.GERMAN, "workdays/%s/%02d%02d%02d",
                     user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)))
                     .child("timestamps").push();
             DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
@@ -287,7 +287,7 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
             ImageView img = (ImageView) v;
             img.setImageResource(R.drawable.hourglass_full);
             calendar = Calendar.getInstance();
-            Query query = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%02d%02d%02d",
+            Query query = database.getReference(String.format(Locale.GERMAN, "workdays/%s/%02d%02d%02d",
                     user.getUid(), calendar.get(Calendar.YEAR) - 2000, calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)))
                     .child("timestamps").orderByKey().limitToLast(1);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -295,7 +295,7 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot d : dataSnapshot.getChildren()) {
                         DateFormat df = new SimpleDateFormat("HH:mm", Locale.GERMANY);
-                        d.getRef().child("endzeit").setValue(df.format(calendar.getTime()));
+                        d.getRef().child("end").setValue(df.format(calendar.getTime()));
                     }
 
                 }

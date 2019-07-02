@@ -22,36 +22,36 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.othregensburg.ourglass.R;
 import com.othregensburg.ourglass.Entity.Stamp;
+import com.othregensburg.ourglass.R;
 
 import java.util.Locale;
 
 public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, FirebaseAdapterCorrection.ViewHolder> {
 
     private ConstraintLayout constraintLayout;
-    private CheckBox urlaubBox;
-    private CheckBox krankBox;
+    private CheckBox holidayBox;
+    private CheckBox illBox;
 
-    public FirebaseAdapterCorrection(@NonNull FirebaseRecyclerOptions<Stamp> options, ConstraintLayout cl, CheckBox urlaubBox, CheckBox krankBox, DatabaseReference reference) {
+    public FirebaseAdapterCorrection(@NonNull FirebaseRecyclerOptions<Stamp> options, ConstraintLayout cl, CheckBox holidayBox, CheckBox illBox, DatabaseReference reference) {
         super(options);
         constraintLayout = cl;
-        this.urlaubBox = urlaubBox;
-        this.krankBox = krankBox;
+        this.holidayBox = holidayBox;
+        this.illBox = illBox;
 
-        this.urlaubBox.setVisibility(View.VISIBLE);
-        this.krankBox.setVisibility(View.VISIBLE);
+        this.holidayBox.setVisibility(View.VISIBLE);
+        this.illBox.setVisibility(View.VISIBLE);
 
-        reference.child("urlaub").addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child("holiday").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Boolean checked = dataSnapshot.getValue(Boolean.class);
-                    urlaubBox.setChecked(checked);
-                    krankBox.setEnabled(!checked);
+                    holidayBox.setChecked(checked);
+                    illBox.setEnabled(!checked);
                 } else {
-                    urlaubBox.setChecked(false);
-                    krankBox.setEnabled(true);
+                    holidayBox.setChecked(false);
+                    illBox.setEnabled(true);
                 }
 
             }
@@ -61,16 +61,16 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
 
             }
         });
-        reference.child("krank").addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child("ill").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     Boolean checked = dataSnapshot.getValue(Boolean.class);
-                    krankBox.setChecked(checked);
-                    urlaubBox.setEnabled(!checked);
+                    illBox.setChecked(checked);
+                    holidayBox.setEnabled(!checked);
                 } else {
-                    krankBox.setChecked(false);
-                    urlaubBox.setEnabled(true);
+                    illBox.setChecked(false);
+                    holidayBox.setEnabled(true);
                 }
 
             }
@@ -82,23 +82,23 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
         });
 
 
-        this.urlaubBox.setOnClickListener(e ->{
-            if (this.urlaubBox.isChecked()) {
-                this.krankBox.setEnabled(false);
-                reference.child("urlaub").setValue(this.urlaubBox.isChecked());
+        this.holidayBox.setOnClickListener(e -> {
+            if (this.holidayBox.isChecked()) {
+                this.illBox.setEnabled(false);
+                reference.child("holiday").setValue(this.holidayBox.isChecked());
             } else {
-                this.krankBox.setEnabled(true);
+                this.illBox.setEnabled(true);
                 reference.setValue(null);
             }
 
 
         });
-        this.krankBox.setOnClickListener(e->{
-            if (this.krankBox.isChecked()) {
-                this.urlaubBox.setEnabled(false);
-                reference.child("krank").setValue(this.krankBox.isChecked());
+        this.illBox.setOnClickListener(e -> {
+            if (this.illBox.isChecked()) {
+                this.holidayBox.setEnabled(false);
+                reference.child("ill").setValue(this.illBox.isChecked());
             } else {
-                this.urlaubBox.setEnabled(true);
+                this.holidayBox.setEnabled(true);
                 reference.setValue(null);
             }
 
@@ -110,12 +110,12 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Stamp model) {
-        holder.startTime.setText(model.startzeit);
-        holder.endTime.setText(model.endzeit);
+        holder.startTime.setText(model.start);
+        holder.endTime.setText(model.end);
         holder.model = model;
         holder.itemRef = getRef(position);
-        urlaubBox.setVisibility(View.INVISIBLE);
-        krankBox.setVisibility(View.INVISIBLE);
+        holidayBox.setVisibility(View.INVISIBLE);
+        illBox.setVisibility(View.INVISIBLE);
     }
 
     @NonNull
@@ -134,40 +134,11 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
         final FloatingActionButton removeButton;
         DatabaseReference itemRef;
 
-        ViewHolder(@NonNull final View itemView) {
-            super(itemView);
-            startTime = itemView.findViewById(R.id.startTime);
-            endTime = itemView.findViewById(R.id.endTime);
-            removeButton = itemView.findViewById(R.id.remove);
-            startTime.setOnClickListener(h -> {
-                Pair<Integer, Integer> pair = model.pairStartzeit();
-                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogStartZeitCallback, pair.first, pair.second, true);
-                tpd.show();
-            });
-            endTime.setOnClickListener(h -> {
-                Pair<Integer, Integer> pair = model.pairEndzeit();
-                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogEndZeitCallback, pair.first, pair.second, true);
-                tpd.show();
-            });
-            removeButton.setOnClickListener(h -> {
-                if (getItemCount() == 1) {
-                    urlaubBox.setVisibility(View.VISIBLE);
-                    krankBox.setVisibility(View.VISIBLE);
-                }
-                if ("".equals(endTime.getText().toString())) {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("user/" + FirebaseAuth.getInstance().getUid() + "/timeRunning");
-                    ref.setValue(false);
-                }
-                itemRef.setValue(null);
-
-            });
-        }
-
-        private TimePickerDialog.OnTimeSetListener onTimeDialogStartZeitCallback = new TimePickerDialog.OnTimeSetListener() {
+        private TimePickerDialog.OnTimeSetListener onTimeDialogStartTimeCallback = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 if (endTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) >= 0) {
-                    itemRef.child("startzeit").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+                    itemRef.child("start").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
 
                     notifyDataSetChanged();
                 } else {
@@ -178,11 +149,11 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
 
             }
         };
-        private TimePickerDialog.OnTimeSetListener onTimeDialogEndZeitCallback = new TimePickerDialog.OnTimeSetListener() {
+        private TimePickerDialog.OnTimeSetListener onTimeDialogEndTimeCallback = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 if (startTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) <= 0) {
-                    itemRef.child("endzeit").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+                    itemRef.child("end").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
 
                 } else {
                     Snackbar.make(constraintLayout, "Endzeit kann nicht vor der Startzeit sein!", Snackbar.LENGTH_LONG)
@@ -191,5 +162,33 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
 
             }
         };
+        ViewHolder(@NonNull final View itemView) {
+            super(itemView);
+            startTime = itemView.findViewById(R.id.startTime);
+            endTime = itemView.findViewById(R.id.endTime);
+            removeButton = itemView.findViewById(R.id.remove);
+            startTime.setOnClickListener(h -> {
+                Pair<Integer, Integer> pair = model.pairStarttime();
+                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogStartTimeCallback, pair.first, pair.second, true);
+                tpd.show();
+            });
+            endTime.setOnClickListener(h -> {
+                Pair<Integer, Integer> pair = model.pairEndtime();
+                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogEndTimeCallback, pair.first, pair.second, true);
+                tpd.show();
+            });
+            removeButton.setOnClickListener(h -> {
+                if (getItemCount() == 1) {
+                    holidayBox.setVisibility(View.VISIBLE);
+                    illBox.setVisibility(View.VISIBLE);
+                }
+                if ("".equals(endTime.getText().toString())) {
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("user/" + FirebaseAuth.getInstance().getUid() + "/timeRunning");
+                    ref.setValue(false);
+                }
+                itemRef.setValue(null);
+
+            });
+        }
     }
 }

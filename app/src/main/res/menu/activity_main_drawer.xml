@@ -9,17 +9,17 @@
             android:icon="@drawable/ic_menu_homescreen"
             android:title="@string/nav_drawer_homescreen" />
         <item
-            android:id="@+id/nav_stundenuebersicht"
+            android:id="@+id/nav_time_overview"
             android:icon="@drawable/calendar"
-            android:title="@string/nav_drawer_stundenuebersicht" />
+            android:title="@string/nav_drawer_time_overview" />
         <item
             android:id="@+id/nav_korrektur"
             android:icon="@drawable/ic_menu_zeitkorrektur"
-            android:title="@string/nav_drawer_korrektur" />
+            android:title="@string/nav_drawer_correction" />
         <item
-            android:id="@+id/nav_projekt"
+            android:id="@+id/nav_project"
             android:icon="@drawable/ic_project_black_24dp"
-            android:title="@string/nav_drawer_projekt" />
+            android:title="@string/nav_drawer_project" />
     </group>
 
 </menu>

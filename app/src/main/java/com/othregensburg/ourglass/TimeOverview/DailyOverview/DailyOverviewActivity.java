@@ -25,7 +25,7 @@ public class DailyOverviewActivity extends AppDrawerBase {
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_stundenuebersicht);
+        navigationView.setCheckedItem(R.id.nav_time_overview);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -40,7 +40,7 @@ public class DailyOverviewActivity extends AppDrawerBase {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = DailyOverviewFragment.newInstance(refUrl, minutesWorekd);
-        fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+        fragmentTransaction.replace(R.id.time_overview_fragmentcontainer, fragment);
         fragmentTransaction.commit();
     }
 

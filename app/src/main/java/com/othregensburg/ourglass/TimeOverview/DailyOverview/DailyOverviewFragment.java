@@ -99,27 +99,27 @@ public class DailyOverviewFragment extends Fragment {
         DateFormat df = new SimpleDateFormat("EEEE dd.MM.yy", Locale.GERMANY);
         textViewDate.setText(df.format(date.getTime()));
 
-        DatabaseReference refEinteilungen = ref.child("/einteilung");
+        DatabaseReference refEinteilungen = ref.child("/classification");
 
         refEinteilungen.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 minutesUntagged = minutesWorked;
-                Map<String, Integer> mapTaetigkeiten = new HashMap<>();
+                Map<String, Integer> mapActivities = new HashMap<>();
 
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    ProjectClassification einteilung = d.getValue(ProjectClassification.class);
-                    int minutesTaetigkeit = mapTaetigkeiten.getOrDefault(einteilung.taetigkeit,0);
-                    minutesTaetigkeit += einteilung.minuten;
-                    mapTaetigkeiten.put(einteilung.taetigkeit, minutesTaetigkeit);
-                    minutesUntagged -= einteilung.minuten;
+                    ProjectClassification classification = d.getValue(ProjectClassification.class);
+                    int minutesActivity = mapActivities.getOrDefault(classification.activity, 0);
+                    minutesActivity += classification.minutes;
+                    mapActivities.put(classification.activity, minutesActivity);
+                    minutesUntagged -= classification.minutes;
                 }
                 List<SliceValue> sliceValues = new ArrayList<>();
-                for (Map.Entry<String, Integer> entry : mapTaetigkeiten.entrySet()) {
+                for (Map.Entry<String, Integer> entry : mapActivities.entrySet()) {
                     sliceValues.add(new SliceValue(entry.getValue(), getNextColor()).setLabel(entry.getKey()));
                 }
                 if (minutesUntagged > 0) {
-                    sliceValues.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(getString(R.string.fragment_tagesuebersicht_label_minutes_untagged)));
+                    sliceValues.add(new SliceValue(minutesUntagged, Color.LTGRAY).setLabel(getString(R.string.fragment_daily_overview_label_minutes_untagged)));
                 }
                 PieChartData pieChartData = new PieChartData(sliceValues);
                 pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
@@ -135,26 +135,26 @@ public class DailyOverviewFragment extends Fragment {
                     @Override
                     public void onValueSelected(int arcIndex, SliceValue value) {
                         String label = String.copyValueOf(value.getLabelAsChars());
-                        if(label.equals(getString(R.string.fragment_tagesuebersicht_label_minutes_untagged))) {
+                        if (label.equals(getString(R.string.fragment_daily_overview_label_minutes_untagged))) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setTitle(getString(R.string.fragment_tagesuebersicht_label_minutes_untagged));
+                            builder.setTitle(getString(R.string.fragment_daily_overview_label_minutes_untagged));
                             Time timeUntagged = new Time(minutesUntagged);
                             TextView textViewUntagged = new TextView(getContext());
-                            textViewUntagged.setText(getString(R.string.dialog_taetigkeit_details_untagged_time, timeUntagged.toString()));
+                            textViewUntagged.setText(getString(R.string.dialog_activity_details_untagged_time, timeUntagged.toString()));
                             textViewUntagged.setTextSize(18);
                             textViewUntagged.setPadding(80, 32  , 0, 0);
                             builder.setView(textViewUntagged);
-                            builder.setPositiveButton("Einteilen", (dialog, which) -> switchToFragmentStundeneinteilung());
+                            builder.setPositiveButton("Einteilen", (dialog, which) -> switchToFragmentTagTime());
                             builder.setNegativeButton("Abbrechen", (dialog, which) -> dialog.dismiss());
                             builder.show();
                         }
                         else {
-                            Query selected = ref.child("einteilung").orderByChild("taetigkeit").equalTo(label);
+                            Query selected = ref.child("classification").orderByChild("activity").equalTo(label);
 
                             AlertDialog.Builder detailBuilder = new AlertDialog.Builder(getContext());
                             detailBuilder.setTitle(label);
-                            View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details, (ViewGroup) getView(), false);
-                            LinearLayout einteilungenList = viewInflated.findViewById(R.id.einteilungen_list);
+                            View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_activity_details, (ViewGroup) getView(), false);
+                            LinearLayout classificationList = viewInflated.findViewById(R.id.classification_list);
                             detailBuilder.setView(viewInflated);
                             detailBuilder.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
                             AlertDialog detailDialog = detailBuilder.show();
@@ -166,29 +166,29 @@ public class DailyOverviewFragment extends Fragment {
                                         detailDialog.dismiss();
                                     }
 
-                                    einteilungenList.removeAllViews();
+                                    classificationList.removeAllViews();
                                     for (DataSnapshot d : dataSnapshot.getChildren()) {
                                         ProjectClassification classification = d.getValue(ProjectClassification.class);
-                                        View element = LayoutInflater.from(getContext()).inflate(R.layout.dialog_taetigkeit_details_entry, einteilungenList, false);
-                                        ((TextView) element.findViewById(R.id.textView_projekt)).setText(classification.projekt);
-                                        ((TextView) element.findViewById(R.id.textView_notiz)).setText(classification.notiz);
-                                        String stringTime = new Time(classification.minuten).toString();
-                                        TextView textViewTime = element.findViewById(R.id.dialog_taetigkeit_textView_time);
+                                        View element = LayoutInflater.from(getContext()).inflate(R.layout.dialog_activity_details_entry, classificationList, false);
+                                        ((TextView) element.findViewById(R.id.textView_project)).setText(classification.project);
+                                        ((TextView) element.findViewById(R.id.textView_note)).setText(classification.note);
+                                        String stringTime = new Time(classification.minutes).toString();
+                                        TextView textViewTime = element.findViewById(R.id.dialog_activity_textView_time);
                                         textViewTime.setText(stringTime);
-                                        einteilungenList.addView(element);
+                                        classificationList.addView(element);
 
                                         element.setOnClickListener(v -> {
                                             //TODO: fullscreen dialog?
                                             AlertDialog.Builder editBuilder = new AlertDialog.Builder(getContext());
-                                            editBuilder.setTitle(R.string.dialog_edit_einteilung_title);
+                                            editBuilder.setTitle(R.string.dialog_edit_classification_title);
 
-                                            View viewInflated1 = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_einteilung, (ViewGroup) getView(), false);
-                                            final SeekBar seekBar =  viewInflated1.findViewById(R.id.dialog_edit_einteilung_seekBar);
-                                            final TextView textView = viewInflated1.findViewById(R.id.dialog_edit_einteilung_textView);
+                                            View viewInflated1 = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_classification, (ViewGroup) getView(), false);
+                                            final SeekBar seekBar = viewInflated1.findViewById(R.id.dialog_edit_classification_seekBar);
+                                            final TextView textView = viewInflated1.findViewById(R.id.dialog_edit_classification_textView);
 
-                                            seekBar.setMax(classification.minuten + minutesUntagged);
-                                            seekBar.setProgress(classification.minuten);
-                                            Time time = new Time(classification.minuten);
+                                            seekBar.setMax(classification.minutes + minutesUntagged);
+                                            seekBar.setProgress(classification.minutes);
+                                            Time time = new Time(classification.minutes);
                                             textView.setText(time.toString());
                                             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                                                 @Override
@@ -210,32 +210,32 @@ public class DailyOverviewFragment extends Fragment {
 
                                             editBuilder.setView(viewInflated1);
 
-                                            String path = "projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid() + "/";
+                                            String path = "projects/" + classification.project + "/employee/" + user.getUid() + "/";
                                             editBuilder.setPositiveButton("Speichern", (dialog, which) -> {
                                                 Map<String, Object> updates = new HashMap<>();
 
                                                 int newTime = seekBar.getProgress();
                                                 if (newTime > 0) {
-                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey() + "/minuten", newTime);
+                                                    updates.put("workdays/" + user.getUid() + "/" + ref.getKey() + "/classification/" + d.getKey() + "/minutes", newTime);
                                                 } else {
-                                                    updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
+                                                    updates.put("workdays/" + user.getUid() + "/" + ref.getKey() + "/classification/" + d.getKey(), null);
                                                 }
 
-                                                DatabaseReference refProjekt = database.getReference("/projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid());
-                                                refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                DatabaseReference refProject = database.getReference("/projects/" + classification.project + "/employee/" + user.getUid());
+                                                refProject.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot ds) {
-                                                        int oldTimeProject = ds.child("zeit").getValue(Integer.class);
-                                                        int newTimeProject = oldTimeProject + seekBar.getProgress() - classification.minuten;
+                                                        int oldTimeProject = ds.child("time").getValue(Integer.class);
+                                                        int newTimeProject = oldTimeProject + seekBar.getProgress() - classification.minutes;
                                                         if (newTimeProject > 0) {
-                                                            updates.put(path + "zeit", newTimeProject);
+                                                            updates.put(path + "time", newTimeProject);
 
-                                                            int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
-                                                            int newTimeTaetigkeit = oldTimeTaetigkeit + seekBar.getProgress() - classification.minuten;
-                                                            if (newTimeTaetigkeit > 0) {
-                                                                updates.put(path + "taetigkeiten/" + classification.taetigkeit, newTimeTaetigkeit);
+                                                            int oldTimeActivity = ds.child("activities/" + classification.activity).getValue(Integer.class);
+                                                            int newTimeActivity = oldTimeActivity + seekBar.getProgress() - classification.minutes;
+                                                            if (newTimeActivity > 0) {
+                                                                updates.put(path + "activities/" + classification.activity, newTimeActivity);
                                                             } else {
-                                                                updates.put(path + "taetigkeiten/" + classification.taetigkeit, null);
+                                                                updates.put(path + "activities/" + classification.activity, null);
                                                             }
                                                         } else {
                                                             updates.put(path, null);
@@ -255,23 +255,23 @@ public class DailyOverviewFragment extends Fragment {
 
                                             editBuilder.setNeutralButton("Löschen", ((dialog, which) -> {
                                                 Map<String, Object> updates = new HashMap<>();
-                                                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + d.getKey(), null);
+                                                updates.put("workdays/" + user.getUid() + "/" + ref.getKey() + "/classification/" + d.getKey(), null);
 
-                                                DatabaseReference refProjekt = database.getReference("/projekte/" + classification.projekt + "/mitarbeiter/" + user.getUid());
-                                                refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                DatabaseReference refProject = database.getReference("/projects/" + classification.project + "/employee/" + user.getUid());
+                                                refProject.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot ds) {
-                                                        int oldTimeProject = ds.child("zeit").getValue(Integer.class);
-                                                        int newTimeProject = oldTimeProject - classification.minuten;
+                                                        int oldTimeProject = ds.child("time").getValue(Integer.class);
+                                                        int newTimeProject = oldTimeProject - classification.minutes;
                                                         if (newTimeProject > 0) {
-                                                            updates.put(path + "zeit", newTimeProject);
+                                                            updates.put(path + "time", newTimeProject);
 
-                                                            int oldTimeTaetigkeit = ds.child("taetigkeiten/" + classification.taetigkeit).getValue(Integer.class);
-                                                            int newTimeTaetigkeit = oldTimeTaetigkeit - classification.minuten;
-                                                            if (newTimeTaetigkeit > 0) {
-                                                                updates.put(path + "taetigkeiten/" + classification.taetigkeit, newTimeTaetigkeit);
+                                                            int oldTimeActivity = ds.child("activities/" + classification.activity).getValue(Integer.class);
+                                                            int newTimeActivity = oldTimeActivity - classification.minutes;
+                                                            if (newTimeActivity > 0) {
+                                                                updates.put(path + "activities/" + classification.activity, newTimeActivity);
                                                             } else {
-                                                                updates.put(path + "taetigkeiten/" + classification.taetigkeit, null);
+                                                                updates.put(path + "activities/" + classification.activity, null);
                                                             }
                                                         } else {
                                                             updates.put(path, null);
@@ -305,17 +305,17 @@ public class DailyOverviewFragment extends Fragment {
                     }
                 });
 
-                FloatingActionButton fabStundeneinteilung = getView().findViewById(R.id.fab_stundeneinteilung);
+                FloatingActionButton fabTagTime = getView().findViewById(R.id.fab_tag_time);
                 if(minutesUntagged == 0) {
-                    fabStundeneinteilung.setEnabled(false);
-                    fabStundeneinteilung.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
-                    fabStundeneinteilung.setAlpha(0.4f);
+                    fabTagTime.setEnabled(false);
+                    fabTagTime.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+                    fabTagTime.setAlpha(0.4f);
                 }
                 else {
-                    fabStundeneinteilung.setEnabled(true);
-                    fabStundeneinteilung.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(),R.color.colorAccent)));
-                    fabStundeneinteilung.setAlpha(1f);
-                    fabStundeneinteilung.setOnClickListener(view1 -> switchToFragmentStundeneinteilung());
+                    fabTagTime.setEnabled(true);
+                    fabTagTime.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(getContext(), R.color.colorAccent)));
+                    fabTagTime.setAlpha(1f);
+                    fabTagTime.setOnClickListener(view1 -> switchToFragmentTagTime());
                 }
             }
 
@@ -326,11 +326,11 @@ public class DailyOverviewFragment extends Fragment {
         });
     }
 
-    private void switchToFragmentStundeneinteilung(){
+    private void switchToFragmentTagTime() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = TagTimeFragment.newInstance(minutesUntagged, ref.toString());
-        fragmentTransaction.replace(R.id.stundenuebersicht_fragmentcontainer, fragment);
+        fragmentTransaction.replace(R.id.time_overview_fragmentcontainer, fragment);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

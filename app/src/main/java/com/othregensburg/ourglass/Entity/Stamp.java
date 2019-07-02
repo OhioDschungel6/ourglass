@@ -4,24 +4,25 @@ import android.util.Pair;
 
 public class Stamp {
     //TODO not public
-    public String startzeit;
-    public String endzeit;
+    public String start;
+    public String end;
 
 
     public Stamp() {
     }
 
-    public Stamp(String startzeit, String endzeit) {
-        this.startzeit = startzeit;
-        this.endzeit = endzeit;
+    public Stamp(String start, String end) {
+        this.start = start;
+        this.end = end;
     }
 
-    public Pair<Integer,Integer> pairStartzeit() {
-        String[] s = startzeit.split(":");
+    public Pair<Integer, Integer> pairStarttime() {
+        String[] s = start.split(":");
         return new Pair<Integer, Integer>(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
     }
-    public Pair<Integer,Integer> pairEndzeit() {
-        String[] s = endzeit.split(":");
+
+    public Pair<Integer, Integer> pairEndtime() {
+        String[] s = end.split(":");
         return new Pair<Integer, Integer>(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
     }
 

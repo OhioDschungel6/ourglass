@@ -44,7 +44,7 @@ public class TagTimeFragment extends Fragment {
     private int minutesUntagged;
     private DatabaseReference ref;
 
-    private ArrayAdapter<String> taetigkeitAdapter;
+    private ArrayAdapter<String> activityAdapter;
 
     public TagTimeFragment() {
         // Required empty public constructor
@@ -77,21 +77,21 @@ public class TagTimeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         SeekBar seekBarTime = view.findViewById(R.id.seekBar_time);
-        Spinner spinnerTaetigkeit = view.findViewById(R.id.spinner_tätigkeit);
-        Spinner spinnerProjekt = view.findViewById(R.id.spinner_projekt);
-        EditText editTextNotiz = view.findViewById(R.id.editTextMultiline_notiz);
+        Spinner spinnerActivity = view.findViewById(R.id.spinner_tätigkeit);
+        Spinner spinnerProject = view.findViewById(R.id.spinner_project);
+        EditText editTextNote = view.findViewById(R.id.editTextMultiline_note);
 
-        DatabaseReference refTaetigkeiten = database.getReference("user/" + user.getUid() + "/taetigkeiten");
-        refTaetigkeiten.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference refActivities = database.getReference("user/" + user.getUid() + "/activities");
+        refActivities.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> taetigkeiten = new ArrayList<>();
+                List<String> activities = new ArrayList<>();
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    taetigkeiten.add(d.getKey());
+                    activities.add(d.getKey());
                 }
-                taetigkeiten.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
-                taetigkeitAdapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, taetigkeiten);
-                spinnerTaetigkeit.setAdapter(taetigkeitAdapter);
+                activities.add(getString(R.string.fragment_tag_time_add_activity));
+                activityAdapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, activities);
+                spinnerActivity.setAdapter(activityAdapter);
             }
 
             @Override
@@ -100,29 +100,29 @@ public class TagTimeFragment extends Fragment {
             }
         });
 
-        spinnerTaetigkeit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerActivity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if ((parent.getItemAtPosition(position)).equals(getString(R.string.fragment_stundeneinteilung_add_taetigkeit))) {
+                if ((parent.getItemAtPosition(position)).equals(getString(R.string.fragment_tag_time_add_activity))) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle(R.string.fragment_stundeneinteilung_add_taetigkeit);
+                    builder.setTitle(R.string.fragment_tag_time_add_activity);
 
                     View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add, (ViewGroup) getView(), false);
-                    final EditText editTextNewTaetigkeit = viewInflated.findViewById(R.id.editText_new);
+                    final EditText editTextNewActivity = viewInflated.findViewById(R.id.editText_new);
                     builder.setView(viewInflated);
 
                     builder.setPositiveButton("Ok", (dialog, which) -> {
-                        String newTaetigkeit = editTextNewTaetigkeit.getText().toString();
-                        database.getReference("user/" + user.getUid() + "/taetigkeiten/" + newTaetigkeit).setValue(true);
-                        taetigkeitAdapter.add(newTaetigkeit);
-                        taetigkeitAdapter.remove(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
-                        taetigkeitAdapter.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
-                        spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit));
+                        String newActivity = editTextNewActivity.getText().toString();
+                        database.getReference("user/" + user.getUid() + "/activities/" + newActivity).setValue(true);
+                        activityAdapter.add(newActivity);
+                        activityAdapter.remove(getString(R.string.fragment_tag_time_add_activity));
+                        activityAdapter.add(getString(R.string.fragment_tag_time_add_activity));
+                        spinnerActivity.setSelection(activityAdapter.getPosition(newActivity));
                     });
                     builder.setNegativeButton("Abbrechen", (dialog, which) -> {
                         dialog.cancel();
-                        spinnerTaetigkeit.setSelection(0);
-                        if (spinnerTaetigkeit.getSelectedItem().toString().equals(getString(R.string.fragment_stundeneinteilung_add_taetigkeit))) {
+                        spinnerActivity.setSelection(0);
+                        if (spinnerActivity.getSelectedItem().toString().equals(getString(R.string.fragment_tag_time_add_activity))) {
                             getActivity().getSupportFragmentManager().popBackStack();
                         }
                     });
@@ -131,7 +131,7 @@ public class TagTimeFragment extends Fragment {
                     dialog.show();
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
 
-                    editTextNewTaetigkeit.addTextChangedListener(new TextWatcher() {
+                    editTextNewActivity.addTextChangedListener(new TextWatcher() {
                         @Override
                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -160,16 +160,16 @@ public class TagTimeFragment extends Fragment {
             }
         });
 
-        DatabaseReference refProjekte = database.getReference("/projekte");
-        refProjekte.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference refProjects = database.getReference("/projects");
+        refProjects.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<String> projekte = new ArrayList<>();
+                List<String> projects = new ArrayList<>();
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    projekte.add(d.getKey());
+                    projects.add(d.getKey());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, projekte);
-                spinnerProjekt.setAdapter(adapter);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.support_simple_spinner_dropdown_item, projects);
+                spinnerProject.setAdapter(adapter);
             }
 
             @Override
@@ -202,34 +202,34 @@ public class TagTimeFragment extends Fragment {
         fabSave.setOnClickListener(v -> {
             if (seekBarTime.getProgress() == 0) {
                 //TODO: Snackbar Texte in strings.xml?
-                Snackbar.make(getActivity().findViewById(R.id.fragment_stundeneinteilung_frameLayout), "Bitte Zeit angeben!", Snackbar.LENGTH_LONG)
+                Snackbar.make(getActivity().findViewById(R.id.fragment_tag_time_frameLayout), "Bitte Zeit angeben!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             } else {
-                ProjectClassification projectClassification = new ProjectClassification(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress());
+                ProjectClassification projectClassification = new ProjectClassification(spinnerActivity.getSelectedItem().toString(), spinnerProject.getSelectedItem().toString(), editTextNote.getText().toString(), seekBarTime.getProgress());
 
-                String classificationKey = ref.child("einteilung").push().getKey();
+                String classificationKey = ref.child("classification").push().getKey();
                 Map<String, Object> updates = new HashMap<>();
-                updates.put("arbeitstage/" + user.getUid() + "/" + ref.getKey() + "/einteilung/" + classificationKey, projectClassification);
+                updates.put("workdays/" + user.getUid() + "/" + ref.getKey() + "/classification/" + classificationKey, projectClassification);
 
-                DatabaseReference refProjekt = database.getReference("/projekte/" + projectClassification.projekt + "/mitarbeiter/" + user.getUid());
-                String path = "projekte/" + projectClassification.projekt + "/mitarbeiter/" + user.getUid() + "/";
-                refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
+                DatabaseReference refProject = database.getReference("/projects/" + projectClassification.project + "/employee/" + user.getUid());
+                String path = "projects/" + projectClassification.project + "/employee/" + user.getUid() + "/";
+                refProject.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
-                            updates.put(path + "zeit", oldTime + projectClassification.minuten);
+                            int oldTime = dataSnapshot.child("time").getValue(Integer.class);
+                            updates.put(path + "time", oldTime + projectClassification.minutes);
                         } else {
-                            updates.put(path + "zeit", projectClassification.minuten);
+                            updates.put(path + "time", projectClassification.minutes);
                             updates.put(path + "name", user.getDisplayName());
                         }
 
-                        DataSnapshot dsTaetigkeit = dataSnapshot.child("taetigkeiten/" + projectClassification.taetigkeit);
-                        if (!dsTaetigkeit.exists()) {
-                            updates.put(path + "taetigkeiten/" + projectClassification.taetigkeit, projectClassification.minuten);
+                        DataSnapshot dsActivity = dataSnapshot.child("activities/" + projectClassification.activity);
+                        if (!dsActivity.exists()) {
+                            updates.put(path + "activities/" + projectClassification.activity, projectClassification.minutes);
                         } else {
-                            int oldTime = dsTaetigkeit.getValue(Integer.class);
-                            updates.put(path + "taetigkeiten/" + projectClassification.taetigkeit, oldTime + projectClassification.minuten);
+                            int oldTime = dsActivity.getValue(Integer.class);
+                            updates.put(path + "activities/" + projectClassification.activity, oldTime + projectClassification.minutes);
                         }
 
                         database.getReference().updateChildren(updates);

@@ -20,7 +20,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_stundenkorrektur" />
+    <include layout="@layout/content_correction" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addTime"

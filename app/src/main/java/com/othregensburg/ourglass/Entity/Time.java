@@ -17,9 +17,9 @@ public class Time {
     }
 
     public void add(Stamp stamp) {
-        if (stamp.endzeit != null &&!stamp.endzeit.equals("")) {
-            String[] start = stamp.startzeit.split(":");
-            String[] end = stamp.endzeit.split(":");
+        if (stamp.end != null && !stamp.end.equals("")) {
+            String[] start = stamp.start.split(":");
+            String[] end = stamp.end.split(":");
             hours += Integer.parseInt(end[0]) - Integer.parseInt(start[0]);
             minutes += Integer.parseInt(end[1]) - Integer.parseInt(start[1]);
             if (minutes < 0) {

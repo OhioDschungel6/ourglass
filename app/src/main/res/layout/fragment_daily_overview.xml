@@ -36,7 +36,7 @@
         android:layout_marginRight="48dp"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_stundeneinteilung"
+        android:id="@+id/fab_tag_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

@@ -61,13 +61,13 @@ public class AppDrawerBase extends AppCompatActivity
         if (id == R.id.nav_homescreen && getClass()!= Homescreen.class) {
             Intent intent = new Intent(this, Homescreen.class);
             startActivity(intent);
-        } else if (id == R.id.nav_stundenuebersicht && getClass()!= TimeOverviewActivity.class && getClass() != DailyOverviewActivity.class) {
+        } else if (id == R.id.nav_time_overview && getClass() != TimeOverviewActivity.class && getClass() != DailyOverviewActivity.class) {
             Intent intent = new Intent(this, TimeOverviewActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_korrektur && getClass()!= CorrectionActivity.class) {
             Intent intent = new Intent(this, CorrectionActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_projekt && getClass()!= ProjectOverviewActivity.class) {
+        } else if (id == R.id.nav_project && getClass() != ProjectOverviewActivity.class) {
             Intent intent = new Intent(this, ProjectOverviewActivity.class);
             startActivity(intent);
         }

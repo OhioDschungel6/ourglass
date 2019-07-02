@@ -1,19 +1,19 @@
 package com.othregensburg.ourglass.Entity;
 
 public class ProjectClassification {
-    public String projekt;
-    public String taetigkeit;
-    public String notiz;
-    public int minuten;
+    public String project;
+    public String activity;
+    public String note;
+    public int minutes;
 
     public ProjectClassification(){
 
     }
 
-    public ProjectClassification(String taetigkeit, String projekt, String notiz, int minuten) {
-        this. projekt = projekt;
-        this.taetigkeit = taetigkeit;
-        this.notiz = notiz;
-        this.minuten = minuten;
+    public ProjectClassification(String activity, String project, String note, int minutes) {
+        this.project = project;
+        this.activity = activity;
+        this.note = note;
+        this.minutes = minutes;
     }
 }

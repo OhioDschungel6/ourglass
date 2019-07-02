@@ -44,6 +44,35 @@ public class CorrectionActivity extends AppDrawerBase {
     private DateFormat df = new SimpleDateFormat("yyMMdd", Locale.GERMANY);
     private DateFormat textFormatter = new SimpleDateFormat("dd.MM.yy", Locale.GERMANY);
 
+    private DatePickerDialog.OnDateSetListener dl = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            cal.set(Calendar.MONTH, month);
+            cal.set(Calendar.YEAR, year);
+            TextView date = findViewById(R.id.date);
+            date.setText(textFormatter.format(cal.getTime()));
+
+            Query query = database
+                    .getReference(String.format(Locale.GERMAN, "workdays/%s/%s", user.getUid(), df.format(cal.getTime())))
+                    .child("timestamps")
+                    .orderByChild("start");
+
+            FirebaseRecyclerOptions<Stamp> options =
+                    new FirebaseRecyclerOptions.Builder<Stamp>()
+                            .setQuery(query, Stamp.class)
+                            .build();
+
+
+            mAdapter = new FirebaseAdapterCorrection(options, findViewById(R.id.constraintCorrection),
+                    findViewById(R.id.checkBox_holiday), findViewById(R.id.checkBox_ill),
+                    database.getReference(String.format(Locale.GERMAN, "workdays/%s/%s", user.getUid(), df.format(cal.getTime()))));
+            RecyclerView recyclerView = findViewById(R.id.recyclerView_correction);
+            recyclerView.setAdapter(mAdapter);
+            mAdapter.startListening();
+        }
+    };
+
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,24 +87,24 @@ public class CorrectionActivity extends AppDrawerBase {
         addTime.setOnClickListener(e -> {
 
 
-            DatabaseReference ref = database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s", user.getUid(), df.format(cal.getTime())))
+            DatabaseReference ref = database.getReference(String.format(Locale.GERMAN, "workdays/%s/%s", user.getUid(), df.format(cal.getTime())))
                     .child("timestamps");
             ref.orderByKey().limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    CheckBox urlaubsbox = findViewById(R.id.checkBox_urlaub);
-                    CheckBox krankbox = findViewById(R.id.checkBox_krank);
+                    CheckBox holidaybox = findViewById(R.id.checkBox_holiday);
+                    CheckBox illbox = findViewById(R.id.checkBox_ill);
 
                     if (mAdapter.getItemCount() == 0) {
-                        if (krankbox.isChecked() || urlaubsbox.isChecked()) {
+                        if (illbox.isChecked() || holidaybox.isChecked()) {
                             //todo Text ändern
-                            Snackbar.make(findViewById(R.id.constraintStundenkorrektur),R.string.stundenkorrektur_checkbox_snackbar, Snackbar.LENGTH_LONG)
+                            Snackbar.make(findViewById(R.id.constraintCorrection), R.string.correction_checkbox_snackbar, Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                             return;
                         } else {
-                            krankbox.setVisibility(View.INVISIBLE);
-                            urlaubsbox.setVisibility(View.INVISIBLE);
+                            illbox.setVisibility(View.INVISIBLE);
+                            holidaybox.setVisibility(View.INVISIBLE);
                         }
                     }
 
@@ -85,7 +114,7 @@ public class CorrectionActivity extends AppDrawerBase {
                             stamp = d.getValue(Stamp.class);
                         }
                         if (stamp != null) {
-                            stamp.startzeit = stamp.endzeit;
+                            stamp.start = stamp.end;
                             DatabaseReference newref = ref.push();
                             newref.setValue(stamp);
                         }
@@ -127,10 +156,10 @@ public class CorrectionActivity extends AppDrawerBase {
         });
 
         //Section RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_correction);
         Query query = database
-                .getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s", user.getUid(), df.format(cal.getTime())))
-                .child("timestamps").orderByChild("startzeit");
+                .getReference(String.format(Locale.GERMAN, "workdays/%s/%s", user.getUid(), df.format(cal.getTime())))
+                .child("timestamps").orderByChild("start");
 
 
         FirebaseRecyclerOptions<Stamp> options =
@@ -138,8 +167,8 @@ public class CorrectionActivity extends AppDrawerBase {
                         .setQuery(query, Stamp.class)
                         .build();
 
-                mAdapter = new FirebaseAdapterCorrection(options, findViewById(R.id.constraintStundenkorrektur), findViewById(R.id.checkBox_urlaub), findViewById(R.id.checkBox_krank),
-                        database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s", user.getUid(), df.format(cal.getTime()))));
+        mAdapter = new FirebaseAdapterCorrection(options, findViewById(R.id.constraintCorrection), findViewById(R.id.checkBox_holiday), findViewById(R.id.checkBox_ill),
+                database.getReference(String.format(Locale.GERMAN, "workdays/%s/%s", user.getUid(), df.format(cal.getTime()))));
 
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -149,40 +178,10 @@ public class CorrectionActivity extends AppDrawerBase {
 
     }
 
-
-    private DatePickerDialog.OnDateSetListener dl = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            cal.set(Calendar.MONTH, month);
-            cal.set(Calendar.YEAR, year);
-            TextView date = findViewById(R.id.date);
-            date.setText(textFormatter.format(cal.getTime()));
-
-            Query query = database
-                    .getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s", user.getUid(), df.format(cal.getTime())))
-                    .child("timestamps")
-                    .orderByChild("startzeit");
-
-            FirebaseRecyclerOptions<Stamp> options =
-                    new FirebaseRecyclerOptions.Builder<Stamp>()
-                            .setQuery(query, Stamp.class)
-                            .build();
-
-
-            mAdapter = new FirebaseAdapterCorrection(options, findViewById(R.id.constraintStundenkorrektur),
-                    findViewById(R.id.checkBox_urlaub), findViewById(R.id.checkBox_krank),
-                    database.getReference(String.format(Locale.GERMAN, "arbeitstage/%s/%s", user.getUid(), df.format(cal.getTime()))));
-            RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
-            recyclerView.setAdapter(mAdapter);
-            mAdapter.startListening();
-        }
-    };
-
     @Override
     protected void onResume() {
         super.onResume();
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_stundenkorrektur);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView_correction);
         recyclerView.setAdapter(mAdapter);
         mAdapter.startListening();
 

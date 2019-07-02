@@ -9,17 +9,17 @@
     tools:showIn="@layout/app_bar_project_overview">
 
     <Spinner
-        android:id="@+id/spinnerProjekt"
+        android:id="@+id/spinnerProject"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/stundeneinteilung_spinnerPrompt_projekt"
+        android:prompt="@string/tag_time_spinnerPrompt_project"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="8dp" />
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:id="@+id/projekt_recycler"
-        app:layout_constraintTop_toBottomOf="@id/spinnerProjekt"
+        android:id="@+id/project_recycler"
+        app:layout_constraintTop_toBottomOf="@id/spinnerProject"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_height="0dp" />
 </android.support.constraint.ConstraintLayout>

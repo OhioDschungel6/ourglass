@@ -9,7 +9,7 @@
     tools:showIn="@layout/app_bar_daily_overview">
 
     <FrameLayout
-        android:id="@+id/stundenuebersicht_fragmentcontainer"
+        android:id="@+id/time_overview_fragmentcontainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

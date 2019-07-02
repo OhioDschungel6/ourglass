@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TimeOverview.DailyOverview.TagTimeFragment"
-    android:id="@+id/fragment_stundeneinteilung_frameLayout">
+    android:id="@+id/fragment_tag_time_frameLayout">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,27 +20,27 @@
             android:layout_marginRight="48dp"
             android:layout_marginTop="88dp"
             android:layout_marginBottom="40dp"
-            android:prompt="@string/stundeneinteilung_spinnerPrompt_taetigkeit"
+            android:prompt="@string/tag_time_spinnerPrompt_activity"
             android:gravity="center"/>
 
         <Spinner
-            android:id="@+id/spinner_projekt"
+            android:id="@+id/spinner_project"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="48dp"
             android:layout_marginRight="48dp"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="40dp"
-            android:prompt="@string/stundeneinteilung_spinnerPrompt_projekt"
+            android:prompt="@string/tag_time_spinnerPrompt_project"
             android:gravity="center"/>
 
         <EditText
-            android:id="@+id/editTextMultiline_notiz"
+            android:id="@+id/editTextMultiline_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:maxLines="3"
-            android:hint="@string/stundeneinteilung_editText_notiz_hint"
+            android:hint="@string/tag_time_editText_note_hint"
             android:layout_gravity="center"
             android:ems="14"
             android:layout_marginTop="40dp"

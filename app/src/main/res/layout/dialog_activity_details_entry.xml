@@ -15,7 +15,7 @@
     android:minHeight="80dp">
 
 <LinearLayout
-    android:id="@+id/dialog_taetigkeit_entry_linearLayout"
+    android:id="@+id/dialog_activity_entry_linearLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -35,12 +35,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="4"
-            android:text="@string/dialog_taetigkeit_details_projekt"
+            android:text="@string/dialog_activity_details_project"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView_projekt"
+            android:id="@+id/textView_project"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -62,12 +62,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="4"
-            android:text="@string/dialog_taetigkeit_details_notiz"
+            android:text="@string/dialog_activity_details_note"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView_notiz"
+            android:id="@+id/textView_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -91,12 +91,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="4"
-            android:text="@string/dialog_taetigkeit_details_zeit"
+            android:text="@string/dialog_activity_details_time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/dialog_taetigkeit_textView_time"
+            android:id="@+id/dialog_activity_textView_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

@@ -36,7 +36,7 @@ import java.util.List;
 public class ProjectOverviewActivity extends AppDrawerBase {
 
     private static final String ADD_PROJEKT = "Neues Projekt hinzufügen";
-    private ArrayAdapter<String> projektAdapter;
+    private ArrayAdapter<String> projectAdapter;
     private FirebaseAdapterProjectOverview mAdapter;
 
     @Override
@@ -48,7 +48,7 @@ public class ProjectOverviewActivity extends AppDrawerBase {
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setCheckedItem(R.id.nav_projekt);
+        navigationView.setCheckedItem(R.id.nav_project);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -57,19 +57,19 @@ public class ProjectOverviewActivity extends AppDrawerBase {
 
 
         //spinner
-        List<String> projekte = new ArrayList<>();
-        Spinner projektSpinner = findViewById(R.id.spinnerProjekt);
-        FirebaseDatabase.getInstance().getReference("projekte").addListenerForSingleValueEvent(new ValueEventListener() {
+        List<String> projects = new ArrayList<>();
+        Spinner projectSpinner = findViewById(R.id.spinnerProject);
+        FirebaseDatabase.getInstance().getReference("projects").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot projekt : dataSnapshot.getChildren()) {
-                        projekte.add(projekt.getKey());
+                    for (DataSnapshot project : dataSnapshot.getChildren()) {
+                        projects.add(project.getKey());
                     }
-                    projekte.add(ADD_PROJEKT);
-                    projektAdapter= new ArrayAdapter<>(getBaseContext(), R.layout.support_simple_spinner_dropdown_item, projekte);
-                    projektSpinner.setAdapter(projektAdapter);
                 }
+                projects.add(ADD_PROJEKT);
+                projectAdapter = new ArrayAdapter<>(getBaseContext(), R.layout.support_simple_spinner_dropdown_item, projects);
+                projectSpinner.setAdapter(projectAdapter);
             }
 
             @Override
@@ -77,13 +77,13 @@ public class ProjectOverviewActivity extends AppDrawerBase {
 
             }
         });
-        projektSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (ADD_PROJEKT.equals(parent.getItemAtPosition(position))) {
                     //TODO: DialogFragment
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                    builder.setTitle(R.string.dialog_addProjekt_title);
+                    builder.setTitle(R.string.dialog_addProject_title);
 
                     View viewInflated = LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_add, (ViewGroup) view.getRootView() , false);
                     final EditText editTextNewProject = viewInflated.findViewById(R.id.editText_new);
@@ -91,16 +91,16 @@ public class ProjectOverviewActivity extends AppDrawerBase {
 
                     builder.setPositiveButton("Ok", (dialog, which) -> {
                         String newProject = editTextNewProject.getText().toString();
-                        FirebaseDatabase.getInstance().getReference("projekte/" + newProject).setValue(true);
-                        projektAdapter.add(newProject);
-                        projektAdapter.remove(ADD_PROJEKT);
-                        projektAdapter.add(ADD_PROJEKT);
-                        projektSpinner.setSelection(projektAdapter.getPosition(newProject));
+                        FirebaseDatabase.getInstance().getReference("projects/" + newProject).setValue(true);
+                        projectAdapter.add(newProject);
+                        projectAdapter.remove(ADD_PROJEKT);
+                        projectAdapter.add(ADD_PROJEKT);
+                        projectSpinner.setSelection(projectAdapter.getPosition(newProject));
 
-                        RecyclerView recyclerView = findViewById(R.id.projekt_recycler);
-                        String s = (parent.getItemAtPosition(position)) + "/mitarbeiter";
+                        RecyclerView recyclerView = findViewById(R.id.project_recycler);
+                        String s = (parent.getItemAtPosition(position)) + "/employee";
                         Query query = FirebaseDatabase.getInstance()
-                                .getReference("projekte/").child(s);
+                                .getReference("projects/").child(s);
 
                         FirebaseRecyclerOptions<ProjectMember> options =
                                 new FirebaseRecyclerOptions.Builder<ProjectMember>()
@@ -114,7 +114,7 @@ public class ProjectOverviewActivity extends AppDrawerBase {
                     });
                     builder.setNegativeButton("Abbrechen", (dialog, which) -> {
                         dialog.cancel();
-                        projektSpinner.setSelection(0);
+                        projectSpinner.setSelection(0);
                     });
 
                     final AlertDialog dialog = builder.create();
@@ -143,10 +143,10 @@ public class ProjectOverviewActivity extends AppDrawerBase {
                     });
 
                 } else {
-                    RecyclerView recyclerView = findViewById(R.id.projekt_recycler);
-                    String s = (parent.getItemAtPosition(position)) + "/mitarbeiter";
+                    RecyclerView recyclerView = findViewById(R.id.project_recycler);
+                    String s = (parent.getItemAtPosition(position)) + "/employee";
                     Query query = FirebaseDatabase.getInstance()
-                            .getReference("projekte/").child(s);
+                            .getReference("projects/").child(s);
 
                     FirebaseRecyclerOptions<ProjectMember> options =
                             new FirebaseRecyclerOptions.Builder<ProjectMember>()

@@ -6,7 +6,7 @@
 
 
     <TextView
-        android:id="@+id/dialog_edit_einteilung_textView"
+        android:id="@+id/dialog_edit_classification_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -14,10 +14,10 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <SeekBar
-        android:id="@+id/dialog_edit_einteilung_seekBar"
+        android:id="@+id/dialog_edit_classification_seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/dialog_edit_einteilung_textView"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_edit_classification_textView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
