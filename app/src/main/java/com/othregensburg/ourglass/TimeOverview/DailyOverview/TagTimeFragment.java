@@ -6,6 +6,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +81,7 @@ public class TagTimeFragment extends Fragment {
         Spinner spinnerProjekt = view.findViewById(R.id.spinner_projekt);
         EditText editTextNotiz = view.findViewById(R.id.editTextMultiline_notiz);
 
-        DatabaseReference refTaetigkeiten = database.getReference("user/"+user.getUid()+"/taetigkeiten");
+        DatabaseReference refTaetigkeiten = database.getReference("user/" + user.getUid() + "/taetigkeiten");
         refTaetigkeiten.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -101,7 +103,7 @@ public class TagTimeFragment extends Fragment {
         spinnerTaetigkeit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if((parent.getItemAtPosition(position)).equals(getString(R.string.fragment_stundeneinteilung_add_taetigkeit))) {
+                if ((parent.getItemAtPosition(position)).equals(getString(R.string.fragment_stundeneinteilung_add_taetigkeit))) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setTitle(R.string.fragment_stundeneinteilung_add_taetigkeit);
 
@@ -111,14 +113,11 @@ public class TagTimeFragment extends Fragment {
 
                     builder.setPositiveButton("Ok", (dialog, which) -> {
                         String newTaetigkeit = editTextNewTaetigkeit.getText().toString();
-                        if (!"".equals(newTaetigkeit)) {
-                            database.getReference("user/" + user.getUid() + "/taetigkeiten/" + newTaetigkeit).setValue(true);
-                            taetigkeitAdapter.add(newTaetigkeit);
-                            taetigkeitAdapter.remove(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
-                            taetigkeitAdapter.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
-                            spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit));
-                        }
-
+                        database.getReference("user/" + user.getUid() + "/taetigkeiten/" + newTaetigkeit).setValue(true);
+                        taetigkeitAdapter.add(newTaetigkeit);
+                        taetigkeitAdapter.remove(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
+                        taetigkeitAdapter.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
+                        spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit));
                     });
                     builder.setNegativeButton("Abbrechen", (dialog, which) -> {
                         dialog.cancel();
@@ -127,7 +126,31 @@ public class TagTimeFragment extends Fragment {
                             getActivity().getSupportFragmentManager().popBackStack();
                         }
                     });
-                    builder.show();
+
+                    final AlertDialog dialog = builder.create();
+                    dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+                    editTextNewTaetigkeit.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            if (editable.length() >= 1) {
+                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                            } else {
+                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                            }
+                        }
+                    });
                 }
             }
 
@@ -177,12 +200,11 @@ public class TagTimeFragment extends Fragment {
 
         FloatingActionButton fabSave = getView().findViewById(R.id.fab_save);
         fabSave.setOnClickListener(v -> {
-            if(seekBarTime.getProgress() == 0) {
+            if (seekBarTime.getProgress() == 0) {
                 //TODO: Snackbar Texte in strings.xml?
                 Snackbar.make(getActivity().findViewById(R.id.fragment_stundeneinteilung_frameLayout), "Bitte Zeit angeben!", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-            }
-            else {
+            } else {
                 ProjectClassification projectClassification = new ProjectClassification(spinnerTaetigkeit.getSelectedItem().toString(), spinnerProjekt.getSelectedItem().toString(), editTextNotiz.getText().toString(), seekBarTime.getProgress());
 
                 String classificationKey = ref.child("einteilung").push().getKey();
@@ -194,11 +216,10 @@ public class TagTimeFragment extends Fragment {
                 refProjekt.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
+                        if (dataSnapshot.exists()) {
                             int oldTime = dataSnapshot.child("zeit").getValue(Integer.class);
                             updates.put(path + "zeit", oldTime + projectClassification.minuten);
-                        }
-                        else {
+                        } else {
                             updates.put(path + "zeit", projectClassification.minuten);
                             updates.put(path + "name", user.getDisplayName());
                         }
