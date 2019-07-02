@@ -111,15 +111,21 @@ public class TagTimeFragment extends Fragment {
 
                     builder.setPositiveButton("Ok", (dialog, which) -> {
                         String newTaetigkeit = editTextNewTaetigkeit.getText().toString();
-                        database.getReference("user/"+user.getUid()+"/taetigkeiten/" + newTaetigkeit).setValue(true);
-                        taetigkeitAdapter.add(newTaetigkeit);
-                        taetigkeitAdapter.remove(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
-                        taetigkeitAdapter.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
-                        spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit));
+                        if (!"".equals(newTaetigkeit)) {
+                            database.getReference("user/" + user.getUid() + "/taetigkeiten/" + newTaetigkeit).setValue(true);
+                            taetigkeitAdapter.add(newTaetigkeit);
+                            taetigkeitAdapter.remove(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
+                            taetigkeitAdapter.add(getString(R.string.fragment_stundeneinteilung_add_taetigkeit));
+                            spinnerTaetigkeit.setSelection(taetigkeitAdapter.getPosition(newTaetigkeit));
+                        }
+
                     });
                     builder.setNegativeButton("Abbrechen", (dialog, which) -> {
                         dialog.cancel();
                         spinnerTaetigkeit.setSelection(0);
+                        if (spinnerTaetigkeit.getSelectedItem().toString().equals(getString(R.string.fragment_stundeneinteilung_add_taetigkeit))) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
                     });
                     builder.show();
                 }
