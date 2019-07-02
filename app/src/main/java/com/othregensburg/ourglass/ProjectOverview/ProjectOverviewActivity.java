@@ -9,6 +9,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,7 +116,32 @@ public class ProjectOverviewActivity extends AppDrawerBase {
                         dialog.cancel();
                         projektSpinner.setSelection(0);
                     });
-                    builder.show();
+
+                    final AlertDialog dialog = builder.create();
+                    dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+                    editTextNewProject.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            if (editable.toString().trim().length() >= 1) {
+                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                            } else {
+                                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                            }
+                        }
+                    });
+
                 } else {
                     RecyclerView recyclerView = findViewById(R.id.projekt_recycler);
                     String s = (parent.getItemAtPosition(position)) + "/mitarbeiter";

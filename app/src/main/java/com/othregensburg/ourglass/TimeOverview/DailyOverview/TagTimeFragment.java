@@ -144,7 +144,7 @@ public class TagTimeFragment extends Fragment {
 
                         @Override
                         public void afterTextChanged(Editable editable) {
-                            if (editable.length() >= 1) {
+                            if (editable.toString().trim().length() >= 1) {
                                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
                             } else {
                                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
