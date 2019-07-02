@@ -1,12 +1,9 @@
 package com.othregensburg.ourglass.ProjectOverview;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,12 +15,10 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.othregensburg.ourglass.Entity.ProjectMember;
 import com.othregensburg.ourglass.Entity.Time;
 import com.othregensburg.ourglass.R;
-import com.othregensburg.ourglass.Entity.ProjectMember;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +73,7 @@ public class FirebaseAdapterProjectOverview extends FirebaseRecyclerAdapter<Proj
                 PieChartView pie = new PieChartView(itemView.getContext());
                 List<SliceValue> sliceValuesList = new ArrayList<>();
 
-                dialog.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -88,7 +83,6 @@ public class FirebaseAdapterProjectOverview extends FirebaseRecyclerAdapter<Proj
                 getRef(getAdapterPosition()).child("taetigkeiten").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                         PieChartData pieChartData = new PieChartData(sliceValuesList);
                         pieChartData.setHasLabels(true).setValueLabelTextSize(PIE_CHART_TEXTSIZE);
                         pieChartData.setHasCenterCircle(true).setCenterText1(new Time(min).toString());
@@ -97,6 +91,7 @@ public class FirebaseAdapterProjectOverview extends FirebaseRecyclerAdapter<Proj
                             sliceValuesList.add(new SliceValue(child.getValue(Integer.class)).setLabel(child.getKey()).setColor(getNextColor()));
                         }
                         pie.setPieChartData(pieChartData);
+                        dialog.setTitle(name.getText());
                         dialog.setView(pie);
                         dialog.show();
                     }
