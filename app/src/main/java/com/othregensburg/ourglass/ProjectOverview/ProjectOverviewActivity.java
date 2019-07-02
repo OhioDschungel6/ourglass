@@ -94,6 +94,21 @@ public class ProjectOverviewActivity extends AppDrawerBase {
                         projektAdapter.remove(ADD_PROJEKT);
                         projektAdapter.add(ADD_PROJEKT);
                         projektSpinner.setSelection(projektAdapter.getPosition(newProject));
+
+                        RecyclerView recyclerView = findViewById(R.id.projekt_recycler);
+                        String s = (parent.getItemAtPosition(position)) + "/mitarbeiter";
+                        Query query = FirebaseDatabase.getInstance()
+                                .getReference("projekte/").child(s);
+
+                        FirebaseRecyclerOptions<ProjectMember> options =
+                                new FirebaseRecyclerOptions.Builder<ProjectMember>()
+                                        .setQuery(query, ProjectMember.class)
+                                        .build();
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                        mAdapter = new FirebaseAdapterProjectOverview(options,getBaseContext());
+                        recyclerView.setAdapter(mAdapter);
+                        mAdapter.startListening();
+
                     });
                     builder.setNegativeButton("Abbrechen", (dialog, which) -> {
                         dialog.cancel();
