@@ -88,9 +88,7 @@ public class AppDrawerBase extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_sign_out) {
+        if (id == R.id.action_sign_out) {
             AuthUI.getInstance()
                     .signOut(this)
                     .addOnCompleteListener(task -> getBackToStartActivity());
