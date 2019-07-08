@@ -22,7 +22,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.othregensburg.ourglass.Entity.ProjectClassification;
 import com.othregensburg.ourglass.Entity.Stamp;
+import com.othregensburg.ourglass.Entity.Time;
 import com.othregensburg.ourglass.R;
 
 import java.util.Locale;
@@ -138,7 +140,57 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 if (endTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) >= 0) {
+                    //TODO prüfung ob verkleinert
+                    if (startTime.getText().toString().compareTo(String.format(Locale.GERMAN,"%02d:%02d", hourOfDay, minute))<0) {
+                        DatabaseReference databaseReference = getRef(getLayoutPosition()).getParent().getParent().child("classification");
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                int min=0;
+                                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                                    ProjectClassification classification = d.getValue(ProjectClassification.class);
+                                    min+= classification.minutes;
+                                }
+                                if (min == 0) {
+                                    itemRef.child("start").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+                                } else {
+                                    DatabaseReference reference=databaseReference.getParent().child("timestamps");
+                                    int finalMin = min;
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Time t = new Time();
+                                            for (DataSnapshot d2 : dataSnapshot.getChildren()) {
+                                                Stamp stamp = d2.getValue(Stamp.class);
+                                                t.add(stamp);
+
+                                            }
+                                            Time t2 = new Time();
+                                            t2.add(new Stamp(startTime.getText().toString(),String.format(Locale.GERMAN,"%02d:%02d", hourOfDay, minute)));
+                                            if (finalMin <= t.getMinutes()-t2.getMinutes()) {
+                                                itemRef.child("start").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        return;
+                    }
                     itemRef.child("start").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+
+
 
                     notifyDataSetChanged();
                 } else {
@@ -153,6 +205,55 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 if (startTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) <= 0) {
+                    //TODO prüfung ob verkleinert
+                    if (endTime.getText().toString().compareTo(String.format(Locale.GERMAN,"%02d:%02d", hourOfDay, minute))>0) {
+                        DatabaseReference databaseReference = getRef(getLayoutPosition()).getParent().getParent().child("classification");
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                int min=0;
+                                for (DataSnapshot d : dataSnapshot.getChildren()) {
+                                    ProjectClassification classification = d.getValue(ProjectClassification.class);
+                                    min+= classification.minutes;
+                                }
+                                if (min == 0) {
+                                    itemRef.child("end").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+                                } else {
+                                    DatabaseReference reference=databaseReference.getParent().child("timestamps");
+                                    int finalMin = min;
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            Time t = new Time();
+                                            for (DataSnapshot d2 : dataSnapshot.getChildren()) {
+                                                Stamp stamp = d2.getValue(Stamp.class);
+                                                t.add(stamp);
+
+                                            }
+                                            Time t2 = new Time();
+                                            t2.add(new Stamp(String.format(Locale.GERMAN,"%02d:%02d", hourOfDay, minute), endTime.getText().toString()));
+                                            if (finalMin <= t.getMinutes()-t2.getMinutes()) {
+                                                itemRef.child("end").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        return;
+                    }
+
                     itemRef.child("end").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
 
                 } else {
@@ -178,17 +279,72 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                 tpd.show();
             });
             removeButton.setOnClickListener(h -> {
-                if (getItemCount() == 1) {
-                    holidayBox.setVisibility(View.VISIBLE);
-                    illBox.setVisibility(View.VISIBLE);
-                }
-                if ("".equals(endTime.getText().toString())) {
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("user/" + FirebaseAuth.getInstance().getUid() + "/timeRunning");
-                    ref.setValue(false);
-                }
-                itemRef.setValue(null);
+
+                DatabaseReference databaseReference = getRef(getLayoutPosition()).getParent().getParent().child("classification");
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int min=0;
+                        for (DataSnapshot d : dataSnapshot.getChildren()) {
+                            ProjectClassification classification = d.getValue(ProjectClassification.class);
+                            min+= classification.minutes;
+                        }
+                        if (min == 0) {
+                            if (getItemCount() == 1) {
+                                holidayBox.setVisibility(View.VISIBLE);
+                                illBox.setVisibility(View.VISIBLE);
+                            }
+                            if ("".equals(endTime.getText().toString())) {
+                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("user/" + FirebaseAuth.getInstance().getUid() + "/timeRunning");
+                                ref.setValue(false);
+                            }
+                            itemRef.setValue(null);
+                        } else {
+                            DatabaseReference reference=databaseReference.getParent().child("timestamps");
+                            int finalMin = min;
+                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Time t = new Time();
+                                    for (DataSnapshot d2 : dataSnapshot.getChildren()) {
+                                        Stamp stamp = d2.getValue(Stamp.class);
+                                        t.add(stamp);
+
+                                    }
+                                    Time t2 = new Time();
+                                    t2.add(new Stamp(startTime.getText().toString(), endTime.getText().toString()));
+                                    if (finalMin <= t.getMinutes()-t2.getMinutes()) {
+                                        if (getItemCount() == 1) {
+                                            holidayBox.setVisibility(View.VISIBLE);
+                                            illBox.setVisibility(View.VISIBLE);
+                                        }
+                                        if ("".equals(endTime.getText().toString())) {
+                                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("user/" + FirebaseAuth.getInstance().getUid() + "/timeRunning");
+                                            ref.setValue(false);
+                                        }
+                                        itemRef.setValue(null);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
 
             });
+
         }
     }
 }

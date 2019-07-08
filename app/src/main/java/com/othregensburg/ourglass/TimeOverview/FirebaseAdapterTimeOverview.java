@@ -77,6 +77,7 @@ public class FirebaseAdapterTimeOverview extends FirebaseRecyclerAdapter<Workday
                     // Extra z.B.: https://ourglass-84f4d.firebaseio.com/workdays/DV8i9rsyXUdXtWA30SCTmiEnfib2/190222
                     intent.putExtra("DatabaseRef", getRef(position).toString());
                     intent.putExtra("minutesWorked", t.getMinutes());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     con.startActivity(intent);
                 }
             }
