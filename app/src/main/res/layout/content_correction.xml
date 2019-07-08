@@ -17,6 +17,8 @@
         android:layout_height="wrap_content"
         android:background="@color/datePicker"
         android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView

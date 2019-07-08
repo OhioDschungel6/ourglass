@@ -49,5 +49,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
+            android:elevation="0dp"
+            app:elevation="0dp"
             app:srcCompat="@drawable/ic_remove_circle_outline_black_24dp" />
     </LinearLayout>
