@@ -2,7 +2,6 @@ package com.othregensburg.ourglass.TimeOverview;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -10,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -131,12 +131,12 @@ public class TimeOverviewActivity extends AppDrawerBase {
 
 
         //setDatePicker for Datepickerbar
-        ConstraintLayout c1 = findViewById(R.id.datePickerLeft);
+        LinearLayout c1 = findViewById(R.id.datePickerLeft);
         c1.setOnClickListener(e->{
             DatePickerDialog dpd = new DatePickerDialog(this, dateDialogFirstDate, firstDate.get(Calendar.YEAR), firstDate.get(Calendar.MONTH), firstDate.get(Calendar.DAY_OF_MONTH));
             dpd.show();
         });
-        ConstraintLayout c2 = findViewById(R.id.datePickerRight);
+        LinearLayout c2 = findViewById(R.id.datePickerRight);
         c2.setOnClickListener(e->{
             DatePickerDialog dpd = new DatePickerDialog(this, dateDialogSecondDate, secondDate.get(Calendar.YEAR), secondDate.get(Calendar.MONTH), secondDate.get(Calendar.DAY_OF_MONTH));
 
