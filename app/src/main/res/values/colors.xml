@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#007ac1</color>
     <color name="colorPrimaryLight">#67daff</color>
     <color name="colorAccent">#03a9f4</color>
-    <color name="datePicker">#c2c2c2</color> //#e2f1f8
+    <color name="datePicker">#CED9DE</color>
     <color name="pieChart_thirdColor">#004f90</color>
 
 </resources>
