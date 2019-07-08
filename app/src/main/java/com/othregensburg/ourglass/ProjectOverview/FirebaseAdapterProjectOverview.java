@@ -80,6 +80,7 @@ public class FirebaseAdapterProjectOverview extends FirebaseRecyclerAdapter<Proj
                     }
                 });
 
+                nextColor = 0;
                 getRef(getAdapterPosition()).child("activities").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

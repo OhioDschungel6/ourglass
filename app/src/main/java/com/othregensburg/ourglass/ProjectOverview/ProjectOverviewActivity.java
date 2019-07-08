@@ -81,7 +81,6 @@ public class ProjectOverviewActivity extends AppDrawerBase {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (ADD_PROJEKT.equals(parent.getItemAtPosition(position))) {
-                    //TODO: DialogFragment
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                     builder.setTitle(R.string.dialog_addProject_title);
 
