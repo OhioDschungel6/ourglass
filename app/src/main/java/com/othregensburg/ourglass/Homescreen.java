@@ -74,8 +74,22 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
         navigationView.setCheckedItem(R.id.nav_homescreen);
 
         //TimeRunning
+        initTimeIsRunning();
 
 
+        //TimeText
+        TextView date = findViewById(R.id.date);
+        DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
+        date.setText(df.format(calendar.getTime()));
+
+
+        loadUI();
+        addRefreshTimer();
+
+
+    }
+
+    private void initTimeIsRunning() {
         DatabaseReference ref = database.getReference("user/" + user.getUid() + "/timeRunning");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -106,17 +120,6 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
                 Log.d("DatabaseError","The read failed: " + databaseError.getCode());
             }
         });
-
-        //TimeText
-        TextView date = findViewById(R.id.date);
-        DateFormat df = new SimpleDateFormat("E dd.MM HH:mm", Locale.GERMANY);
-        date.setText(df.format(calendar.getTime()));
-
-
-        loadUI();
-        addRefreshTimer();
-
-
     }
 
     private void addRefreshTimer() {
@@ -190,7 +193,20 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
                 Double anz = dataSnapshot.getValue(Double.class);
                 if (anz != null) {
                     dailyworktime = anz;
-                    double d = anz * getWorkdays();
+                    int workdays = getWorkdays((Calendar) calendar.clone());
+
+                    Date date = new Date(user.getMetadata().getCreationTimestamp());
+                    Calendar calendar2 = Calendar.getInstance();
+                    calendar2.set(Calendar.DAY_OF_MONTH, 1);
+                    if (calendar2.getTime().compareTo(date) < 0) {
+                        Calendar calendar1 = Calendar.getInstance();
+                        calendar1.setTime(date);
+                        workdays = workdays - getWorkdays(calendar1);
+                        if (date.getDay() != 6 && date.getDay() != 0) {
+                            workdays++;
+                        }
+                    }
+                    double d = anz * workdays;
                     sollStd.setText(String.format(Locale.GERMAN, "%d:%02d", (int) d, (int) ((d - (int) d) * 60)));
                 }
                 //months Worktime
@@ -242,12 +258,13 @@ public class Homescreen extends AppDrawerBase implements View.OnClickListener{
         });
     }
 
-    public int getWorkdays() {
-        Calendar cal = (Calendar) calendar.clone();
+    public int getWorkdays(Calendar c) {
+        Calendar cal = c;
         int weekday = cal.get(Calendar.DAY_OF_WEEK);
         int day = cal.get(Calendar.DAY_OF_MONTH);
         int oldDay = day;
         cal.set(Calendar.DAY_OF_MONTH, 1);
+
         int weekDayOfFirst = cal.get(Calendar.DAY_OF_WEEK);
 
         if (weekDayOfFirst == 1) {

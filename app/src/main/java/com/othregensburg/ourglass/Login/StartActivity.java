@@ -13,13 +13,10 @@ import android.widget.ImageView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
-import com.othregensburg.ourglass.R;
 import com.othregensburg.ourglass.Homescreen;
+import com.othregensburg.ourglass.R;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,9 +30,14 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_start);
-        ImageView img = (ImageView) findViewById(R.id.loading);
+        ImageView img = findViewById(R.id.loading);
         AnimationDrawable ad = (AnimationDrawable) img.getDrawable();
         ad.start();
+
+        if (!getIntent().getBooleanExtra("persistent", false)) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }
+
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             //LoggedIn
@@ -71,7 +73,7 @@ public class StartActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 IdpResponse resp= (IdpResponse) data.getExtras().get("extra_idp_response");
-                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
 
                 if (resp!=null && resp.isNewUser()) {
                     Intent intent = new Intent(this, FirstLoginActivity.class);
