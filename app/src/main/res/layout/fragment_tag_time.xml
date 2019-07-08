@@ -38,13 +38,14 @@
             android:id="@+id/editTextMultiline_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
+            android:layout_marginBottom="40dp"
             android:maxLines="3"
             android:hint="@string/tag_time_editText_note_hint"
             android:layout_gravity="center"
             android:ems="14"
             android:layout_marginTop="40dp"
-            android:layout_marginBottom="40dp"/>
+            android:imeOptions="actionDone"
+            android:inputType="textImeMultiLine" />
 
         <TextView
             android:id="@+id/textView_time"

@@ -75,7 +75,6 @@
             app:layout_constraintStart_toEndOf="@id/textView_n"
             app:layout_constraintTop_toTopOf="parent"
             android:maxWidth="224dp"/>
-            <!--TODO: maxWidth passt nicht -->
 
     </android.support.constraint.ConstraintLayout>
 

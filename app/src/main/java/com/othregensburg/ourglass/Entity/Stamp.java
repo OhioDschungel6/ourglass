@@ -3,7 +3,6 @@ package com.othregensburg.ourglass.Entity;
 import android.util.Pair;
 
 public class Stamp {
-    //TODO not public
     public String start;
     public String end;
 

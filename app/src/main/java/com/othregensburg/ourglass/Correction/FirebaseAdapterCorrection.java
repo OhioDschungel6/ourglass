@@ -140,7 +140,6 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 if (endTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) >= 0) {
-                    //TODO prüfung ob verkleinert
                     if (startTime.getText().toString().compareTo(String.format(Locale.GERMAN,"%02d:%02d", hourOfDay, minute))<0) {
                         DatabaseReference databaseReference = getRef(getLayoutPosition()).getParent().getParent().child("classification");
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -205,7 +204,6 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 if (startTime.getText().toString().compareTo(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute)) <= 0) {
-                    //TODO prüfung ob verkleinert
                     if (endTime.getText().toString().compareTo(String.format(Locale.GERMAN,"%02d:%02d", hourOfDay, minute))>0) {
                         DatabaseReference databaseReference = getRef(getLayoutPosition()).getParent().getParent().child("classification");
                         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {

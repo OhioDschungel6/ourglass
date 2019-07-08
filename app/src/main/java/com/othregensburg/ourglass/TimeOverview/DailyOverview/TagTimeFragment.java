@@ -96,7 +96,6 @@ public class TagTimeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                //TODO: db error handle
             }
         });
 
@@ -174,7 +173,6 @@ public class TagTimeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                //TODO: db error handle
             }
         });
 
@@ -201,8 +199,8 @@ public class TagTimeFragment extends Fragment {
         FloatingActionButton fabSave = getView().findViewById(R.id.fab_save);
         fabSave.setOnClickListener(v -> {
             if (seekBarTime.getProgress() == 0) {
-                //TODO: Snackbar Texte in strings.xml?
-                Snackbar.make(getActivity().findViewById(R.id.fragment_tag_time_frameLayout), "Bitte Zeit angeben!", Snackbar.LENGTH_LONG)
+                //TODO: Snackbar Texte in strings.xml
+                Snackbar.make(getActivity().findViewById(R.id.fragment_tag_time_frameLayout), R.string.fragment_tag_time_no_time_snackbar_text, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             } else {
                 ProjectClassification projectClassification = new ProjectClassification(spinnerActivity.getSelectedItem().toString(), spinnerProject.getSelectedItem().toString(), editTextNote.getText().toString(), seekBarTime.getProgress());

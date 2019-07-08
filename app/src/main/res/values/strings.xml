@@ -33,6 +33,7 @@
     <string name="firstLogin_weekly_worktime_label">Wöchentliche Arbeitszeit:</string>
     <string name="correction_holidaybox">Urlaub</string>
     <string name="illbox">Krank</string>
+    <string name="fragment_tag_time_no_time_snackbar_text">Bitte Zeit angeben!</string>
 
 
 </resources>

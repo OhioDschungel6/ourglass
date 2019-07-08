@@ -98,7 +98,6 @@ public class CorrectionActivity extends AppDrawerBase {
 
                     if (mAdapter.getItemCount() == 0) {
                         if (illbox.isChecked() || holidaybox.isChecked()) {
-                            //todo Text ändern
                             Snackbar.make(findViewById(R.id.constraintCorrection), R.string.correction_checkbox_snackbar, Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
                             return;

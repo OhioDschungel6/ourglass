@@ -178,7 +178,6 @@ public class DailyOverviewFragment extends Fragment {
                                         classificationList.addView(element);
 
                                         element.setOnClickListener(v -> {
-                                            //TODO: fullscreen dialog?
                                             AlertDialog.Builder editBuilder = new AlertDialog.Builder(getContext());
                                             editBuilder.setTitle(R.string.dialog_edit_classification_title);
 
@@ -321,7 +320,6 @@ public class DailyOverviewFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                //Todo: DatabaseError
             }
         });
     }
