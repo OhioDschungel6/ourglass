@@ -278,9 +278,12 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                 tpd.show();
             });
             endTime.setOnClickListener(h -> {
-                Pair<Integer, Integer> pair = model.pairEndtime();
-                TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogEndTimeCallback, pair.first, pair.second, true);
-                tpd.show();
+                if (model.end != null) {
+                    Pair<Integer, Integer> pair = model.pairEndtime();
+                    TimePickerDialog tpd = new TimePickerDialog(itemView.getContext(), onTimeDialogEndTimeCallback, pair.first, pair.second, true);
+                    tpd.show();
+                }
+
             });
             removeButton.setOnClickListener(h -> {
 
