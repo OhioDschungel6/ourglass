@@ -34,10 +34,11 @@ public class StartActivity extends AppCompatActivity {
         AnimationDrawable ad = (AnimationDrawable) img.getDrawable();
         ad.start();
 
+        /*
         if (!getIntent().getBooleanExtra("persistent", false)) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         }
-
+        */
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             //LoggedIn

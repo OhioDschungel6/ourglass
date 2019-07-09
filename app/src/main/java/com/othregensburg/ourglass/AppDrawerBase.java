@@ -99,7 +99,7 @@ public class AppDrawerBase extends AppCompatActivity
 
     private void getBackToStartActivity () {
         Intent intent = new Intent(this, StartActivity.class);
-        intent.putExtra("persistent", true);
+        //intent.putExtra("persistent", true);
         startActivity(intent);
         finish();
     }
