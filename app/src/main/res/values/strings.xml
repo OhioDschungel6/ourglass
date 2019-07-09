@@ -1,9 +1,44 @@
 <resources>
+    <string name="dialog_activity_details_untagged_time">Zeit: %1$s</string>
+    <string name="dialog_activity_details_time">Zeit: </string>
+    <string name="dialog_activity_details_project">Projekt: </string>
+    <string name="dialog_activity_details_note">Notiz: </string>
+    <string name="dialog_edit_classification_title">Einteilung bearbeiten</string>
+    <string name="dialog_addProject_title">Neues Projekt hinzufügen</string>
+    <string name="action_sign_out">Abmelden</string>
+    <string name="sign_in_button_text">Anmelden</string>
+    <string name="tag_time_spinnerPrompt_activity">Wähle eine Aktivität</string>
+    <string name="tag_time_spinnerPrompt_project">Wähle ein Projekt</string>
+    <string name="tag_time_editText_note_hint">Notiz</string>
+    <string name="sollzeit">Soll:</string>
+    <string name="istzeit">Ist:</string>
     <string name="app_name">ourglass</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">ourglass</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="nav_drawer_homescreen">Startseite</string>
+    <string name="nav_drawer_time_overview">Stundenübersicht</string>
+    <string name="nav_drawer_correction">Zeitkorrektur</string>
+    <string name="nav_drawer_project">Projekte</string>
+    <string name="title_activity_time_overview">Stundenübersicht</string>
+    <string name="title_activity_correction">Zeitkorrektur</string>
+    <string name="title_activity_project_overview">Projektübersicht</string>
+    <string name="title_activity_daily_overview">Tagesübersicht</string>
+    <string name="divider">-</string>
+    <string name="correction_checkbox_snackbar">Zeiten hinzufügen nicht möglich während Krank oder Urlaub ausgewählt ist</string>
+    <string name="fragment_daily_overview_label_minutes_untagged">Nicht eingeteilt</string>
+    <string name="fragment_tag_time_add_activity">Neue Tätigkeit hinzufügen</string>
+    <string name="firstLogin_weekly_worktime_label">Wöchentliche Arbeitszeit:</string>
+    <string name="correction_holidaybox">Urlaub</string>
+    <string name="illbox">Krank</string>
+    <string name="fragment_tag_time_no_time_snackbar_text">Bitte Zeit angeben!</string>
+    <string name="correction_time_tagged_snackbar">Diese Zeit ist bereits eingeteilt!</string>
+    <string name="correction_starttime_after_endtime_snackbar">Startzeit kann nicht nach der Endzeit sein!</string>
+    <string name="correction_endtime_before_starttime_snackbar">Endzeit kann nicht vor der Startzeit sein!</string>
+    <string name="start_activity_login_cancelled">Login wurde abgebrochen</string>
+    <string name="first_login_activity_worktime_snackbar">Bitte Anzahl Wochenstunden angeben!</string>
+
+
 </resources>

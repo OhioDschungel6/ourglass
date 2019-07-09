@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TimeOverview.DailyOverview.TagTimeFragment"
+    android:id="@+id/fragment_tag_time_frameLayout">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/spinner_tätigkeit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="48dp"
+            android:layout_marginTop="88dp"
+            android:layout_marginBottom="40dp"
+            android:prompt="@string/tag_time_spinnerPrompt_activity"
+            android:gravity="center"/>
+
+        <Spinner
+            android:id="@+id/spinner_project"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="48dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            android:prompt="@string/tag_time_spinnerPrompt_project"
+            android:gravity="center"/>
+
+        <EditText
+            android:id="@+id/editTextMultiline_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:maxLines="3"
+            android:hint="@string/tag_time_editText_note_hint"
+            android:layout_gravity="center"
+            android:ems="14"
+            android:layout_marginTop="40dp"
+            android:imeOptions="actionDone"
+            android:inputType="textImeMultiLine" />
+
+        <TextView
+            android:id="@+id/textView_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center"
+            android:text="0:00" />
+
+        <SeekBar
+            android:id="@+id/seekBar_time"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_fab_done" />
+
+
+
+</FrameLayout>
