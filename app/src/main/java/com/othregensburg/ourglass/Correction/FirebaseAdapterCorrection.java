@@ -168,6 +168,8 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                                             t2.add(new Stamp(startTime.getText().toString(),String.format(Locale.GERMAN,"%02d:%02d", hourOfDay, minute)));
                                             if (finalMin <= t.getMinutes()-t2.getMinutes()) {
                                                 itemRef.child("start").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+                                            } else {
+                                                //TODO Snackbar
                                             }
                                         }
 
@@ -232,6 +234,8 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                                             t2.add(new Stamp(String.format(Locale.GERMAN,"%02d:%02d", hourOfDay, minute), endTime.getText().toString()));
                                             if (finalMin <= t.getMinutes()-t2.getMinutes()) {
                                                 itemRef.child("end").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
+                                            } else {
+                                                //TODO Snackbar
                                             }
                                         }
 
@@ -321,6 +325,8 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                                             ref.setValue(false);
                                         }
                                         itemRef.setValue(null);
+                                    } else {
+                                        //TODO Snackbar
                                     }
                                 }
 
