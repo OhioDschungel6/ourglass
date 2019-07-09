@@ -101,7 +101,7 @@ public class StartActivity extends AppCompatActivity {
                 Button signInButton = findViewById(R.id.button_sign_in);
                 signInButton.setVisibility(View.VISIBLE);
 
-                Snackbar.make(findViewById(R.id.start_activity_constraintLayout), "Login wurde abgebrochen", Snackbar.LENGTH_LONG)
+                Snackbar.make(findViewById(R.id.start_activity_constraintLayout), R.string.start_activity_login_cancelled, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
                 signInButton.setOnClickListener(new Button.OnClickListener() {

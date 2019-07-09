@@ -1,5 +1,6 @@
 package com.othregensburg.ourglass.Login;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -9,7 +10,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -18,10 +18,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.othregensburg.ourglass.Entity.User;
-import com.othregensburg.ourglass.R;
 import com.othregensburg.ourglass.Homescreen;
+import com.othregensburg.ourglass.R;
 
 public class FirstLoginActivity extends AppCompatActivity {
+    @SuppressLint("RestrictedApi")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +55,9 @@ public class FirstLoginActivity extends AppCompatActivity {
             Double workhours = seekBarWeeklyWorkHours.getProgress() / 2.0;
 
             if (workhours == 0.0) {
-                Snackbar.make(findViewById(R.id.constraintLogin), "Bitte Anzahl Wochenstunden angeben!", Snackbar.LENGTH_LONG)
+                Snackbar.make(findViewById(R.id.constraintLogin), R.string.first_login_activity_worktime_snackbar, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-            }
-            else {
-                //TODO: Problem bei FloatingActionButton?
+            } else {
                 findViewById(R.id.textView_weeklyWorkTimeLabel).setVisibility(View.GONE);
                 textViewWeeklyWorkHours.setVisibility(View.GONE);
                 seekBarWeeklyWorkHours.setVisibility(View.GONE);

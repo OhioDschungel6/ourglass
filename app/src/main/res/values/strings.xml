@@ -34,6 +34,11 @@
     <string name="correction_holidaybox">Urlaub</string>
     <string name="illbox">Krank</string>
     <string name="fragment_tag_time_no_time_snackbar_text">Bitte Zeit angeben!</string>
+    <string name="correction_time_tagged_snackbar">Diese Zeit ist bereits eingeteilt!</string>
+    <string name="correction_starttime_after_endtime_snackbar">Startzeit kann nicht nach der Endzeit sein!</string>
+    <string name="correction_endtime_before_starttime_snackbar">Endzeit kann nicht vor der Startzeit sein!</string>
+    <string name="start_activity_login_cancelled">Login wurde abgebrochen</string>
+    <string name="first_login_activity_worktime_snackbar">Bitte Anzahl Wochenstunden angeben!</string>
 
 
 </resources>

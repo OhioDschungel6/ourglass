@@ -199,7 +199,6 @@ public class TagTimeFragment extends Fragment {
         FloatingActionButton fabSave = getView().findViewById(R.id.fab_save);
         fabSave.setOnClickListener(v -> {
             if (seekBarTime.getProgress() == 0) {
-                //TODO: Snackbar Texte in strings.xml
                 Snackbar.make(getActivity().findViewById(R.id.fragment_tag_time_frameLayout), R.string.fragment_tag_time_no_time_snackbar_text, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             } else {

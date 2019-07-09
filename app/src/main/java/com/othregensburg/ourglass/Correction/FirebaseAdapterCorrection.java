@@ -169,7 +169,8 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                                             if (finalMin <= t.getMinutes()-t2.getMinutes()) {
                                                 itemRef.child("start").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
                                             } else {
-                                                //TODO Snackbar
+                                                Snackbar.make(constraintLayout, R.string.correction_time_tagged_snackbar, Snackbar.LENGTH_LONG)
+                                                        .setAction("Action", null).show();
                                             }
                                         }
 
@@ -196,7 +197,7 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                     notifyDataSetChanged();
                 } else {
 
-                    Snackbar.make(constraintLayout, "Startzeit kann nicht nach der Endzeit sein!", Snackbar.LENGTH_LONG)
+                    Snackbar.make(constraintLayout, R.string.correction_starttime_after_endtime_snackbar, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
 
@@ -235,7 +236,8 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                                             if (finalMin <= t.getMinutes()-t2.getMinutes()) {
                                                 itemRef.child("end").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
                                             } else {
-                                                //TODO Snackbar
+                                                Snackbar.make(constraintLayout, R.string.correction_time_tagged_snackbar, Snackbar.LENGTH_LONG)
+                                                        .setAction("Action", null).show();
                                             }
                                         }
 
@@ -259,7 +261,7 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                     itemRef.child("end").setValue(String.format(Locale.GERMAN, "%02d:%02d", hourOfDay, minute));
 
                 } else {
-                    Snackbar.make(constraintLayout, "Endzeit kann nicht vor der Startzeit sein!", Snackbar.LENGTH_LONG)
+                    Snackbar.make(constraintLayout, R.string.correction_endtime_before_starttime_snackbar, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
 
@@ -326,7 +328,8 @@ public class FirebaseAdapterCorrection extends FirebaseRecyclerAdapter<Stamp, Fi
                                         }
                                         itemRef.setValue(null);
                                     } else {
-                                        //TODO Snackbar
+                                        Snackbar.make(constraintLayout, R.string.correction_time_tagged_snackbar, Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
                                     }
                                 }
 
