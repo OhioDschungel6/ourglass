@@ -12,8 +12,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.othregensburg.ourglass.Correction.CorrectionActivity;
 import com.othregensburg.ourglass.Login.StartActivity;
 import com.othregensburg.ourglass.ProjectOverview.ProjectOverviewActivity;
@@ -81,6 +84,9 @@ public class AppDrawerBase extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        TextView name = findViewById(R.id.nameView);
+        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+        name.setText("Hello "+user.getDisplayName());
         return true;
     }
 
