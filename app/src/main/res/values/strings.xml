@@ -17,6 +17,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">ourglass</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_header_greeting">Hallo %1$s!</string>
     <string name="action_settings">Einstellungen</string>
     <string name="nav_drawer_homescreen">Startseite</string>
     <string name="nav_drawer_time_overview">Stundenübersicht</string>

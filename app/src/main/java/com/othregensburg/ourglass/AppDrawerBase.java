@@ -85,8 +85,12 @@ public class AppDrawerBase extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         TextView name = findViewById(R.id.nameView);
-        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
-        name.setText("Hello "+user.getDisplayName());
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            name.setText(getString(R.string.nav_header_greeting, user.getDisplayName()));
+        } else {
+            name.setText("");
+        }
         return true;
     }
 
